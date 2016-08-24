@@ -1,0 +1,21 @@
+\img("image/bg.png", "image-bg")
+
+文字を表示します。
+改行でwaitします。
+あっとまーくで@行中でwaitします。
+
+一行あけてクリアします。
+
+\style(color: "red")赤にしたり\style(color: "blue")青にしたり\style(color: "white")できます。
+
+画像も出せます。
+
+\img("image/example.png", "image-center", "fadeIn")
+
+???「セリフをしゃべります」
+
+画像を消します。
+
+\clear("image", "image-center", "fadeOut")
+
+end
