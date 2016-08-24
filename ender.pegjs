@@ -65,6 +65,7 @@ Line
 
 Say = name:(!(NL / "「") .)* "「" lines:(Function / Text)* "」" {
   name = toStr(name);
+  lines = Array.prototype.concat.apply([], lines);
   return Array.prototype.concat.apply([], [genName(name), lines, genObj("wait"), genObj("nameClear")]);
 }
 

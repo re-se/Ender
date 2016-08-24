@@ -161,6 +161,7 @@ function peg$parse(input, options) {
       peg$c11 = peg$literalExpectation("\u300D", false),
       peg$c12 = function(name, lines) {
         name = toStr(name);
+        lines = Array.prototype.concat.apply([], lines);
         return Array.prototype.concat.apply([], [genName(name), lines, genObj("wait"), genObj("nameClear")]);
       },
       peg$c13 = "@",
