@@ -1,9 +1,14 @@
 fs = require 'fs'
 path = require 'path'
+{FuncEngine} = require './func'
+
 module.exports = class Ender
   constructor: (@filename, @Action, @config) ->
     @parse()
+    @fe = new FuncEngine(@insts, @Action)
     @g = @_exec()
+    @currentMessage = []
+    @nextMessage = []
     @history = ""
 
   parse: () ->
@@ -23,6 +28,9 @@ module.exports = class Ender
       setTimeout =>
         @exec() if @config.auto
       , @config.autoSpeed
+
+  addMessage: (message) ->
+    @nextMessage.push message
 
   showMessage: (currentMessage, nextMessage) ->
     console.log currentMessage
@@ -53,29 +61,29 @@ module.exports = class Ender
   _exec: =>
     @isAnimated = false
     @isTextAnimated = false
-    currentMessage = []
-    nextMessage = []
     imagesMap = {}
     style = {}
-    for inst, i in @insts
-      console.log inst.type
+    i = 0
+    loop
+      inst = @insts[i]
       next = @insts[i+1]
+      console.log inst.type
       switch inst.type
         when "wait"
           @endMarker = if next?.type is "clear" then "▼" else "▽"
-          @showMessage(currentMessage, nextMessage)
+          @showMessage(@currentMessage, @nextMessage)
           yield 0
-          currentMessage = currentMessage.concat nextMessage
-          nextMessage = []
+          @currentMessage = @currentMessage.concat @nextMessage
+          @nextMessage = []
           if @isTextAnimated
             clearTimeout @timeoutID
-            @Action.setText @addEndMarker(currentMessage)
+            @Action.setText @addEndMarker(@currentMessage)
             yield 0
         when "text"
           for m in inst.value
             @history += m.body if m.body?
             @history += "\n" if m.type is "br"
-          nextMessage = nextMessage.concat inst.value
+          @nextMessage = @nextMessage.concat inst.value
         when "name"
           @Action.setName(inst.name)
           @history += "#{inst.name}「"
@@ -86,40 +94,22 @@ module.exports = class Ender
         #   message = message.concat type: "br"
         when "clear"
           if inst.message
-            currentMessage = []
-            nextMessage = []
-            @Action.setText currentMessage
+            @currentMessage = []
+            @nextMessage = []
+            @Action.setText @currentMessage
             # @history += "\n"
           if inst.image
             @Action.clearImage(inst.target, inst.effect)
             @isAnimated = true
             yield 0 while @isAnimated
         when "func"
-          console.log "func: #{inst.name}"
-          switch inst.name
-            when "img"
-              image = {}
-              image.src = inst.args[0]
-              image.className = inst.args[1]
-              image.effect = inst.args[2]
-              id = @Action.setImage image
-              if image.effect?
-                yield 0 while @isAnimated
-              else
-                yield 0
-            when "style"
-              style = Object.assign {}, style, inst.args[0]
-              nextMessage.push type: "style", value: style
-            when "clear"
-              type = inst.args[0]
-              className = inst.args[1]
-              effect = inst.args[2]
-              @clear(type, className, effect)
-              yield 0 while @isAnimated
-            else
-              console.error inst
+          it = @fe.exec(@, i)
+          while not (ret = it.next()).done
+            yield ret.value
         else
           console.error inst
+      i++
+      break unless next?
 
     @Action.clear()
     @history = ""
