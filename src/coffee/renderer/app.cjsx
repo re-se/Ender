@@ -27,7 +27,7 @@ window.onload = () ->
       window.addEventListener("wheel", @onScroll)
       ipcRenderer.on 'show-setting', =>
         @changeMode "setting"
-      Action = {@setText, @setName, @setImage, @clearImage, @clear}
+      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation}
       filename = '01.end'
       @engine = new Engine(filename, Action, config)
       @setState config: config, @execAuto
@@ -40,14 +40,16 @@ window.onload = () ->
         diff.auto = $set: false
         @setConfig diff
       @setState mode: mode
-    startAnimation: (className, effectName, callback) ->
+    startAnimation: (target, effectName, callback) ->
       @tls = []
       @engine.startAnimation()
+      nodes = document.querySelectorAll target
+      nodes = document.getElementsByClassName(target) if nodes.length < 1
       cb = =>
         callback?()
         @engine.finishAnimation()
         @execAuto()
-      for node in document.getElementsByClassName(className)
+      for node in nodes
         @tls.push effects[effectName](node, cb)
         cb = null
     finishAnimation: (className) ->
@@ -86,7 +88,7 @@ window.onload = () ->
     setConfig: (diff) ->
       config = update(@state.config, diff)
       @engine?.config = config
-      @setState config: config
+      @setState config: config, => @execAuto()
     onClick: ->
       switch @state.mode
         when "main"
@@ -127,10 +129,10 @@ window.onload = () ->
             items.push <NameBox key="name" name={@state.name} />
           if @state.history?
             items.push <HistoryView key="history" history={@state.history} />
-          items.push <MessageBox key="message" styles="message-1" message={@state.message}/>
+          items.push <MessageBox key="message" styles="message-1" message={@state.message}/> if @state.message?.length > 0
           items.push <ImageView key="images" images={@state.images} />
         when "setting"
-          items = <Setting key="setting" config={@state.config} />
+          items = <Setting key="setting" config={@state.config} Action={{@setConfig, @changeMode}} />
       return (
         <div id="inner" onClick={@onClick}>
           {items}
