@@ -1,8 +1,12 @@
-\img("image/bg.png", "image-bg")
+\img("image/bg.png", "image-bg", "fadeIn")
+\effect("#contents", "shake")
 
 文字を表示します。
+
 改行でwaitします。
-あっとまーくで@行中でwaitします。
+行末に\\で\
+waitしません。
+\@で@行中でwaitします。
 
 一行あけてクリアします。
 
@@ -11,6 +15,7 @@
 画像も出せます。
 
 \img("image/example.png", "image-center", "fadeIn")
+\effect("image-center", "shake")
 
 ???「セリフをしゃべります」
 

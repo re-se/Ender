@@ -82,13 +82,16 @@ Text = value:(Element)+ nl:(NL)? at:("@")? {
 
 Element
   = Ruby
+  / "\\" "\n" { return genObj("br"); }
   / SimpleText
 
 Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
 	return genRuby(toStr(kanji), toStr(kana));
 }
 
-SimpleText = line:(!(NL / "」" / "{" / "@" / "\\") .)+ {
+Escape = "\\" [「」{}@\\]
+
+SimpleText = line:(Escape / !(NL / "」" / "{" / "@" / "\\") .)+ {
    return genText(toStr(line));
  }
 

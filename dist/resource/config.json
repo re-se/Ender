@@ -1,5 +1,5 @@
 {
-  "auto": true,
+  "auto": false,
   "autoSpeed": 1000,
   "textSpeed": 50
 }
