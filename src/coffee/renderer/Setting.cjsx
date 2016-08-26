@@ -8,7 +8,7 @@ module.exports = React.createClass
   genConfigView: (config, path="") ->
     items = []
     table = "table" if path is ""
-    for key, value of config
+    for key, value of config.config
       path = "#{path}/{key}"
       tr = []
       tr.push <td key="#{path}-key">{key}</td>
@@ -41,8 +41,8 @@ module.exports = React.createClass
   onClick: (e) ->
     e.stopPropagation()
     json = @genConfigJSON()
-    console.log json
-    @props.Action.setConfig $set: json
+    @props.config.config = json
+    @props.Action.setConfig @props.config
     @props.Action.changeMode "main"
   render: ->
     <div className="setting">

@@ -1,7 +1,7 @@
 class @FuncEngine
   constructor: (@insts, @Action) ->
-  exec: (engine, i) ->
-    inst = @insts[i]
+  exec: (engine) ->
+    inst = @insts[engine.pc]
     console.log "func: #{inst.name}"
     switch inst.name
       when "img"
@@ -29,5 +29,10 @@ class @FuncEngine
         effect = inst.args[2]
         engine.clear(type, className, effect)
         yield 0 while engine.isAnimated
+      when "skip"
+        @Action.setConfig "skip", true
+      when "stop"
+        @Action.setConfig "skip", false
+        yield 0
       else
         console.error inst

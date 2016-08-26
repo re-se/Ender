@@ -11,6 +11,7 @@ window.onload = () ->
   HistoryView = require './js/renderer/HistoryView'
   Setting = require './js/renderer/Setting'
   effects = require './js/renderer/effects'
+  {Config} = require './js/renderer/Config'
 
   Contents = React.createClass
     getInitialState: ->
@@ -23,14 +24,16 @@ window.onload = () ->
     componentDidMount: ->
       console.log "start!"
       config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
+      @config = new Config config
       window.addEventListener("keydown", @onKeyDown)
       window.addEventListener("wheel", @onScroll)
       ipcRenderer.on 'show-setting', =>
         @changeMode "setting"
-      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation}
+      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig}
       filename = '01.end'
-      @engine = new Engine(filename, Action, config)
-      @setState config: config, @execAuto
+      @engine = new Engine(filename, Action, @config)
+      # @setState config: config, @engine.exec
+      @engine.exec()
     componentWillUnmount: ->
       window.removeEventListener("keydown", @onKeyDown)
       window.removeEventListener("scroll", @onScroll)
@@ -38,7 +41,7 @@ window.onload = () ->
       unless mode is "main"
         diff = {}
         diff.auto = $set: false
-        @setConfig diff
+        @setConfig "auto", false
       @setState mode: mode
     startAnimation: (target, effectName, callback) ->
       @tls = []
@@ -57,8 +60,9 @@ window.onload = () ->
         tl.progress(1, false)
       @tls = null
       @engine.finishAnimation()
-    setText: (message) ->
+    setText: (message, cb) ->
       @setState message: message
+      , cb
     setName: (name) ->
       @setState name: name
     setImage: (image) ->
@@ -85,11 +89,17 @@ window.onload = () ->
       @setState
         message: null
         images: []
-    setConfig: (diff) ->
-      config = update(@state.config, diff)
-      @engine?.config = config
-      @setState config: config, => @execAuto()
-    onClick: ->
+    setConfig: (key, value) ->
+      if value?
+        @config[key] = value
+      else
+        @config = key
+      @engine?.config = @config
+      @execAuto()
+      # config = update(@state.config, diff)
+      # @engine?.config = config
+      # @setState config: config, => @execAuto()
+    onClick: (e) ->
       switch @state.mode
         when "main"
           if @state.history?
@@ -97,7 +107,7 @@ window.onload = () ->
           else
             diff = {}
             diff.auto = $set: false
-            @setConfig diff
+            @setConfig "auto", false
             if @engine.isAnimated and @tls?
               @finishAnimation()
             else
@@ -114,13 +124,10 @@ window.onload = () ->
           if e.deltaY < 0 and !@state.history?
             diff = {}
             diff.auto = $set: false
-            @setConfig diff
+            @setConfig "auto", false
             @setState history: @engine?.history
     execAuto: ->
-      if @state.config.auto
-        setTimeout =>
-          @engine.exec() if @state.config.auto
-        , @state.config.autoSpeed
+      @engine.execAuto()
     render: () ->
       switch @state.mode
         when "main"
@@ -129,10 +136,11 @@ window.onload = () ->
             items.push <NameBox key="name" name={@state.name} />
           if @state.history?
             items.push <HistoryView key="history" history={@state.history} />
-          items.push <MessageBox key="message" styles="message-1" message={@state.message}/> if @state.message?.length > 0
+          if @state.message?.length > 0 && !@state.config.hideMessageBox
+            items.push <MessageBox key="message" styles="message-1" message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
         when "setting"
-          items = <Setting key="setting" config={@state.config} Action={{@setConfig, @changeMode}} />
+          items = <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
       return (
         <div id="inner" onClick={@onClick}>
           {items}

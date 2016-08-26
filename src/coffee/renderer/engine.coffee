@@ -1,6 +1,7 @@
 fs = require 'fs'
 path = require 'path'
 {FuncEngine} = require './func'
+{Config} = require './Config'
 
 module.exports = class Ender
   constructor: (@filename, @Action, @config) ->
@@ -24,6 +25,23 @@ module.exports = class Ender
     @isAnimated = true
 
   execAuto: ->
+    console.trace()
+    if @config.skip
+      if @config.textSpeed > 0
+        @_config = @config.dup()
+        @Action.setConfig "textSpeed", 0
+      else
+        setTimeout =>
+          @exec() if @config.skip
+        , 0
+      return
+    else
+      if @_config?
+        @_config.skip = false
+        @config = @_config
+        @_config = null
+        @Action.setConfig @config
+        return
     if @config.auto
       setTimeout =>
         @exec() if @config.auto
@@ -33,8 +51,6 @@ module.exports = class Ender
     @nextMessage.push message
 
   showMessage: (currentMessage, nextMessage) ->
-    console.log currentMessage
-    console.log nextMessage
     me = @messageGen currentMessage, nextMessage
     if @config.textSpeed > 0
       @isTextAnimated = true
@@ -47,8 +63,7 @@ module.exports = class Ender
           @timeoutID = setTimeout cb, @config.textSpeed
       cb()
     else
-      @Action.setText @addEndMarker(currentMessage.concat nextMessage)
-      @execAuto()
+      @Action.setText @addEndMarker(currentMessage.concat nextMessage), => @execAuto()
 
   clear: (type, className, effect) ->
     switch type
@@ -63,10 +78,10 @@ module.exports = class Ender
     @isTextAnimated = false
     imagesMap = {}
     style = {}
-    i = 0
+    @pc = 0
     loop
-      inst = @insts[i]
-      next = @insts[i+1]
+      inst = @insts[@pc]
+      next = @insts[@pc+1]
       console.log inst.type
       switch inst.type
         when "wait"
@@ -103,12 +118,12 @@ module.exports = class Ender
             @isAnimated = true
             yield 0 while @isAnimated
         when "func"
-          it = @fe.exec(@, i)
+          it = @fe.exec(@)
           while not (ret = it.next()).done
             yield ret.value
         else
           console.error inst
-      i++
+      @pc++
       break unless next?
 
     @Action.clear()
