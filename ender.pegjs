@@ -114,7 +114,7 @@ Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
   }
   return arg;
 }
-Arg = Object / String
+Arg = Object / String / Number
 
 Object = _Object / SimpleObject
 
@@ -135,10 +135,18 @@ SimpleObject = p:Property  {
   return obj;
 }
 
-Property = k:Name _ ":" _ v:Arg {
+Property = k:(Name / String) _ ":" _ v:Arg {
   return [k, v]
 }
 
 String = '"' str:(!'"' .)* '"' {
   return toStr(str);
+}
+
+Number = d:[0-9]+ f:("." [0-9]*)? {
+  var n = d.join("");
+  if(f) {
+    n += "." + f[1].join("");
+  }
+  return parseFloat(n);
 }
