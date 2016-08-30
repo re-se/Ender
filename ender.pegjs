@@ -1,4 +1,3 @@
-
  {
    function genObj(type) {
       return {type: type};
@@ -30,10 +29,24 @@
      return o;
    }
 
+   function genVar(name) {
+     var o = genObj("var");
+     o.name = name;
+     return o;
+   }
+
    function genFunc(name, args) {
      var o = genObj("func");
      o.name = name;
      o.args = args;
+     return o;
+   }
+
+   function genFuncDecl(name, args, body) {
+     var o = genObj("funcdecl");
+     o.name = name;
+     o.args = args;
+     o.body = body;
      return o;
    }
 
@@ -58,16 +71,44 @@ _ = S*
 __ = (S / NL)*
 
 Line
-  = Say
+  = Comment
+  / Say
+  / FuncDecl
   / Function
   / Text
   / Br
+
+Comment = "#" (!NL .)* NL { return null; }
 
 Say = name:(!(NL / "「") .)* "「" lines:(Function / Text)* "」" {
   name = toStr(name);
   lines = Array.prototype.concat.apply([], lines);
   return Array.prototype.concat.apply([], [genName(name), lines, genObj("wait"), genObj("nameClear")]);
 }
+
+FuncDecl = "func" _ name:Name _ args:FuncArgs _ "{" lines:(__ !"}" Line)* __ "}" NL? {
+  var body = [];
+   for(var i = 0; i < lines.length; i++) {
+     body = body.concat(lines[i][2]);
+   }
+   return genFuncDecl(name, args, body);
+}
+
+FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
+  var arg;
+  if (arg1 || arg2.length > 0) {
+    arg = [arg1];
+  }
+  if(arg2.length > 0) {
+    var ar = arg2.map(function(a) {
+      return a[3];
+    });
+    arg = arg.concat(ar);
+  }
+  return arg;
+}
+
+
 
 Text = value:(Element)+ nl:(NL)? at:("@")? {
   if(nl) {
@@ -105,8 +146,11 @@ Function
 Name = name:([a-zA-Z] [a-zA-Z0-9\-]*) { return name[0] + name[1].join(""); }
 
 Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
-  var arg = [arg1];
-  if(arg2) {
+  var arg;
+  if (arg1 || arg2.length > 0) {
+    arg = [arg1];
+  }
+  if(arg2.length > 0) {
     var ar = arg2.map(function(a) {
       return a[3];
     });
@@ -114,7 +158,12 @@ Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
   }
   return arg;
 }
-Arg = Object / String / Number
+
+Arg = Object / String / Number / Var / Null
+
+Var = name:Name { return genVar(name) }
+
+Null = '' { return null; }
 
 Object = _Object / SimpleObject
 

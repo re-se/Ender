@@ -1,5 +1,10 @@
-\img("image/bg.png", "image-bg", "fadeIn")
-\effect("#contents", "shake")
+# \skip
+func setBG(name) {
+  \img(name, "image-bg", "fadeIn")
+  \effect("#contents", "shake")
+}
+
+\setBG("image/bg.png")
 
 文字を表示します。
 
@@ -10,7 +15,9 @@ waitしません。
 
 一行あけてクリアします。
 
-\style(color: "red")赤にしたり\style(color: "blue")青にしたり\style(color: "white")できます。
+\stop
+
+\style(color: "red")赤にしたり\style(color: "blue")青にしたり\style(fontSize: 30)大きくしたり\style(color: "white")できます。
 
 画像も出せます。
 

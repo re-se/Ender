@@ -137,7 +137,7 @@ window.onload = () ->
           if @state.history?
             items.push <HistoryView key="history" history={@state.history} />
           if @state.message?.length > 0 && !@state.config.hideMessageBox
-            items.push <MessageBox key="message" styles="message-1" message={@state.message}/>
+            items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
         when "setting"
           items = <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />

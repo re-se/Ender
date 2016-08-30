@@ -25,7 +25,6 @@ module.exports = class Ender
     @isAnimated = true
 
   execAuto: ->
-    console.trace()
     if @config.skip
       if @config.textSpeed > 0
         @_config = @config.dup()
@@ -82,49 +81,54 @@ module.exports = class Ender
     loop
       inst = @insts[@pc]
       next = @insts[@pc+1]
-      console.log inst.type
-      switch inst.type
-        when "wait"
-          @endMarker = if next?.type is "clear" then "▼" else "▽"
-          @showMessage(@currentMessage, @nextMessage)
-          yield 0
-          @currentMessage = @currentMessage.concat @nextMessage
-          @nextMessage = []
-          if @isTextAnimated
-            clearTimeout @timeoutID
-            @Action.setText @addEndMarker(@currentMessage)
+      if inst?
+        console.log inst.type
+        switch inst.type
+          when "wait"
+            @endMarker = if next?.type is "clear" then "▼" else "▽"
+            @showMessage(@currentMessage, @nextMessage)
             yield 0
-        when "text"
-          for m in inst.value
-            @history += m.body if m.body?
-            @history += "\n" if m.type is "br"
-          @nextMessage = @nextMessage.concat inst.value
-        when "name"
-          @Action.setName(inst.name)
-          @history += "#{inst.name}「"
-        when "nameClear"
-          @Action.setName(null)
-          @history += "」\n"
-        # when "br"
-        #   message = message.concat type: "br"
-        when "clear"
-          if inst.message
+            @currentMessage = @currentMessage.concat @nextMessage
+            @nextMessage = []
+            if @isTextAnimated
+              clearTimeout @timeoutID
+              @Action.setText @addEndMarker(@currentMessage)
+              yield 0
+          when "text"
+            for m in inst.value
+              @history += m.body if m.body?
+              @history += "\n" if m.type is "br"
+            @nextMessage = @nextMessage.concat inst.value
+          when "name"
             @currentMessage = []
             @nextMessage = []
-            @Action.setText @currentMessage
-            # @history += "\n"
-          if inst.image
-            @Action.clearImage(inst.target, inst.effect)
-            @isAnimated = true
-            yield 0 while @isAnimated
-        when "func"
-          it = @fe.exec(@)
-          while not (ret = it.next()).done
-            yield ret.value
-        else
-          console.error inst
+            @Action.setName(inst.name)
+            @history += "#{inst.name}「"
+          when "nameClear"
+            @Action.setName(null)
+            @history += "」\n"
+          # when "br"
+          #   message = message.concat type: "br"
+          when "clear"
+            if inst.message
+              @currentMessage = []
+              @nextMessage = []
+              @Action.setText @currentMessage
+              # @history += "\n"
+            if inst.image
+              @Action.clearImage(inst.target, inst.effect)
+              @isAnimated = true
+              yield 0 while @isAnimated
+          when "funcdecl"
+            @fe.addFunc(inst)
+          when "func"
+            it = @fe.exec(@)
+            while not (ret = it.next()).done
+              yield ret.value
+          else
+            console.error inst
       @pc++
-      break unless next?
+      break if @insts.length < @pc
 
     @Action.clear()
     @history = ""
