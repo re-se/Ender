@@ -2,21 +2,25 @@ fs = require 'fs'
 path = require 'path'
 {FuncEngine} = require './func'
 {Config} = require './Config'
+parser = require '../../../ender.js'
 
 module.exports = class Ender
-  constructor: (@filename, @Action, @config) ->
-    @parse()
-    @fe = new FuncEngine(@insts, @Action)
+  constructor: (@Action, @config) ->
+    @insts = []
+    @pc = 0
+    @parse(@config.main)
+    @pc++
+    @fe = new FuncEngine(@Action)
     @g = @_exec()
     @currentMessage = []
     @nextMessage = []
     @history = ""
 
-  parse: () ->
-    parser = require '../../../ender.js'
-    @basePath = path.resolve() + "/dist/resource/"
-    @script = fs.readFileSync(@basePath + @filename).toString()
-    @insts = parser.parse(@script)
+  parse: (p) ->
+    mainPath = path.join(@config.basePath + p)
+    script = fs.readFileSync(mainPath).toString()
+    @insts = parser.parse(script).concat @insts[@pc+1..]
+    @pc = -1
 
   finishAnimation: ->
     @isAnimated = false
@@ -66,6 +70,10 @@ module.exports = class Ender
 
   clear: (type, className, effect) ->
     switch type
+      when "text"
+        @currentMessage = []
+        @nextMessage = []
+        @Action.clear()
       when "image"
         @Action.clearImage(className, effect)
         @isAnimated = true

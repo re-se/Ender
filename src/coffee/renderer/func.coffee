@@ -1,15 +1,15 @@
 class @FuncEngine
-  constructor: (@mainInsts, @Action) ->
+  constructor: (@Action) ->
     @funcMap = {}
   addFunc: (inst) ->
     @funcMap[inst.name] = {body: inst.body, args: inst.args}
   getArg: (inst, n) ->
-    if inst.args[n].type is "var"
+    if inst.args[n]?.type is "var"
       @nameMap[inst.args[n].name]
     else
       inst.args[n]
   exec: (engine) ->
-    inst = @mainInsts[engine.pc]
+    inst = engine.insts[engine.pc]
     @nameMap = {}
     console.log "func: #{inst.name}"
     loop
@@ -42,10 +42,15 @@ class @FuncEngine
           engine.clear(type, className, effect)
           yield 0 while engine.isAnimated
         when "skip"
-          @Action.setConfig "skip", true
+          if engine.config.debug
+            @Action.setConfig "skip", true
         when "stop"
-          @Action.setConfig "skip", false
+          if engine.config.debug
+            @Action.setConfig "skip", false
           yield 0
+        when "load"
+          path = @getArg(inst, 0)
+          engine.parse(path)
         else
           if @funcMap[inst.name]?
             @insts = @funcMap[inst.name].body
@@ -55,7 +60,8 @@ class @FuncEngine
               for arg in @funcMap[inst.name].args
                 @nameMap[arg] = inst.args[i]
                 i++
-          console.error inst
+          else
+            console.error inst
       if !@insts? or @insts.length - 1 <= @pc
         @insts = undefined
         @pc = undefined

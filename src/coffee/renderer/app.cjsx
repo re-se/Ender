@@ -30,8 +30,7 @@ window.onload = () ->
       ipcRenderer.on 'show-setting', =>
         @changeMode "setting"
       Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig}
-      filename = '01.end'
-      @engine = new Engine(filename, Action, @config)
+      @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
       @engine.exec()
     componentWillUnmount: ->
