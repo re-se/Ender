@@ -35,6 +35,12 @@
      return o;
    }
 
+   function genInterpolation(expr) {
+     var o = genObj("interpolation");
+     o.expr = expr;
+     return o;
+   }
+
    function genFunc(name, args) {
      var o = genObj("func");
      o.name = name;
@@ -67,6 +73,7 @@
 
 S = [ \t]
 NL = '\r'? '\n'
+EOL = NL / !.
 _ = S*
 __ = (S / NL)*
 
@@ -74,13 +81,14 @@ Line
   = Comment
   / Say
   / FuncDecl
-  / Function
+  / VarDecl
+  / Call
   / Text
   / Br
 
 Comment = "#" (!NL .)* NL { return null; }
 
-Say = name:(Escape / !(NL / "「") .)* "「" lines:(Function / Text)* "」" {
+Say = name:(Escape / !(NL / "「") .)* "「" lines:(Call / Text)* "」" {
   name = toStr(name);
   lines = Array.prototype.concat.apply([], lines);
   return Array.prototype.concat.apply([], [genName(name), lines, genObj("wait"), genObj("nameClear")]);
@@ -108,9 +116,7 @@ FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
   return arg;
 }
 
-
-
-Text = value:(Element)+ nl:(NL)? at:("@")? {
+Text = value:(Element)+ nl:(NL / &"#")? at:("@")? {
   if(nl) {
     value = value.concat(genObj("br"));
   }
@@ -122,28 +128,59 @@ Text = value:(Element)+ nl:(NL)? at:("@")? {
 }
 
 Element
-  = Ruby
+  = Interpolation
+  / Ruby
   / "\\" "\n" { return genObj("br"); }
   / SimpleText
+
+Interpolation = "${" _ t:Assignable _ "}" {
+  var top = t[0];
+  var left = t[1];
+  var recv = t[2];
+  left[recv] = null;
+  return genInterpolation(top);
+}
 
 Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
 	return genRuby(toStr(kanji), toStr(kana));
 }
 
-Escape = "\\" [「」{}@\\]
+Escape = "\\" [「」{}@\\#]
 
-SimpleText = line:(Escape / !(NL / "」" NL / "{" / "@" / "\\") .)+ {
+SimpleText = line:(Escape / !(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#") .)+ {
    return genText(toStr(line));
  }
 
 Br = NL+ { return genClear("message"); }
 
-Function
+Call
   = "\\" name:Name args:Args? {
   return genFunc(name, args);
 }
 
-Name = name:([a-zA-Z] [a-zA-Z0-9\-]*) { return name[0] + name[1].join(""); }
+VarDecl = t:Assignable _ "=" _ right:Arg EOL {
+  var top = t[0];
+  var left = t[1];
+  var recv = t[2];
+  left[recv] = right;
+  return genFunc("set", [top]);
+}
+
+Assignable = recv:Identifier accessor:(Accessor)* {
+  var left = {};
+  var top = left;
+  for (var i = 0; i < accessor.length; i++) {
+    left = left[recv] = {};
+    recv = accessor[i];
+  }
+  return [top, left, recv];
+}
+
+Accessor = "." name:(Identifier / Name) {return name;}
+
+Identifier = Name
+
+Name = name:([a-zA-Z_] [a-zA-Z0-9_]*) { return name[0] + name[1].join(""); }
 
 Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
   var arg;
@@ -159,9 +196,16 @@ Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
   return arg;
 }
 
-Arg = Object / String / Number / Var / Null
+Arg = Object / String / Number / Bool / Var / Null
 
 Var = name:Name { return genVar(name) }
+
+Bool = b:("true" / "false") {
+  if(b === "true") {
+    return true;
+  }
+  return false;
+}
 
 Null = '' { return null; }
 
@@ -184,7 +228,7 @@ SimpleObject = p:Property  {
   return obj;
 }
 
-Property = k:(Name / String) _ ":" _ v:Arg {
+Property = k:(Name / String / Number) _ ":" _ v:Arg {
   return [k, v]
 }
 

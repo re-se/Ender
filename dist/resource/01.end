@@ -17,6 +17,10 @@ waitしません。
 
 \stop
 
+v.taro = name: "太郎"
+
+${v.taro.name}です。
+
 \style(color: "red")赤にしたり\style(color: "blue")青にしたり\style(fontSize: 30)大きくしたり\style(color: "white")できます。
 
 画像も出せます。
@@ -24,7 +28,8 @@ waitしません。
 \img("image/example.png", "image-center", "fadeIn")
 \effect("image-center", "shake")
 
-???「セリフをしゃべります」
+???「「セリフをしゃべります」」
+わたし「${v.taro.name}さん、こんにちは」
 
 画像を消します。
 

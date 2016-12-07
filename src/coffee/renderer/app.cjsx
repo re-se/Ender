@@ -20,7 +20,6 @@ window.onload = () ->
       images: []
       refs: {}
       tls: null
-      config: {}
     componentDidMount: ->
       console.log "start!"
       config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
@@ -42,6 +41,9 @@ window.onload = () ->
         diff.auto = $set: false
         @setConfig "auto", false
       @setState mode: mode
+    Pause: ->
+      @setConfig "auto", false
+
     startAnimation: (target, effectName, callback) ->
       @tls = []
       @engine.startAnimation()
@@ -50,7 +52,7 @@ window.onload = () ->
       cb = =>
         callback?()
         @engine.finishAnimation()
-        @execAuto()
+        @autoExec()
       for node in nodes
         @tls.push effects[effectName](node, cb)
         cb = null
@@ -68,7 +70,7 @@ window.onload = () ->
       if image.effect?
         callback = => @startAnimation(image.className, image.effect)
       else
-        callback = => @execAuto()
+        callback = => @autoExec()
       @setState
         images: @state.images.concat(image)
         , callback
@@ -94,10 +96,10 @@ window.onload = () ->
       else
         @config = key
       @engine?.config = @config
-      @execAuto()
+      @autoExec()
       # config = update(@state.config, diff)
       # @engine?.config = config
-      # @setState config: config, => @execAuto()
+      # @setState config: config, => @autoExec()
     onClick: (e) ->
       switch @state.mode
         when "main"
@@ -125,8 +127,8 @@ window.onload = () ->
             diff.auto = $set: false
             @setConfig "auto", false
             @setState history: @engine?.history
-    execAuto: ->
-      @engine.execAuto()
+    autoExec: ->
+      @engine.autoExec()
     render: () ->
       switch @state.mode
         when "main"
@@ -135,7 +137,7 @@ window.onload = () ->
             items.push <NameBox key="name" name={@state.name} />
           if @state.history?
             items.push <HistoryView key="history" history={@state.history} />
-          if @state.message?.length > 0 && !@state.config.hideMessageBox
+          if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
         when "setting"

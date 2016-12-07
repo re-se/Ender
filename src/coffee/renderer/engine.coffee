@@ -17,7 +17,7 @@ module.exports = class Ender
     @history = ""
 
   parse: (p) ->
-    mainPath = path.join(@config.basePath + p)
+    mainPath = path.join(@config.basePath, p)
     script = fs.readFileSync(mainPath).toString()
     @insts = parser.parse(script).concat @insts[@pc+1..]
     @pc = -1
@@ -28,7 +28,7 @@ module.exports = class Ender
   startAnimation: ->
     @isAnimated = true
 
-  execAuto: ->
+  autoExec: ->
     if @config.skip
       if @config.textSpeed > 0
         @_config = @config.dup()
@@ -50,23 +50,27 @@ module.exports = class Ender
         @exec() if @config.auto
       , @config.autoSpeed
 
+  changeStyle: (style) ->
+    @style = Object.assign {}, @style, style
+    @addMessage type: "style", value: @style
+
   addMessage: (message) ->
     @nextMessage.push message
 
   showMessage: (currentMessage, nextMessage) ->
-    me = @messageGen currentMessage, nextMessage
+    me = @messageGen @currentMessage, @nextMessage
     if @config.textSpeed > 0
       @isTextAnimated = true
       cb = () =>
         if (m = me.next()).done
           @isTextAnimated = false
-          @execAuto()
+          @autoExec()
         else
           @Action.setText m.value
           @timeoutID = setTimeout cb, @config.textSpeed
       cb()
     else
-      @Action.setText @addEndMarker(currentMessage.concat nextMessage), => @execAuto()
+      @Action.setText @addEndMarker(@currentMessage.concat @nextMessage), => @autoExec()
 
   clear: (type, className, effect) ->
     switch type
@@ -83,8 +87,8 @@ module.exports = class Ender
   _exec: =>
     @isAnimated = false
     @isTextAnimated = false
+    @style = {}
     imagesMap = {}
-    style = {}
     @pc = 0
     loop
       inst = @insts[@pc]
@@ -94,7 +98,7 @@ module.exports = class Ender
         switch inst.type
           when "wait"
             @endMarker = if next?.type is "clear" then "▼" else "▽"
-            @showMessage(@currentMessage, @nextMessage)
+            @showMessage()
             yield 0
             @currentMessage = @currentMessage.concat @nextMessage
             @nextMessage = []
@@ -104,6 +108,9 @@ module.exports = class Ender
               yield 0
           when "text"
             for m in inst.value
+              if m.type is "interpolation"
+                m.type = "text"
+                m.body = @fe.getVar m.expr
               @history += m.body if m.body?
               @history += "\n" if m.type is "br"
             @nextMessage = @nextMessage.concat inst.value

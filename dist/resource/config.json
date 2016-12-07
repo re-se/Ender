@@ -1,5 +1,9 @@
 {
-  "auto": false,
-  "autoSpeed": 1000,
-  "textSpeed": 50
+  "@auto": false,
+  "@autoSpeed": 1000,
+  "@textSpeed": 50,
+  "skip": false,
+  "text": {
+    "styles": "message-1"
+  }
 }
