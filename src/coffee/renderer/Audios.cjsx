@@ -1,12 +1,15 @@
 React = require 'react'
+Audio = require './Audio'
 
-class Audios extends React.Component
+module.exports = React.createClass
   render: ->
-    audios = null
-    <div>
-      {audios}
+    items = @props.audios.forIn (key, audio) =>
+      <Audio audio={audio} key={audio.src} config={@props.config} audioContext={@props.audioContext}
+        Action={
+          "setAudio": @props.Action.setAudio,
+          "playAudio": @props.Action.playAudio
+        }
+      />
+    <div className="audios">
+      {items}
     </div>
-
-class Audio extends React.Component
-  render: ->
-    <audio />
