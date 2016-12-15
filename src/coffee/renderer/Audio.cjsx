@@ -14,11 +14,7 @@ module.exports = React.createClass
           style[key] = audio.option[key]
     onload = (e) =>
       audioDom = e.currentTarget
-      src = @props.audioContext.createMediaElementSource audioDom
-      if e.id is "@audio-" + audio.name
-        @props.Action.setAudio audio.name, src
-      else
-        @props.Action.setAudio "#{audio.name}", src
+      @props.Action.setAudio audio.name, audioDom
     onloaded = () ->
       console.log "loaded #{audio.name}"
     onend = (e) =>

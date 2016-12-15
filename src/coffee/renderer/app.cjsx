@@ -36,7 +36,7 @@ window.onload = () ->
       window.addEventListener("wheel", @onScroll)
       ipcRenderer.on 'show-setting', =>
         @changeMode "setting"
-      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio}
+      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio}
       @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
       @engine.exec()
@@ -95,32 +95,36 @@ window.onload = () ->
       if effect?
         @startAnimation(target, effect, cb)
     loadAudio: (audio) ->
+      # merge audio style, Config(default) style and Option style
       style = if @config.audio.hasOwnProperty audio.type then @config.audio[audio.type] else {}
       if audio.option
         style.forIn (key, value) ->
           if audio.option.hasOwnProperty key
             style[key] = audio.option[key]
-      newKey = audio.name
       newAudios = {}
-      newAudios[newKey] = audio
+      newAudios[audio.name] = audio
       if style.loop && style.loopStart > 0
-        newAudios["#{newKey}_loop"] =
+        newAudios["#{audio.name}_loop"] =
           "type": audio.type,
           "name": "#{audio.name}_loop",
           "src": "#{audio.src}#t=#{style.loopStart}"
           "option": if audio.option? then audio.option else {}
-        newAudios["#{newKey}_loop"].option.loopStart = 0
+        newAudios["#{audio.name}_loop"].option.loopStart = 0
       newAudios = update @state.audios,
        "$merge": newAudios
       @setState () ->
         audios: newAudios
-    setAudioNode: (name, node) ->
+    setAudioNode: (name, dom) ->
       if @state.audios[name]?
+        node = @audioContext.createMediaElementSource dom
         @state.audios[name].node = node
     playAudio: (name) ->
       if @state.audios[name]?
         @state.audios[name].node.connect @audioContext.destination
         (document.getElementById "audio-#{name}").play()
+    stopAudio: (name) ->
+      if @state.audios[name]?
+        (document.getElementById "audio-#{name}").stop()
 
     clear: ->
       @setState
@@ -177,8 +181,8 @@ window.onload = () ->
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
         when "setting"
-          items = <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
-      items.push <Audios key="audios" audios={@state.audios} config={@config.audio} audioContext={@audioContext}
+          items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
+      items.push <Audios key="audios" audios={@state.audios} config={@config.audio}
         Action={
           "setAudio": @setAudioNode
           "playAudio": @playAudio
