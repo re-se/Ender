@@ -45,6 +45,21 @@ FuncMap =
   "load": (engine, inst) ->
     path = @getArg(inst, 0)
     engine.parse(path)
+  "loadAudio": (engine, inst) ->
+    audio =
+      "type": @getArg(inst, 0)
+      "name": @getArg(inst, 1)
+      "src": @getArg(inst, 2)
+      "option": @getArg(inst, 3)
+    console.log "loadAudio:", audio
+    @Action.loadAudio(audio)
+  "playAudio": (engine, inst) ->
+    name = @getArg(inst, 0)
+    @Action.playAudio(name)
+  "stopAudio": (engine, inst) ->
+    name = @getArg(inst, 0)
+    @Action.stopAudio(name)
+
 
 class @FuncEngine
   constructor: (@Action) ->
