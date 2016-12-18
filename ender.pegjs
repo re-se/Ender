@@ -15,6 +15,12 @@
      return o;
    }
 
+   function genEnphasize(text) {
+     var o = genObj("strong");
+     o.body = text;
+     return o;
+   }
+
    function genRuby(kanji, kana) {
      var o = genObj("ruby");
      o.body = kanji;
@@ -73,7 +79,8 @@
 
 S = [ \t]
 NL = '\r'? '\n'
-EOL = NL / !.
+EOL = NL / EOF
+EOF = !.
 _ = S*
 __ = (S / NL)*
 
@@ -88,11 +95,13 @@ Line
 
 Comment = "#" (!NL .)* NL { return null; }
 
-Say = name:(Escape / !(NL / "「") .)* "「" lines:(Call / Text)* "」" {
+Say = name:(Escape / !(NL / "「") .)* !KP "「" lines:(Call / Text / Br)* "」" {
   name = toStr(name);
   lines = Array.prototype.concat.apply([], lines);
   return Array.prototype.concat.apply([], [genName(name), lines, genObj("wait"), genObj("nameClear")]);
 }
+
+KP = "「" (KP / !"」" .)* "」" !EOL
 
 FuncDecl = "func" _ name:Name _ args:FuncArgs _ "{" lines:(__ !"}" Line)* __ "}" NL? {
   var body = [];
@@ -131,6 +140,7 @@ Element
   = Interpolation
   / Ruby
   / "\\" "\n" { return genObj("br"); }
+  / Enphasize
   / SimpleText
 
 Interpolation = "${" _ t:Assignable _ "}" {
@@ -145,11 +155,15 @@ Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
 	return genRuby(toStr(kanji), toStr(kana));
 }
 
-Escape = "\\" [「」{}@\\#]
+Escape = "\\" [「」{}@\\#*]
 
-SimpleText = line:(Escape / !(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#") .)+ {
+SimpleText = line:(Escape / !(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#"/ "*") .)+ {
    return genText(toStr(line));
  }
+
+Enphasize = "*" text:(!("*") .)+ "*" {
+  return genEnphasize(toStr(text));
+}
 
 Br = NL+ { return genClear("message"); }
 
