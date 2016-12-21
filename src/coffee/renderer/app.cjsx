@@ -2,7 +2,8 @@ window.onload = () ->
   React = require 'react'
   ReactDOM = require 'react-dom'
   fs = require 'fs'
-  {ipcRenderer} = require 'electron'
+  path = require 'path'
+  {ipcRenderer, remote} = require 'electron'
   update = require 'react-addons-update'
   Engine = require './js/renderer/engine'
   {Button} = require './js/renderer/Button'
@@ -14,9 +15,9 @@ window.onload = () ->
   Setting = require './js/renderer/Setting'
   Audios = require './js/renderer/Audios'
   effects = require './js/renderer/effects'
-  utils = require './js/renderer/utils'
   {Config} = require './js/renderer/Config'
   configPath = 'dist/resource/config.json'
+  utils = require './js/renderer/utils'
   utils.load()
 
   Contents = React.createClass
@@ -130,6 +131,30 @@ window.onload = () ->
       if @state.audios[name]?
         (document.getElementById "audio-#{name}").stop()
 
+    changeToSaveMode: (e) ->
+      e.stopPropagation()
+      # rect =
+      #   x: 0
+      #   y: 0
+      #   width: 100
+      #   height: 100
+      remote.getCurrentWindow().capturePage (img) =>
+        @screenshot = img
+        @changeMode("save")
+    save: (target) ->
+        s = {}
+        s.date = new Date()
+        arr = @engine?.history.split("\n")
+        loop
+          s.text = arr.pop()
+          break if s.text.length > 0 or arr.length < 1
+        s.thumbnail = @screenshot?.toDataURL()
+        diff = []
+        diff[target] = $set: s
+        newSaves = update @state.saves, diff
+        @setState saves: newSaves
+        fs.writeFile path.join(@config.savePath, "#{s.date.format()}.SAVE"), JSON.stringify(s)
+
     clear: ->
       @setState
         message: null
@@ -187,14 +212,11 @@ window.onload = () ->
           if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
-          changeToSaveMode = (e) =>
-            e.stopPropagation()
-            @changeMode("save")
-          items.push <Button key="save-button" inner="save" classes="save" onClick={changeToSaveMode} />
+          items.push <Button key="save-button" inner="save" classes="save" onClick={@changeToSaveMode} />
         when "setting"
           items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
         when "save"
-          items.push <SaveView key="save-view" saves={@state.saves}/>
+          items.push <SaveView key="save-view" saves={@state.saves} Action={{@save}}/>
       items.push <Audios key="audios" audios={@state.audios} config={@config.audio}
         Action={
           "setAudio": @setAudioNode
