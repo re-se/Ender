@@ -5,15 +5,18 @@ window.onload = () ->
   {ipcRenderer} = require 'electron'
   update = require 'react-addons-update'
   Engine = require './js/renderer/engine'
+  {Button} = require './js/renderer/Button'
   MessageBox = require './js/renderer/MessageBox'
   NameBox = require './js/renderer/NameBox'
   ImageView = require './js/renderer/ImageView'
   HistoryView = require './js/renderer/HistoryView'
+  {SaveView} = require './js/renderer/SaveView'
   Setting = require './js/renderer/Setting'
   Audios = require './js/renderer/Audios'
   effects = require './js/renderer/effects'
   utils = require './js/renderer/utils'
   {Config} = require './js/renderer/Config'
+  configPath = 'dist/resource/config.json'
   utils.load()
 
   Contents = React.createClass
@@ -24,8 +27,9 @@ window.onload = () ->
       audios: {}
       refs: {}
       tls: null
+      saves: []
     componentWillMount: ->
-      config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
+      config = JSON.parse fs.readFileSync(configPath, 'utf8')
       @config = new Config config
       @audioContext = new AudioContext()
     componentDidMount: ->
@@ -134,8 +138,11 @@ window.onload = () ->
       if value?
         @config[key] = value
       else
-        @config = key
+        json = key
+        for key, value of json
+          @config[key] = value
       @engine?.config = @config
+      fs.writeFile configPath, @config.toString("  ")
       @autoExec()
       # config = update(@state.config, diff)
       # @engine?.config = config
@@ -157,7 +164,7 @@ window.onload = () ->
       switch @state.mode
         when "main"
           @onClick() if e.keyCode is 13
-        when "setting"
+        else
           @setState mode: "main" if e.keyCode is 27
     onScroll: (e) ->
       switch @state.mode
@@ -180,8 +187,14 @@ window.onload = () ->
           if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
+          changeToSaveMode = (e) =>
+            e.stopPropagation()
+            @changeMode("save")
+          items.push <Button key="save-button" inner="save" classes="save" onClick={changeToSaveMode} />
         when "setting"
           items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
+        when "save"
+          items.push <SaveView key="save-view" saves={@state.saves}/>
       items.push <Audios key="audios" audios={@state.audios} config={@config.audio}
         Action={
           "setAudio": @setAudioNode
