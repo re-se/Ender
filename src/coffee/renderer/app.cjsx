@@ -108,17 +108,16 @@ window.onload = () ->
             style[key] = audio.option[key]
       newAudios = {}
       newAudios[audio.name] = audio
-      if style.loop && style.loopStart > 0
+      if style.loop && audio.loopSrc?
         newAudios["#{audio.name}_loop"] =
           "type": audio.type,
           "name": "#{audio.name}_loop",
-          "src": "#{audio.src}#t=#{style.loopStart}"
+          "src": "#{audio.loopSrc}"
+          "loopSrc": null
           "option": if audio.option? then audio.option else {}
-        newAudios["#{audio.name}_loop"].option.loopStart = 0
       newAudios = update @state.audios,
        "$merge": newAudios
-      @setState () ->
-        audios: newAudios
+      @setState audios: newAudios
     setAudioNode: (name, dom) ->
       if @state.audios[name]?
         node = @audioContext.createMediaElementSource dom
@@ -217,10 +216,11 @@ window.onload = () ->
           items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
         when "save"
           items.push <SaveView key="save-view" saves={@state.saves} Action={{@save}}/>
-      items.push <Audios key="audios" audios={@state.audios} config={@config.audio}
+      items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode
           "playAudio": @playAudio
+          "engineExec": @engine?.exec
         }
       />
       return (
