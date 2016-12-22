@@ -178,11 +178,19 @@ window.onload = () ->
         @engine.setCurrentState save.filename, save.pc, =>
           @changeMode "main"
 
-    clear: ->
-      @setState
-        message: null
-        images: []
-    setConfig: (key, value) ->
+    clear: (type) ->
+      s = switch type
+        when "text"
+          message: null
+          images: []
+        else
+          cb = type
+          message: null
+          images: []
+          audios: {}
+      @setState s, cb
+
+    setConfig: (key, value, save) ->
       if value?
         @config[key] = value
       else
@@ -190,7 +198,8 @@ window.onload = () ->
         for key, value of json
           @config[key] = value
       @engine?.config = @config
-      fs.writeFile configPath, @config.toString("  ")
+      if save
+        fs.writeFile configPath, @config.toString("  ")
       @autoExec()
       # config = update(@state.config, diff)
       # @engine?.config = config

@@ -54,10 +54,10 @@ FuncMap =
       "option": @getArg(inst, 4)
     console.log "loadAudio:", audio
     loopAudio = @Action.loadAudio(audio)
-    yield 0
+    yield "async"
     if loopAudio?
       @Action.loadAudio loopAudio
-      yield 0
+      yield "async"
   "playAudio": (engine, inst) ->
     name = @getArg(inst, 0)
     @Action.playAudio(name)

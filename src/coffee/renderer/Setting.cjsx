@@ -44,7 +44,7 @@ module.exports = React.createClass
     e.stopPropagation()
     json = @genConfigJSON()
     @props.config.config = json
-    @props.Action.setConfig @props.config
+    @props.Action.setConfig @props.config, null, true
     @props.Action.changeMode "main"
   render: ->
     <div className="setting">

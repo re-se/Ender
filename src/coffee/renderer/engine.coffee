@@ -28,14 +28,26 @@ module.exports = class Ender
 
   setCurrentState: (filename, pc, cb) ->
     @parse filename
-    @clearAll()
+    @clearAll () =>
+      @skip(pc, cb)
+
+  skip: (pc, cb) ->
+    _g = @g
+    @g = @_skip(_g, pc, cb)
+    @exec()
+
+  _skip : (_g, pc, cb) ->
     textSpeed = @config.textSpeed
     @Action.setConfig "textSpeed", 0
     while @pc < pc
-      @exec()
+      ret = _g.next()
+      if ret.value is "async"
+        yield 0
     @Action.setConfig "textSpeed", textSpeed
+    @g = _g
     if cb?
       cb()
+
 
   finishAnimation: ->
     @isAnimated = false
@@ -92,15 +104,18 @@ module.exports = class Ender
       when "text"
         @currentMessage = []
         @nextMessage = []
-        @Action.clear()
+        @Action.clear("text")
       when "image"
         @Action.clearImage(className, effect)
         @isAnimated = true
       else
-        console.error type
-  clearAll: ->
-    @clear("text")
+        @currentMessage = []
+        @nextMessage = []
+        @Action.clear(type)
+
+  clearAll: (cb) ->
     @history = ""
+    @clear(cb)
 
   _exec: =>
     @isAnimated = false
@@ -112,7 +127,7 @@ module.exports = class Ender
       inst = @insts[@pc]
       next = @insts[@pc+1]
       if inst?
-        console.log inst.type
+        # console.log inst.type
         switch inst.type
           when "wait"
             @endMarker = if next?.type is "clear" then "▼" else "▽"
