@@ -41,8 +41,8 @@ window.onload = () ->
       window.addEventListener("keydown", @onKeyDown)
       window.addEventListener("wheel", @onScroll)
       ipcRenderer.on 'show-setting', =>
-        @changeMode "setting"
-      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio}
+        @changeToSettingMode()
+      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
       @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
       @engine.exec()
@@ -140,7 +140,21 @@ window.onload = () ->
         (document.getElementById "audio-#{name}").play()
     stopAudio: (name) ->
       if @state.audios[name]?
-        (document.getElementById "audio-#{name}").stop()
+        audioDom = document.getElementById "audio-#{name}"
+        console.log audioDom
+        audioDom.pause()
+        audioDom.currentTime = 0
+    pauseAudio: (name) ->
+      if @state.audios[name]?
+        (document.getElementById "audio-#{name}").pause()
+
+    changeToSettingMode: (e) ->
+      e?.stopPropagation()
+      if @engine.isAnimated
+        @finishAnimation()
+      if @engine.isTextAnimated
+        @engine.exec()
+      @changeMode("setting")
 
     changeToSaveMode: (e) ->
       e.stopPropagation()
@@ -192,6 +206,7 @@ window.onload = () ->
 
     setConfig: (key, value, save) ->
       if value?
+        return if @config[key] is value
         @config[key] = value
       else
         json = key
@@ -246,7 +261,7 @@ window.onload = () ->
           items.push <ImageView key="images" images={@state.images} />
           items.push <div className="toolbar">
             <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
-            <Button key="setting-button" inner="設定" classes="setting" onClick={=> @changeMode "setting"} />
+            <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
           </div>
         when "setting"
           items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />

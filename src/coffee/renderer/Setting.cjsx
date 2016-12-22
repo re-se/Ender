@@ -11,7 +11,7 @@ module.exports = React.createClass
     items = []
     table = "table" if path is ""
     for key, value of config.config
-      path = "#{path}/{key}"
+      path = "#{path}/#{key}"
       tr = []
       tr.push <td key="#{path}-key">{key}</td>
       v = switch typeOf value
@@ -20,6 +20,8 @@ module.exports = React.createClass
         when "Number"
           step = value // 10
           <input type="number" defaultValue={value} step={step} />
+        when "Object"
+          @genConfigView(value, path)
         else
           value
       tr.push <td key="#{path}-value">{v}</td>

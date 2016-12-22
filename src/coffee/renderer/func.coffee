@@ -64,6 +64,9 @@ FuncMap =
   "stopAudio": (engine, inst) ->
     name = @getArg(inst, 0)
     @Action.stopAudio(name)
+  "pauseAudio": (engine, inst) ->
+    name = @getArg(inst, 0)
+    @Action.pauseAudio(name)
 
 
 class @FuncEngine
