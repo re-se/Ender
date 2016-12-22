@@ -127,7 +127,7 @@ module.exports = class Ender
       inst = @insts[@pc]
       next = @insts[@pc+1]
       if inst?
-        # console.log inst.type
+        console.log inst.type
         switch inst.type
           when "wait"
             @endMarker = if next?.type is "clear" then "▼" else "▽"
@@ -138,6 +138,7 @@ module.exports = class Ender
             if @isTextAnimated
               clearTimeout @timeoutID
               @Action.setText @addEndMarker(@currentMessage)
+              @isTextAnimated = false
               yield 0
           when "text"
             for m in inst.value
