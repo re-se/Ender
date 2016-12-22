@@ -1,4 +1,6 @@
 React = require 'react'
+{Button} = require './Button'
+
 typeOf = (obj) ->
   type = Object.prototype.toString.call(obj)[8...-1]
   console.log type
@@ -47,6 +49,6 @@ module.exports = React.createClass
   render: ->
     <div className="setting">
       {@genConfigView @props.config}
-      <div className="setting-cancel">cancel</div>
-      <div className="setting-save" onClick={@onClick}>save</div>
+      <Button classes="setting-cancel" onClick={=> @props.Action.changeMode "main"} inner="cancel" />
+      <Button classes="setting-save" onClick={@onClick}inner="save" />
     </div>

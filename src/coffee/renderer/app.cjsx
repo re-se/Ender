@@ -33,6 +33,7 @@ window.onload = () ->
       config = JSON.parse fs.readFileSync(configPath, 'utf8')
       @config = new Config config
       @audioContext = new AudioContext()
+      @loadSaveFiles()
     componentDidMount: ->
       console.log "start!"
       # config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
@@ -48,10 +49,18 @@ window.onload = () ->
     componentWillUnmount: ->
       window.removeEventListener("keydown", @onKeyDown)
       window.removeEventListener("scroll", @onScroll)
+
+    loadSaveFiles: ->
+      filenames = fs.readdirSync @config.savePath
+      saves = []
+      for filename in filenames
+        if path.extname(filename) is ".SAVE"
+          file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
+          saves.push JSON.parse(file)
+      @setState saves: saves
+
     changeMode: (mode) ->
       unless mode is "main"
-        diff = {}
-        diff.auto = $set: false
         @setConfig "auto", false
       @setState mode: mode
     Pause: ->
@@ -142,19 +151,31 @@ window.onload = () ->
       remote.getCurrentWindow().capturePage (img) =>
         @screenshot = img
         @changeMode("save")
+
     save: (target) ->
-        s = {}
-        s.date = new Date()
-        arr = @engine?.history.split("\n")
-        loop
-          s.text = arr.pop()
-          break if s.text.length > 0 or arr.length < 1
-        s.thumbnail = @screenshot?.toDataURL()
-        diff = []
-        diff[target] = $set: s
-        newSaves = update @state.saves, diff
-        @setState saves: newSaves
-        fs.writeFile path.join(@config.savePath, "#{s.date.format()}.SAVE"), JSON.stringify(s)
+      if @state.saves[target]?
+        fs.unlink path.join(@config.savePath, @state.saves[target].self), (err) ->
+          console.log err
+      s = {}
+      s.date = new Date()
+      arr = @engine?.history.split("\n")
+      loop
+        s.text = arr.pop()
+        break if s.text.length > 0 or arr.length < 1
+      s.thumbnail = @screenshot?.toDataURL()
+      [s.filename, s.pc] = @engine.getCurrentState()
+      s.self = "#{s.date.format()}.SAVE"
+
+      diff = []
+      diff[target] = $set: s
+      newSaves = update @state.saves, diff
+      @setState saves: newSaves
+      fs.writeFile path.join(@config.savePath, s.self), JSON.stringify(s)
+    load: (target) ->
+      save = @state.saves[target]
+      if save?
+        @engine.setCurrentState save.filename, save.pc, =>
+          @changeMode "main"
 
     clear: ->
       @setState
@@ -191,7 +212,7 @@ window.onload = () ->
         when "main"
           @onClick() if e.keyCode is 13
         else
-          @setState mode: "main" if e.keyCode is 27
+          @changeMode "main" if e.keyCode is 27
     onScroll: (e) ->
       switch @state.mode
         when "main"
@@ -213,11 +234,14 @@ window.onload = () ->
           if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
           items.push <ImageView key="images" images={@state.images} />
-          items.push <Button key="save-button" inner="save" classes="save" onClick={@changeToSaveMode} />
+          items.push <div className="toolbar">
+            <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
+            <Button key="setting-button" inner="設定" classes="setting" onClick={=> @changeMode "setting"} />
+          </div>
         when "setting"
           items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
         when "save"
-          items.push <SaveView key="save-view" saves={@state.saves} Action={{@save}}/>
+          items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}}/>
       items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode

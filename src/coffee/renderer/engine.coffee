@@ -17,10 +17,25 @@ module.exports = class Ender
     @history = ""
 
   parse: (p) ->
+    @filename = p
     mainPath = path.join(@config.basePath, p)
     script = fs.readFileSync(mainPath).toString()
     @insts = parser.parse(script).concat @insts[@pc+1..]
     @pc = -1
+
+  getCurrentState: ->
+    [@filename, @pc]
+
+  setCurrentState: (filename, pc, cb) ->
+    @parse filename
+    @clearAll()
+    textSpeed = @config.textSpeed
+    @Action.setConfig "textSpeed", 0
+    while @pc < pc
+      @exec()
+    @Action.setConfig "textSpeed", textSpeed
+    if cb?
+      cb()
 
   finishAnimation: ->
     @isAnimated = false
@@ -83,6 +98,9 @@ module.exports = class Ender
         @isAnimated = true
       else
         console.error type
+  clearAll: ->
+    @clear("text")
+    @history = ""
 
   _exec: =>
     @isAnimated = false
@@ -145,8 +163,7 @@ module.exports = class Ender
       @pc++
       break if @insts.length < @pc
 
-    @Action.clear()
-    @history = ""
+    @clearAll()
     @g = @_exec()
 
   exec: =>
