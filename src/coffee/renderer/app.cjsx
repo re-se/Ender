@@ -51,13 +51,14 @@ window.onload = () ->
       window.removeEventListener("scroll", @onScroll)
 
     loadSaveFiles: ->
-      filenames = fs.readdirSync @config.savePath
-      saves = []
-      for filename in filenames
-        if path.extname(filename) is ".SAVE"
-          file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
-          saves.push JSON.parse(file)
-      @setState saves: saves
+      if @config.savePath?
+        filenames = fs.readdirSync @config.savePath
+        saves = []
+        for filename in filenames
+          if path.extname(filename) is ".SAVE"
+            file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
+            saves.push JSON.parse(file)
+        @setState saves: saves
 
     changeMode: (mode) ->
       unless mode is "main"
