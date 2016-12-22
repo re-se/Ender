@@ -42,7 +42,7 @@ window.onload = () ->
       window.addEventListener("wheel", @onScroll)
       ipcRenderer.on 'show-setting', =>
         @changeMode "setting"
-      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio}
+      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
       @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
       @engine.exec()
@@ -140,7 +140,13 @@ window.onload = () ->
         (document.getElementById "audio-#{name}").play()
     stopAudio: (name) ->
       if @state.audios[name]?
-        (document.getElementById "audio-#{name}").stop()
+        audioDom = document.getElementById "audio-#{name}"
+        console.log audioDom
+        audioDom.pause()
+        audioDom.currentTime = 0
+    pauseAudio: (name) ->
+      if @state.audios[name]?
+        (document.getElementById "audio-#{name}").pause()
 
     changeToSaveMode: (e) ->
       e.stopPropagation()
