@@ -53,8 +53,11 @@ FuncMap =
       "loopSrc": @getArg(inst, 3)
       "option": @getArg(inst, 4)
     console.log "loadAudio:", audio
-    @Action.loadAudio(audio)
+    loopAudio = @Action.loadAudio(audio)
     yield 0
+    if loopAudio?
+      @Action.loadAudio loopAudio
+      yield 0
   "playAudio": (engine, inst) ->
     name = @getArg(inst, 0)
     @Action.playAudio(name)

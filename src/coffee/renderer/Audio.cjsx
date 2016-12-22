@@ -13,16 +13,15 @@ module.exports = React.createClass
         if audio.option.hasOwnProperty key
           style[key] = audio.option[key]
     onload = (e) =>
-
+      console.log "loading #{audio.name}"
     onloaded = (e) =>
       audioDom = e.currentTarget
       @props.Action.setAudio audio.name, audioDom
       console.log "loaded #{audio.name}"
       @props.Action.engineExec()
     onEndSrcLoop = (e) =>
-      dom = document.getElementById "audio-#{audio.name}_loop"
-      console.log dom
-      dom.play()
+      audioDom = document.getElementById "audio-#{audio.name}_loop"
+      # audioDom.play()
       @props.Action.playAudio "#{audio.name}_loop"
     onEndTimeLoop = (e) =>
       audioDom = e.currentTarget

@@ -108,16 +108,18 @@ window.onload = () ->
             style[key] = audio.option[key]
       newAudios = {}
       newAudios[audio.name] = audio
+      newAudios = update @state.audios,
+       "$merge": newAudios
+      @setState audios: newAudios
       if style.loop && audio.loopSrc?
-        newAudios["#{audio.name}_loop"] =
+        loopAudio =
           "type": audio.type,
           "name": "#{audio.name}_loop",
           "src": "#{audio.loopSrc}"
           "loopSrc": null
           "option": if audio.option? then audio.option else {}
-      newAudios = update @state.audios,
-       "$merge": newAudios
-      @setState audios: newAudios
+      else
+        null
     setAudioNode: (name, dom) ->
       if @state.audios[name]?
         node = @audioContext.createMediaElementSource dom
