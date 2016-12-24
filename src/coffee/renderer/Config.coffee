@@ -24,11 +24,11 @@ class @Config
           @config[k] = value
         else
           @__defineGetter__ key, ((_key) -> (-> @_config[_key]))(key)
-          @__defineSetter__ k, ((_key) -> (
+          @__defineSetter__ key, ((_key) -> (
             (n) ->
               @_config[_key] = n
               @_origin[_key] = n
-          ))(k)
+          ))(key)
           @_config[key] = value
 
   dup: ->

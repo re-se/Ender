@@ -1,10 +1,10 @@
 React = require 'react'
+path = require 'path'
 
 module.exports = React.createClass
   componentDidMount: ->
   render: ->
-    basePath = "resource/"
     image = @props.image
     cl = image.className
     cl = "image-default" unless cl
-    <img src={basePath + image.src} className={cl} ref="image"/>
+    <img src={path.join @props.basePath, image.src} className={cl} ref="image"/>

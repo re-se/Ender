@@ -9,7 +9,7 @@ module.exports = React.createClass
         counts[image.src] += 1
       else
         counts[image.src] = 0
-      <Image image={image} key="#{image.src}-#{counts[image.src]}"/>
+      <Image basePath={@props.basePath} image={image} key="#{image.src}-#{counts[image.src]}"/>
     <div className="images">
         {items}
     </div>

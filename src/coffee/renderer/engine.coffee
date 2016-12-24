@@ -18,7 +18,7 @@ module.exports = class Ender
 
   parse: (p) ->
     @filename = p
-    mainPath = path.join(@config.basePath, p)
+    mainPath = path.join(@config.basePath, @config.text.path, p)
     script = fs.readFileSync(mainPath).toString()
     @insts = parser.parse(script).concat @insts[@pc+1..]
     @pc = -1

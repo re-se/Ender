@@ -136,8 +136,11 @@ window.onload = () ->
         @state.audios[name].node = node
     playAudio: (name) ->
       if @state.audios[name]?
-        @state.audios[name].node.connect @audioContext.destination
-        (document.getElementById "audio-#{name}").play()
+        if @state.audios[name].node?
+          @state.audios[name].node?.connect @audioContext.destination
+          (document.getElementById "audio-#{name}").play()
+        else
+          console.error "@state.audios[name].node is undefined"
     stopAudio: (name) ->
       if @state.audios[name]?
         audioDom = document.getElementById "audio-#{name}"
@@ -205,16 +208,16 @@ window.onload = () ->
       @setState s, cb
 
     setConfig: (key, value, save) ->
-      if value?
-        return if @config[key] is value
-        @config[key] = value
-      else
-        json = key
-        for key, value of json
+      unless value? && (@config[key] is value)
+        if value?
           @config[key] = value
-      @engine?.config = @config
-      if save
-        fs.writeFile configPath, @config.toString("  ")
+        else
+          json = key
+          for key, value of json
+            @config[key] = value
+        @engine?.config = @config
+        if save
+          fs.writeFile configPath, @config.toString("  ")
       @autoExec()
       # config = update(@state.config, diff)
       # @engine?.config = config
@@ -258,7 +261,10 @@ window.onload = () ->
             items.push <HistoryView key="history" history={@state.history} />
           if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
-          items.push <ImageView key="images" images={@state.images} />
+          imagePath = [@config.basePath]
+          imagePath.push @config.image.path if @config.image?.path?
+          imagePath = path.join.apply @, imagePath
+          items.push <ImageView key="images" images={@state.images} basePath={imagePath} />
           items.push <div className="toolbar">
             <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
             <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
