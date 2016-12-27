@@ -11,7 +11,11 @@ module.exports = React.createClass
           when "text"
             <span key={k} style={style}>{m.body}</span>
           when "strong"
-            <strong key={k} style={style}>{m.body}</strong>
+            i = 0
+            ru = ""
+            while i++ < m.body.length
+              ru += "﹅"
+            <ruby key={k} style={style}><rb>{m.body}</rb><rt>{ru}</rt></ruby>
           when "br"
             <br key={k} style={style}/>
           when "marker"
