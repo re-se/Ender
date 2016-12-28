@@ -30,8 +30,6 @@ class @Config
               @_origin[_key] = n
           ))(key)
           @_config[key] = value
-    if @.auto
-      @.auto = false
   dup: ->
     new Config @_origin
 

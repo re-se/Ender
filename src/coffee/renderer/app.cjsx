@@ -32,6 +32,7 @@ window.onload = () ->
     componentWillMount: ->
       config = JSON.parse fs.readFileSync(configPath, 'utf8')
       @config = new Config config
+      @config.auto = false
       @audioContext = new AudioContext()
       @loadSaveFiles()
     componentDidMount: ->

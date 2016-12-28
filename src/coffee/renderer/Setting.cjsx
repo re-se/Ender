@@ -49,8 +49,10 @@ module.exports = React.createClass
     @props.Action.setConfig @props.config, null, true
     @props.Action.changeMode "main"
   render: ->
-    <div className="setting">
+    <div className="settingView">
       {@genConfigView @props.config}
-      <Button classes="setting-cancel" onClick={=> @props.Action.changeMode "main"} inner="cancel" />
-      <Button classes="setting-save" onClick={@onClick}inner="save" />
+      <div className="setting-buttons">
+        <Button classes="setting-cancel" onClick={=> @props.Action.changeMode "main"} inner="cancel" />
+        <Button classes="setting-save" onClick={@onClick}inner="save" />
+      </div>
     </div>

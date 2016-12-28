@@ -147,9 +147,24 @@ ruby rt {
   right: 0;
 }
 
-.setting {
+.settingView {
   width: 100%;
   height: 100%;
+  color: #eee;
+  padding: 2em;
+  background-color: #555555;
+  .setting-buttons {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    .setting-cancel, .setting-save {
+      margin: 1em 2em;
+    }
+  }
+  table {
+    margin: 0 auto;
+  }
 }
 
 .button {
