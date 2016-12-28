@@ -14,6 +14,7 @@ window.onload = () ->
   {SaveView} = require './js/renderer/SaveView'
   Setting = require './js/renderer/Setting'
   Audios = require './js/renderer/Audios'
+  Title = require './js/renderer/Title'
   effects = require './js/renderer/effects'
   {Config} = require './js/renderer/Config'
   configPath = 'dist/resource/config.json'
@@ -22,7 +23,7 @@ window.onload = () ->
 
   Contents = React.createClass
     getInitialState: ->
-      mode: "main"
+      mode: "title"
       message: null
       images: {}
       audios: {}
@@ -39,6 +40,7 @@ window.onload = () ->
       @loadSaveFiles()
     componentDidMount: ->
       console.log "start!"
+      @prevMode = @state.mode
       # config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
       # @config = new Config config
       window.addEventListener("keydown", @onKeyDown)
@@ -76,6 +78,7 @@ window.onload = () ->
     changeMode: (mode) ->
       unless mode is "main"
         @setConfig "auto", false
+      @prevMode = @state.mode
       @setState mode: mode
     Pause: ->
       @setConfig "auto", false
@@ -321,9 +324,11 @@ window.onload = () ->
             <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
           </div>
         when "setting"
-          items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} />
+          items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} prev={@prevMode}/>
         when "save"
-          items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}}/>
+          items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
+        when "title"
+          items.push <Title key="title-view" basePath={@config.basePath} Action={{@changeMode}} />
       items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode

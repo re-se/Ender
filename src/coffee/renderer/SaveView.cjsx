@@ -21,7 +21,7 @@ class @SaveView extends React.Component
     utils = []
     utils.push <Button key="save-util-save" inner="セーブ" onClick={=> @props.Action.save(@state.selected)}/>
     utils.push <Button key="save-util-load" inner="ロード" onClick={=> @props.Action.load(@state.selected)}/>
-    utils.push <Button key="save-util-back" inner="戻る" onClick={=> @props.Action.changeMode("main")}/>
+    utils.push <Button key="save-util-back" inner="戻る" onClick={=> @props.Action.changeMode(@props.prev)}/>
 
     <div className="saveView">
       <div className="saveView-util">
