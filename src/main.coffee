@@ -1,4 +1,4 @@
-{app, BrowserWindow, Menu} = require('electron')
+{app, BrowserWindow, Menu, ipcMain} = require('electron')
 # require('crash-reporter').start()
 
 mainWindow = null
