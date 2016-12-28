@@ -3,8 +3,8 @@ isObject = (v) ->
 
 
 class @Config
-  constructor: (config, base) ->
-    @_origin = if base? then base else config
+  constructor: (config) ->
+    @_origin = config
     @_config = {}
     @config = {}
     for key, value of config
@@ -30,12 +30,36 @@ class @Config
               @_origin[_key] = n
           ))(key)
           @_config[key] = value
-
+    if @.auto
+      @.auto = false
   dup: ->
     new Config @_origin
 
-  toString:(space) ->
-    JSON.stringify @_origin, null, space
+  toString:(space = "", obj=@_origin) ->
+    out = "{\n"
+    num = 0
+    obj.forIn (key, value, index) =>
+      if typeof value is "string"
+        if num > 0
+          out += ",\n"
+        out += space + JSON.stringify(key) + ": " + JSON.stringify(value, space)
+      else if typeof value is "object"
+        if key is "_origin" or key is "_config" or key is "config"
+          return
+        else
+          if num > 0
+            out += ",\n"
+          out += space + "#{JSON.stringify(key)}: #{value.toString(space + "  ", value)}"
+      else if typeof value is "function"
+        return
+      else
+        if num > 0
+          out += ",\n"
+        out += space + "#{JSON.stringify(key)}: #{JSON.stringify(value, space)}"
+      num++
+    out += "\n"
+    out += space + "}"
+    out
 
   hasPublic: ->
     Object.getOwnPropertyNames(@config).length > 0

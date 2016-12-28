@@ -24,6 +24,9 @@ extendingObject = () ->
       f = f.replace(/ddd/g, week[@getDay()])
       f = f.replace(/dd/g, ('0' + @getDate()).slice(-2))
       f
+  window.typeOf = (obj) ->
+    type = Object.prototype.toString.call(obj)[8...-1]
+    type
 module.exports =
   "load": () =>
     extendingObject()
