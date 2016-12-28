@@ -34,6 +34,8 @@ window.onload = () ->
       @config = new Config config
       @config.auto = false
       @audioContext = new AudioContext()
+      @gainNodes = {}
+      @loadGainNodes()
       @loadSaveFiles()
     componentDidMount: ->
       console.log "start!"
@@ -60,6 +62,16 @@ window.onload = () ->
             file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
             saves.push JSON.parse(file)
         @setState saves: saves
+
+    loadGainNodes: ->
+      @config.volume.forIn (key, node) =>
+        if key isnt "_origin" and key isnt "config" and key isnt "_config"
+          @gainNodes[key] = @audioContext.createGain()
+          @gainNodes[key].gain.value = node / 100.0
+      @config.volume.forIn (key, node) =>
+        if key isnt "_origin" and key isnt "config" and key isnt "_config"
+          con = if key is "Master" then @audioContext.destination else @gainNodes["Master"]
+          @gainNodes[key].connect con
 
     changeMode: (mode) ->
       unless mode is "main"
@@ -165,7 +177,15 @@ window.onload = () ->
     playAudio: (name) ->
       if @state.audios[name]?
         if @state.audios[name].node?
-          @state.audios[name].node?.connect @audioContext.destination
+          style = {}
+          if @config.audio.hasOwnProperty @state.audios[name].type
+             Object.assign style, @config.audio[@state.audios[name].type]
+          if @state.audios[name].option
+            style.forIn (key, value) ->
+              if @state.audios[name].option.hasOwnProperty key
+                style[key] = @state.audios[name].option[key]
+          gain = @gainNodes[style.amp]
+          @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
           (document.getElementById "audio-#{name}").play()
         else
           console.error "@state.audios[name].node is undefined"
@@ -178,6 +198,9 @@ window.onload = () ->
     pauseAudio: (name) ->
       if @state.audios[name]?
         (document.getElementById "audio-#{name}").pause()
+    refreshGain: ->
+      @gainNodes.forIn (key, value) =>
+        @gainNodes[key].gain.value = @config.volume[key] / 100
 
     changeToSettingMode: (e) ->
       e?.stopPropagation()
@@ -246,6 +269,7 @@ window.onload = () ->
         @engine?.config = @config
         if save
           fs.writeFile configPath, @config.toString("  ")
+      @refreshGain()
       @autoExec()
       # config = update(@state.config, diff)
       # @engine?.config = config

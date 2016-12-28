@@ -9,6 +9,7 @@ class @Config
     @config = {}
     for key, value of config
       if isObject value
+        console.log value
         value = new Config value, @_origin
         if value.hasPublic()
           key = "@#{key}" if key[0] isnt "@"
@@ -37,17 +38,16 @@ class @Config
     out = "{\n"
     num = 0
     obj.forIn (key, value, index) =>
+      if key is "_origin" or key is "_config" or key is "config"
+        return
       if typeof value is "string"
         if num > 0
           out += ",\n"
         out += space + JSON.stringify(key) + ": " + JSON.stringify(value, space)
       else if typeof value is "object"
-        if key is "_origin" or key is "_config" or key is "config"
-          return
-        else
-          if num > 0
-            out += ",\n"
-          out += space + "#{JSON.stringify(key)}: #{value.toString(space + "  ", value)}"
+        if num > 0
+          out += ",\n"
+        out += space + "#{JSON.stringify(key)}: #{@.toString(space + "  ", if(value._origin)? then value._origin else value)}"
       else if typeof value is "function"
         return
       else
