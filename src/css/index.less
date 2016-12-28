@@ -12,24 +12,32 @@ html, body, #contents, #inner {
   cursor: default;
   overflow: hidden;
   font-family: mplus-1c;
+  font-size: 3vh;
 }
 
 pre {
   white-space: pre-wrap;
 }
 
+ruby rt {
+  font-size: 0.4em;
+}
+
 .namebox-1 {
   z-index: 666;
   position: absolute;
-  width: 20%;
-  height: 8%;
-  top: 62%;
+  min-width: 20%;
+  max-width: 50%;
+  height: 1.5em;
+  top: calc(~"70% - 1.5em");
   left: 0;
   padding: 0 2vh;
   box-sizing: border-box;
-  font-size: 5vh;
+  font-size: 4vh;
+  text-align: center;
   background-color: rgba(34, 34, 34, 0.8);
   color: #eee;
+  border-radius: 0.1em 0.1em 0 0;
 }
 
 .messageBox {
@@ -54,7 +62,8 @@ pre {
   background-color: rgba(34, 34, 34, 0.7);
   color: #eee;
   font-size: 4vh;
-  line-height: 1.2;
+  line-height: 1.6em;
+  vertical-align: baseline;
   text-shadow: 0.1em 0.1em 0.05em #444444;
 }
 
@@ -75,7 +84,7 @@ pre {
   background-color: rgba(34, 34, 34, 0.7);
   color: #eee;
   font-size: 4vh;
-  line-height: 1.2;
+  line-height: 1.6em;
   text-shadow: 0.1em 0.1em 0.05em #444444;
 }
 
@@ -147,8 +156,10 @@ pre {
   z-index: 667;
   width: 18vh;
   height: 7vh;
-  background-color: #eee;
+  color: #eee;
+  background-color: fade(#333333, 90%);
   box-sizing: border-box;
+  border-radius: 0.1em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -165,6 +176,11 @@ pre {
       box-shadow: 0px 0px 0px 0.15em #94a6b8;
     }
   }
+  transition: background-color, 250ms, cubic-bezier(0.465, 0.183, 0.153, 0.946);
+}
+
+.button:hover {
+  background-color: fade(#555555, 90%);
 }
 
 .saveView {
@@ -173,10 +189,11 @@ pre {
   display: flex;
   flex-wrap: wrap;
   align-content: center;
+  background-color: #555555;
   .save-thumbnail {
     width: 18vh;
     height: 12.5vh;
-    background-color: white;
+    background-color: #222222;
     background-size: cover;
   }
   .save-info {

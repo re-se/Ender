@@ -31,10 +31,13 @@ module.exports = React.createClass
     src = path.join(basePath, audio.src)
     if style.loop
       if audio.loopSrc?
-        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndSrcLoop}/>
+        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndSrcLoop} onError={@onError}/>
       else if style.loopStart == 0
-        <audio src={src} id={"audio-" + audio.name} loop preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded}/>
+        <audio src={src} id={"audio-" + audio.name} loop preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onError={@onError}/>
       else
-        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndTimeLoop}/>
+        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndTimeLoop} onError={@onError}/>
     else
-      <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded}/>
+      <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onError={@onError}/>
+
+  onError: (e) ->
+    @props.Action.engineExec()
