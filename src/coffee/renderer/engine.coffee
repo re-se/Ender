@@ -40,6 +40,7 @@ module.exports = class Ender
     textSpeed = @config.textSpeed
     @Action.setConfig "textSpeed", 0
     while @pc < pc
+      break if @config.debug && !@config.skip
       ret = _g.next()
       if ret.value is "async"
         yield 0
@@ -183,7 +184,11 @@ module.exports = class Ender
     @g = @_exec()
 
   exec: =>
-    @g.next()
+    try
+      @g.next()
+    catch error
+      console.error error
+
 
   addEndMarker: (message, isNewPage) ->
     endMarker = {type: "marker"}

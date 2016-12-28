@@ -114,12 +114,10 @@ window.onload = () ->
         cb = @engine.exec
       diff = {}
       diff[image.className] = "$set": arr
-
-
       if image.effect?
         callback = => @startAnimation(image, cb)
       else
-        callback = => cb
+        callback = => cb()
       @setState
         images: update(@state.images, diff)
         , callback
@@ -133,6 +131,7 @@ window.onload = () ->
       cb = =>
         @setState
           images: images
+          , @engine.exec
       if effect?
         @startAnimation(target, effect, cb)
       else
