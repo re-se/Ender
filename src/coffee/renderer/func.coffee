@@ -7,9 +7,7 @@ FuncMap =
     id = @Action.setImage image
     if image.effect?
       engine.startAnimation()
-      yield 0 while engine.isAnimated
-    # else
-    #   yield 0
+      yield "async" while engine.isAnimated
   "effect": (engine, inst) ->
     target = @getArg(inst, 0)
     effectName = @getArg(inst, 1)
