@@ -1,4 +1,5 @@
 React = require 'react'
+path = require 'path'
 
 module.exports = React.createClass
   componentDidMount: ->
@@ -27,12 +28,13 @@ module.exports = React.createClass
       audioDom = e.currentTarget
       audioDom.currentTime = style.loopStart
       audioDom.play()
+    src = path.join(basePath, audio.src)
     if style.loop
       if audio.loopSrc?
-        <audio src={basePath + audio.src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndSrcLoop}/>
+        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndSrcLoop}/>
       else if style.loopStart == 0
-        <audio src={basePath + audio.src} id={"audio-" + audio.name} loop preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded}/>
+        <audio src={src} id={"audio-" + audio.name} loop preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded}/>
       else
-        <audio src={basePath + audio.src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndTimeLoop}/>
+        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndTimeLoop}/>
     else
-      <audio src={basePath + audio.src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded}/>
+      <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded}/>
