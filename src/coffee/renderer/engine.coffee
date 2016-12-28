@@ -107,7 +107,7 @@ module.exports = class Ender
         @Action.clear("text")
       when "image"
         @Action.clearImage(className, effect)
-        @isAnimated = true
+        @isAnimated = true if effect?
       else
         @currentMessage = []
         @nextMessage = []

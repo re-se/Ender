@@ -7,4 +7,4 @@ module.exports = React.createClass
     image = @props.image
     cl = image.className
     cl = "image-default" unless cl
-    <img src={path.join @props.basePath, image.src} className={cl} ref="image"/>
+    <img src={path.join @props.basePath, image.src} className={cl} id={image.src}/>

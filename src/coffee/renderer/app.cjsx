@@ -24,7 +24,7 @@ window.onload = () ->
     getInitialState: ->
       mode: "main"
       message: null
-      images: []
+      images: {}
       audios: {}
       refs: {}
       tls: null
@@ -70,15 +70,23 @@ window.onload = () ->
     startAnimation: (target, effectName, callback) ->
       @tls = []
       @engine.startAnimation()
-      nodes = document.querySelectorAll target
-      nodes = document.getElementsByClassName(target) if nodes.length < 1
-      cb = =>
-        callback?()
-        @engine.finishAnimation()
-        @autoExec()
-      for node in nodes
-        @tls.push effects[effectName](node, cb)
-        cb = null
+      if typeof target isnt "string"
+        cb = =>
+          @engine.finishAnimation()
+          effectName?()
+          @autoExec()
+        node = document.getElementById(target.src)
+        @tls.push effects[target.effect](node, cb)
+      else
+        cb = =>
+          @engine.finishAnimation()
+          callback?()
+          @autoExec()
+        nodes = document.querySelectorAll target
+        nodes = document.getElementsByClassName(target) if nodes.length < 1
+        for node in nodes
+          @tls.push effects[effectName](node, cb)
+          cb = null
     finishAnimation: (className) ->
       for tl in @tls
         tl.progress(1, false)
@@ -90,25 +98,44 @@ window.onload = () ->
     setName: (name) ->
       @setState name: name
     setImage: (image) ->
-      if image.effect?
-        callback = => @startAnimation(image.className, image.effect)
+      fdiff = {}
+      fdiff[image.className] = "$set": [image]
+      arr = @state.images[image.className]
+      if arr?
+        arr = arr.concat image
       else
-        callback = => @autoExec()
+        arr = [image]
+      diff = {}
+      diff[image.className] = "$set": arr
+      if image.effect?
+        cb = =>
+          @setState
+            images: update(@state.images, fdiff)
+            , @engine.exec
+        callback = => @startAnimation(image, cb)
+      else
+        callback = =>
+          @setState
+            images: update(@state.images, fdiff)
+            , @autoExec
+
       @setState
-        images: @state.images.concat(image)
+        images: update(@state.images, diff)
         , callback
     #target: className(string), effect: name(string)
     clearImage: (target, effect) ->
-      images = []
+      images = {}
       if target?
-        for image in @state.images
-          if image.className isnt target
-            images.push image
+        diff = {}
+        diff[target] = "$set": []
+        images = update @state.images, diff
       cb = =>
         @setState
           images: images
       if effect?
         @startAnimation(target, effect, cb)
+      else
+        cb()
     loadAudio: (audio) ->
       # merge audio style, Config(default) style and Option style
       style = if @config.audio.hasOwnProperty audio.type then @config.audio[audio.type] else {}
