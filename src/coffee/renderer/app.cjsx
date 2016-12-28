@@ -90,14 +90,14 @@ window.onload = () ->
         cb = =>
           @engine.finishAnimation()
           effectName?()
-        return cb() if @state.mode isnt "main"
+        return cb() if @state.mode isnt "main" || @config.skip
         node = document.getElementById(target.src)
         @tls.push effects[target.effect](node, cb)
       else
         cb = =>
           @engine.finishAnimation()
           callback?()
-        return cb() if @state.mode isnt "main"
+        return cb() if @state.mode isnt "main" || @config.skip
         nodes = document.querySelectorAll target
         nodes = document.getElementsByClassName(target) if nodes.length < 1
         for node in nodes
@@ -114,7 +114,7 @@ window.onload = () ->
     setName: (name) ->
       @setState name: name
     setImage: (image) ->
-      # console.dir @state.images
+      console.dir @state.images
       fdiff = {}
       fdiff[image.className] = "$set": [image]
       arr = @state.images[image.className]
@@ -138,14 +138,11 @@ window.onload = () ->
         , callback
     #target: className(string), effect: name(string)
     clearImage: (target, effect) ->
-      images = {}
-      if target?
-        diff = {}
-        diff[target] = "$set": []
-        images = update @state.images, diff
+      diff = {}
+      diff[target] = "$set": []
       cb = =>
         @setState
-          images: images
+          images: update(@state.images, diff)
           , @engine.exec
       if effect?
         @startAnimation(target, effect, cb)
@@ -252,9 +249,9 @@ window.onload = () ->
       s = switch type
         when "text"
           message: null
-          images: {}
         else
-          cb = type
+          cb = ()=>
+            type()
           message: null
           images: {}
           audios: {}

@@ -32,15 +32,17 @@ module.exports = class Ender
       @skip(pc, cb)
 
   skip: (pc, cb) ->
+    return if @isSkip
+    @isSkip = true
     _g = @g
     @g = @_skip(_g, pc, cb)
     @exec()
+    @isSkip = false
 
   _skip : (_g, pc, cb) ->
     textSpeed = @config.textSpeed
     @Action.setConfig "textSpeed", 0
-    while @pc < pc
-      break if @config.debug && !@config.skip
+    while @pc < pc || @config.skip
       ret = _g.next()
       if ret.value is "async"
         yield 0
@@ -108,7 +110,6 @@ module.exports = class Ender
         @Action.clear("text")
       when "image"
         @Action.clearImage(className, effect)
-        @isAnimated = true if effect?
       else
         @currentMessage = []
         @nextMessage = []
