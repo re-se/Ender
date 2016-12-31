@@ -8,19 +8,20 @@ module.exports = class Ender
   constructor: (@Action, @config) ->
     @insts = []
     @pc = 0
-    @load(@config.main)
     @fe = new FuncEngine(@Action)
+    @load(@config.main)
 
-  load: (filename) ->
-    @filename = filename if filename
+  load: (filename, cb) ->
+    @filename = filename
     @parse()
     @pc = 0
-    @clear()
     @g = @_exec()
+    @clearAll cb
 
-  reload: ->
+  reload: (cb) ->
     @insts = []
-    @load()
+    @pc = 0
+    @load(@filename, cb)
 
   parse: ->
     mainPath = path.join(@config.basePath, @config.text.path, @filename)
@@ -31,17 +32,18 @@ module.exports = class Ender
     [@filename, @pc]
 
   setCurrentState: (filename, pc, cb) ->
-    @parse filename
-    @clearAll () =>
+    @reload =>
       @skip(pc, cb)
 
   skip: (pc, cb) ->
     return if @isSkip
     @isSkip = true
     _g = @g
-    @g = @_skip(_g, pc, cb)
+    callback = =>
+      @isSkip = false
+      cb()
+    @g = @_skip(_g, pc, callback)
     @exec()
-    @isSkip = false
 
   _skip : (_g, pc, cb) ->
     textSpeed = @config.textSpeed
@@ -55,7 +57,6 @@ module.exports = class Ender
     if cb?
       cb()
 
-
   finishAnimation: ->
     @isAnimated = false
 
@@ -63,22 +64,22 @@ module.exports = class Ender
     @isAnimated = true
 
   autoExec: ->
-    if @config.skip
-      if @config.textSpeed > 0
-        @_config = @config.dup()
-        @Action.setConfig "textSpeed", 0
-      else
-        setTimeout =>
-          @exec() if @config.skip
-        , 0
-      return
-    else
-      if @_config?
-        @_config.skip = false
-        @config = @_config
-        @_config = null
-        @Action.setConfig @config
-        return
+    # if @config.skip
+    #   if @config.textSpeed > 0
+    #     @_config = @config.dup()
+    #     @Action.setConfig "textSpeed", 0
+    #   else
+    #     setTimeout =>
+    #       @exec() if @config.skip
+    #     , 0
+    #   return
+    # else
+    #   if @_config?
+    #     @_config.skip = false
+    #     @config = @_config
+    #     @_config = null
+    #     @Action.setConfig @config
+    #     return
     if @config.auto
       setTimeout =>
         @exec() if @config.auto

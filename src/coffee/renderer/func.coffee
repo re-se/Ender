@@ -5,14 +5,16 @@ FuncMap =
     image.className = @getArg(inst, 1)
     image.effect = @getArg(inst, 2)
     id = @Action.setImage image
-    if image.effect?
-      engine.startAnimation()
-      yield "async" while engine.isAnimated
+    loop
+      yield "async"
+      break if not engine.isAnimated
   "effect": (engine, inst) ->
     target = @getArg(inst, 0)
     effectName = @getArg(inst, 1)
-    @Action.startAnimation target, effectName
-    yield 0 while engine.isAnimated
+    @Action.startAnimation target, effectName, engine.exec
+    loop
+      yield "async"
+      break if not engine.isAnimated
   "style": (engine, inst) ->
     style = @getArg(inst, 0)
     engine.changeStyle style
@@ -21,10 +23,10 @@ FuncMap =
     className = @getArg(inst, 1)
     effect = @getArg(inst, 2)
     engine.clear(type, className, effect)
-    yield 0 while engine.isAnimated
-    if type is "image"
-      yield "async"
-
+    if effect?
+      loop
+        yield "async"
+        break if not engine.isAnimated
   "skip": (engine) ->
     if engine.config.debug
       @Action.setConfig "skip", true
@@ -45,8 +47,10 @@ FuncMap =
     console.dir value
   "load": (engine, inst) ->
     path = @getArg(inst, 0)
-    engine.load(path)
-    engine.pc--
+    engine.load path, ->
+      engine.pc--
+      engine.exec()
+    yield "async"
   "loadAudio": (engine, inst) ->
     audio =
       "type": @getArg(inst, 0)

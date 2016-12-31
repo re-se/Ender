@@ -99,6 +99,7 @@ window.onload = () ->
       @engine.startAnimation()
       if typeof target isnt "string"
         cb = =>
+          console.info "koko"
           @engine.finishAnimation()
           effectName?()
         return cb() if @state.mode isnt "main" || @config.skip
@@ -327,7 +328,7 @@ window.onload = () ->
           imagePath.push @config.image.path if @config.image?.path?
           imagePath = path.join.apply @, imagePath
           items.push <ImageView key="images" images={@state.images} basePath={imagePath} />
-          items.push <div className="toolbar">
+          items.push <div key="toolbar" className="toolbar">
             <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
             <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
           </div>
