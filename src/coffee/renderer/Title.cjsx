@@ -11,6 +11,7 @@ module.exports = React.createClass
         <p key="title-config" className="title-button title-config" onClick={@config}> 設定 </p>
     </div>
   start: () ->
+    @props.Action.engineLoad()
     @props.Action.changeMode "main"
   continue: () ->
     @props.Action.changeMode "save"

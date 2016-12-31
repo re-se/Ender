@@ -2,26 +2,30 @@ fs = require 'fs'
 path = require 'path'
 {FuncEngine} = require './func'
 {Config} = require './Config'
-parser = require '../../../ender.js'
+parser = require './ender.js'
 
 module.exports = class Ender
   constructor: (@Action, @config) ->
     @insts = []
     @pc = 0
-    @parse(@config.main)
-    @pc++
+    @load(@config.main)
     @fe = new FuncEngine(@Action)
-    @g = @_exec()
-    @currentMessage = []
-    @nextMessage = []
-    @history = ""
 
-  parse: (p) ->
-    @filename = p
-    mainPath = path.join(@config.basePath, @config.text.path, p)
+  load: (filename) ->
+    @filename = filename if filename
+    @parse()
+    @pc = 0
+    @clear()
+    @g = @_exec()
+
+  reload: ->
+    @insts = []
+    @load()
+
+  parse: ->
+    mainPath = path.join(@config.basePath, @config.text.path, @filename)
     script = fs.readFileSync(mainPath).toString()
     @insts = parser.parse(script).concat @insts[@pc+1..]
-    @pc = -1
 
   getCurrentState: ->
     [@filename, @pc]
@@ -113,6 +117,7 @@ module.exports = class Ender
       else
         @currentMessage = []
         @nextMessage = []
+        @history = ""
         @Action.clear(type)
 
   clearAll: (cb) ->

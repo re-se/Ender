@@ -45,7 +45,8 @@ FuncMap =
     console.dir value
   "load": (engine, inst) ->
     path = @getArg(inst, 0)
-    engine.parse(path)
+    engine.load(path)
+    engine.pc--
   "loadAudio": (engine, inst) ->
     audio =
       "type": @getArg(inst, 0)

@@ -1,9 +1,12 @@
+
 window.onload = () ->
   React = require 'react'
   ReactDOM = require 'react-dom'
   fs = require 'fs'
   path = require 'path'
   {ipcRenderer, remote} = require 'electron'
+  remote.getCurrentWindow().removeAllListeners()
+  app = remote.app
   update = require 'react-addons-update'
   Engine = require './js/renderer/engine'
   {Button} = require './js/renderer/Button'
@@ -17,7 +20,7 @@ window.onload = () ->
   Title = require './js/renderer/Title'
   effects = require './js/renderer/effects'
   {Config} = require './js/renderer/Config'
-  configPath = 'dist/resource/config.json'
+  configPath = path.join app.getAppPath(), 'dist/resource/config.json'
   utils = require './js/renderer/utils'
   utils.load()
 
@@ -33,6 +36,10 @@ window.onload = () ->
     componentWillMount: ->
       config = JSON.parse fs.readFileSync(configPath, 'utf8')
       @config = new Config config
+      @config
+      for prop in ["basePath", "savePath"]
+        if !path.isAbsolute(@config[prop])
+          @config.__defineGetter__ prop, ((key) -> (-> path.join app.getAppPath(), @_config[key]))(prop)
       @config.auto = false
       @audioContext = new AudioContext()
       @gainNodes = {}
@@ -47,10 +54,12 @@ window.onload = () ->
       window.addEventListener("wheel", @onScroll)
       ipcRenderer.on 'show-setting', =>
         @changeToSettingMode()
+      ipcRenderer.on 'show-title', =>
+        @changeMode 'title'
       Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
       @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
-      @engine.exec()
+      # @engine.exec()
     componentWillUnmount: ->
       window.removeEventListener("keydown", @onKeyDown)
       window.removeEventListener("scroll", @onScroll)
@@ -114,7 +123,7 @@ window.onload = () ->
     setName: (name) ->
       @setState name: name
     setImage: (image) ->
-      console.dir @state.images
+      # console.dir @state.images
       fdiff = {}
       fdiff[image.className] = "$set": [image]
       arr = @state.images[image.className]
@@ -251,7 +260,7 @@ window.onload = () ->
           message: null
         else
           cb = ()=>
-            type()
+            type?()
           message: null
           images: {}
           audios: {}
@@ -325,7 +334,8 @@ window.onload = () ->
         when "save"
           items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
         when "title"
-          items.push <Title key="title-view" basePath={@config.basePath} Action={{@changeMode}} />
+          items.push <Title key="title-view" basePath={@config.basePath}
+            Action={{@changeMode, engineLoad: => @engine.reload()}} />
       items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode

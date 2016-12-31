@@ -18,7 +18,7 @@ html(lang='ja')
     +css('./css/index.css')
     //- +css('https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700')
     script
-      | require('electron-connect').client.create()
+      | if(require('electron-connect')) require('electron-connect').client.create()
     block header
   body
     .js-loader
