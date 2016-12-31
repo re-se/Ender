@@ -1,6 +1,10 @@
 window.onload = () ->
   React = require 'react'
   ReactDOM = require 'react-dom'
+  ref = require 'electron'
+  ipcRenderer = ref.ipcRenderer
+  remote = ref.remote
+  app = remote.app
   fs = require 'fs'
   path = require 'path'
   {ipcRenderer, remote} = require 'electron'
@@ -55,13 +59,19 @@ window.onload = () ->
       window.removeEventListener("keydown", @onKeyDown)
       window.removeEventListener("scroll", @onScroll)
 
+    getBasePath: ->
+      path.join app.getAppPath(), @config.basePath
+
+    getSavePath: ->
+      path.join app.getAppPath(), @config.savePath
+
     loadSaveFiles: ->
       if @config.savePath?
-        filenames = fs.readdirSync @config.savePath
+        filenames = fs.readdirSync @getSavePath()
         saves = []
         for filename in filenames
           if path.extname(filename) is ".SAVE"
-            file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
+            file = fs.readFileSync path.join(@getSavePath(), filename), 'utf-8'
             saves.push JSON.parse(file)
         @setState saves: saves
 
@@ -222,7 +232,7 @@ window.onload = () ->
 
     save: (target) ->
       if @state.saves[target]?
-        fs.unlink path.join(@config.savePath, @state.saves[target].self), (err) ->
+        fs.unlink path.join(@getSavePath(), @state.saves[target].self), (err) ->
           console.log err
       s = {}
       s.date = new Date()
@@ -238,7 +248,7 @@ window.onload = () ->
       diff[target] = $set: s
       newSaves = update @state.saves, diff
       @setState saves: newSaves
-      fs.writeFile path.join(@config.savePath, s.self), JSON.stringify(s)
+      fs.writeFile path.join(@getSavePath(), s.self), JSON.stringify(s)
     load: (target) ->
       save = @state.saves[target]
       if save?
@@ -312,7 +322,7 @@ window.onload = () ->
             items.push <HistoryView key="history" history={@state.history} />
           if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
-          imagePath = [@config.basePath]
+          imagePath = [@getBasePath()]
           imagePath.push @config.image.path if @config.image?.path?
           imagePath = path.join.apply @, imagePath
           items.push <ImageView key="images" images={@state.images} basePath={imagePath} />
@@ -325,8 +335,8 @@ window.onload = () ->
         when "save"
           items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
         when "title"
-          items.push <Title key="title-view" basePath={@config.basePath} Action={{@changeMode}} />
-      items.push <Audios key="audios" audios={@state.audios} config={@config}
+          items.push <Title key="title-view" basePath={@getBasePath()} Action={{@changeMode}} />
+      items.push <Audios key="audios" audios={@state.audios} config={@config} basePath={@getBasePath()}
         Action={
           "setAudio": @setAudioNode
           "playAudio": @playAudio

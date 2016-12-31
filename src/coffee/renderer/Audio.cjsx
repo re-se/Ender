@@ -4,7 +4,7 @@ path = require 'path'
 module.exports = React.createClass
   componentDidMount: ->
   render: ->
-    basePath = @props.config.basePath
+    basePath = @props.basePath
     audio = @props.audio
     style = {}
     if @props.config.audio.hasOwnProperty audio.type
