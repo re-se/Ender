@@ -48,10 +48,17 @@ module.exports = class Ender
   _skip : (_g, pc, cb) ->
     textSpeed = @config.textSpeed
     @Action.setConfig "textSpeed", 0
+    audioVolume = @config.volume.Master
+    muteVolume = @config.volume
+    muteVolume.Master = 0
+    @Action.setConfig "volume", muteVolume
+    console.log @config
     while @pc < pc || @config.skip
       ret = _g.next()
       if ret.value is "async"
         yield 0
+    muteVolume.Master = audioVolume
+    @Action.setConfig "volume", muteVolume
     @Action.setConfig "textSpeed", textSpeed
     @g = _g
     if cb?

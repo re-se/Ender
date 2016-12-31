@@ -1,5 +1,6 @@
 {
-  "basePath": "dist/resource/",
+  "basePath": "dist/resource",
+  "savePath": "save",
   "main": "m01.end",
   "debug": false,
   "@auto": false,
@@ -8,27 +9,33 @@
   "text": {
     "path": "scenario",
     "styles": "message-1"
-  },
+    },
   "image": {
     "path": "image"
-  },
+    },
   "audio": {
     "bgm": {
       "loop": true,
       "loopStart": 0,
       "loopEnd": 0,
       "playbackRate": 1
-    },
+      },
     "se": {
       "loop": false,
       "loopStart": 0,
       "loopEnd": 0,
       "playbackRate": 1
+      }
+    },
+  "audioNode": {
+    "Master": {
+      "type": "gain",
+      "to": null
     }
   },
   "@volume": {
     "@Master": 100,
-    "@BGM": 60,
+    "@BGM": 70,
     "@SE": 60
+    }
   }
-}

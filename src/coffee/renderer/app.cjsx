@@ -47,6 +47,7 @@ window.onload = () ->
       @gainNodes = {}
       @loadGainNodes()
       @loadSaveFiles()
+      @bgmState = {}
     componentDidMount: ->
       console.log "start!"
       @prevMode = @state.mode
@@ -162,7 +163,9 @@ window.onload = () ->
         cb()
     loadAudio: (audio) ->
       # merge audio style, Config(default) style and Option style
-      style = if @config.audio.hasOwnProperty audio.type then @config.audio[audio.type] else {}
+      style = {}
+      if @config.audio.hasOwnProperty audio.type
+        Object.assign style, @config.audio[audio.type]
       if audio.option
         style.forIn (key, value) ->
           if audio.option.hasOwnProperty key
@@ -186,29 +189,50 @@ window.onload = () ->
         node = @audioContext.createMediaElementSource dom
         @state.audios[name].node = node
     playAudio: (name) ->
+      # if @engine.isSkip
+      #   style = @_getAudioStyle name
+      #   if style.loop
+      #     @bgmState[name] = true
+      #   return
       if @state.audios[name]?
         if @state.audios[name].node?
-          style = {}
-          if @config.audio.hasOwnProperty @state.audios[name].type
-             Object.assign style, @config.audio[@state.audios[name].type]
-          if @state.audios[name].option
-            style.forIn (key, value) ->
-              if @state.audios[name].option.hasOwnProperty key
-                style[key] = @state.audios[name].option[key]
+          style = @_getAudioStyle name
           gain = @gainNodes[style.amp]
           @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
           (document.getElementById "audio-#{name}").play()
         else
           console.error "@state.audios[name].node is undefined"
     stopAudio: (name) ->
+      # if @engine.isSkip
+      #   style = @_getAudioStyle name
+      #   if style.loop
+      #     bgmState[name] = false
+      #   return
       if @state.audios[name]?
         audioDom = document.getElementById "audio-#{name}"
         console.log audioDom
         audioDom.pause()
         audioDom.currentTime = 0
     pauseAudio: (name) ->
+      # if @engine.isSkip
+      #   style = @_getAudioStyle name
+      #   if style.loop
+      #     bgmState[name] = false
       if @state.audios[name]?
         (document.getElementById "audio-#{name}").pause()
+    playCurrentAudio: ->
+      for name, isPlay of @bgmState
+        if isPlay
+          @playAudio name
+    _getAudioStyle: (name) ->
+      style = {}
+      if @config.audio.hasOwnProperty @state.audios[name].type
+        Object.assign style, @config.audio[@state.audios[name].type]
+      if @state.audios[name].option
+        style.forIn (key, value) ->
+          if @state.audios[name].option.hasOwnProperty key
+            style[key] = @state.audios[name].option[key]
+      return style
     refreshGain: ->
       @gainNodes.forIn (key, value) =>
         @gainNodes[key].gain.value = @config.volume[key] / 100
@@ -276,7 +300,10 @@ window.onload = () ->
         else
           json = key
           for key, value of json
-            @config[key] = value
+            if key is "basePath" or key is "savePath"
+              @config[key] = json._origin[key]
+            else
+              @config[key] = value
         @engine?.config = @config
         if save
           fs.writeFile configPath, @config.toString("  ")
