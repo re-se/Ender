@@ -46,6 +46,7 @@ FuncMap =
   "load": (engine, inst) ->
     path = @getArg(inst, 0)
     engine.parse(path)
+    engine.clear()
   "loadAudio": (engine, inst) ->
     audio =
       "type": @getArg(inst, 0)
