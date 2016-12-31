@@ -1,9 +1,34 @@
 {
+  "basePath": "dist/resource/",
+  "main": "m01.end",
+  "debug": false,
   "@auto": false,
   "@autoSpeed": 1000,
-  "@textSpeed": 50,
-  "skip": false,
+  "@textSpeed": 20,
   "text": {
+    "path": "scenario",
     "styles": "message-1"
+  },
+  "image": {
+    "path": "image"
+  },
+  "audio": {
+    "bgm": {
+      "loop": true,
+      "loopStart": 0,
+      "loopEnd": 0,
+      "playbackRate": 1
+    },
+    "se": {
+      "loop": false,
+      "loopStart": 0,
+      "loopEnd": 0,
+      "playbackRate": 1
+    }
+  },
+  "@volume": {
+    "@Master": 100,
+    "@BGM": 60,
+    "@SE": 60
   }
 }

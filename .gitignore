@@ -3,4 +3,4 @@ node_modules/
 dist/
 pack/
 packages/
-!dist/resource/
+!dist/resource

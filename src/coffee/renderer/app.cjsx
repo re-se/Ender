@@ -2,6 +2,8 @@
 window.onload = () ->
   React = require 'react'
   ReactDOM = require 'react-dom'
+  {ipcRenderer, remote} = require 'electron'
+  app = remote.app
   fs = require 'fs'
   path = require 'path'
   {ipcRenderer, remote} = require 'electron'
@@ -38,7 +40,7 @@ window.onload = () ->
       @config = new Config config
       @config
       for prop in ["basePath", "savePath"]
-        if !path.isAbsolute(@config[prop])
+        if @config[prop]? && !path.isAbsolute(@config[prop])
           @config.__defineGetter__ prop, ((key) -> (-> path.join app.getAppPath(), @_config[key]))(prop)
       @config.auto = false
       @audioContext = new AudioContext()
