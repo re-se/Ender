@@ -4,6 +4,7 @@ window.onload = () ->
   ReactDOM = require 'react-dom'
   {ipcRenderer, remote} = require 'electron'
   app = remote.app
+  ReactCSSTransitionGroup = require 'react-addons-css-transition-group'
   fs = require 'fs'
   path = require 'path'
   {ipcRenderer, remote, webFrame} = require 'electron'
@@ -402,9 +403,20 @@ window.onload = () ->
       />
       items.push <div key="cover" id="cover"/>
       return (
-        <div id="inner" onClick={@onClick}>
-          {items}
-        </div>
+        # <div id="inner" className="main-view-inner" key="main-view-#{@state.mode}" onClick={@onClick}>
+        #     {items}
+        # </div>
+        <ReactCSSTransitionGroup transitionName="main-view-anim"
+          transitionAppear={true}
+          transitionAppearTimeout={1500}
+          transitionEnter={true}
+          transitionEnterTimeout={500}
+          transitionLeave={false}
+          component="div">
+          <div id="inner" className="main-view-inner" key="main-view-#{@state.mode}" onClick={@onClick}>
+              {items}
+          </div>
+        </ReactCSSTransitionGroup>
       )
   ReactDOM.render(
     <Contents />

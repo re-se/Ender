@@ -4,7 +4,7 @@
   font-weight: normal;
 }
 
-html, body, #contents, #inner {
+html, body, #contents, #inner, #contents > div {
   width: 100%;
   height: 100%;
   margin: 0;
@@ -13,6 +13,7 @@ html, body, #contents, #inner {
   overflow: hidden;
   font-family: mplus-1c;
   font-size: 3vh;
+  background-color: #222;
 }
 
 #cover {
@@ -264,7 +265,8 @@ ruby rt {
 .title-view {
   width: 100%;
   height: 100%;
-  background-color: #eeeeee;
+  background-color: white;
+
   .title-main {
     position: absolute;
     height: 100%;
@@ -291,6 +293,21 @@ ruby rt {
   .title-config {
     bottom: 10vh;
   }
+}
+
+.main-view-anim-appear {
+  opacity: 0;
+}
+.main-view-anim-appear-active {
+  opacity: 1;
+  transition: opacity, 1.5s, cubic-bezier(0.465, 0.183, 0.153, 0.946);
+}
+.main-view-anim-enter {
+  opacity: 0;
+}
+.main-view-anim-enter-active {
+  opacity: 1;
+  transition: opacity, 0.5s, cubic-bezier(0.465, 0.183, 0.153, 0.946);
 }
 
 ::-webkit-scrollbar {
