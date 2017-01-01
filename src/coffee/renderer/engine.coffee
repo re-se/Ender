@@ -35,7 +35,7 @@ module.exports = class Ender
     [@filename, @pc]
 
   setCurrentState: (filename, pc, cb) ->
-    @reload =>
+    @reload filename, =>
       @skip(pc, cb)
 
   skip: (pc, cb) ->
@@ -58,6 +58,7 @@ module.exports = class Ender
     console.log @config
     while @pc < pc || @config.skip
       ret = _g.next()
+      console.log ret
       if ret.value is "async"
         yield 0
     muteVolume.Master = audioVolume
@@ -179,14 +180,19 @@ module.exports = class Ender
           #   message = message.concat type: "br"
           when "clear"
             if inst.message
-              @currentMessage = []
-              @nextMessage = []
-              @Action.setText @currentMessage
+              @clear "text", =>
+                @Action.setText @currentMessage
+            else
+              console.error inst
               # @history += "\n"
-            if inst.image
-              @Action.clearImage(inst.target, inst.effect)
-              @isAnimated = true
-              yield 0 while @isAnimated
+            # if inst.image
+            #   console.error "wawawa"
+            #   console.dir inst
+            #   @Action.clearImage(inst.target, inst.effect, @exec)
+            #   @startAnimation()
+            #   loop
+            #     yield "async"
+            #     break if not @isAnimated
           when "funcdecl"
             @fe.addFunc(inst)
           when "func"

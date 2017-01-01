@@ -56,6 +56,10 @@ window.onload = () ->
       # @config = new Config config
       window.addEventListener("keydown", @onKeyDown)
       window.addEventListener("wheel", @onScroll)
+      window.ondragstart = window.ondragover = window.ondrop = (e) ->
+        console.log e
+        e.preventDefault()
+        false
       ipcRenderer.on 'show-setting', =>
         @changeToSettingMode()
       ipcRenderer.on 'show-title', =>
@@ -152,19 +156,18 @@ window.onload = () ->
         images: update(@state.images, diff)
         , callback
     #target: className(string), effect: name(string)
-    clearImage: (target, effect) ->
+    clearImage: (target, effect, callback) ->
       diff = {}
       diff[target] = "$set": []
       cb = =>
         @setState
           images: update(@state.images, diff)
-          , @engine.exec
+          , callback
       if effect?
         @startAnimation(target, effect, cb)
       else
         cb()
-    loadAudio: (audio) ->
-      # merge audio style, Config(default) style and Option style
+    genAudioStyle: (audio) ->
       style = {}
       if @config.audio.hasOwnProperty audio.type
         Object.assign style, @config.audio[audio.type]
@@ -172,11 +175,12 @@ window.onload = () ->
         style.forIn (key, value) ->
           if audio.option.hasOwnProperty key
             style[key] = audio.option[key]
+      style
+    loadAudio: (audio) ->
+      # merge audio style, Config(default) style and Option style
+      style = @genAudioStyle(audio)
       newAudios = {}
       newAudios[audio.name] = audio
-      newAudios = update @state.audios,
-       "$merge": newAudios
-      @setState audios: newAudios
       if style.loop && audio.loopSrc?
         loopAudio =
           "type": audio.type,
@@ -184,8 +188,12 @@ window.onload = () ->
           "src": "#{audio.loopSrc}"
           "loopSrc": null
           "option": if audio.option? then audio.option else {}
-      else
-        null
+        newAudios[loopAudio.name] = loopAudio
+      newAudios = update @state.audios,
+       "$merge": newAudios
+      @setState audios: newAudios
+      loopAudio
+
     setAudioNode: (name, dom) ->
       if @state.audios[name]?
         node = @audioContext.createMediaElementSource dom
@@ -288,10 +296,10 @@ window.onload = () ->
         when "text"
           message: null
         else
+          cb = () -> type?()
           message: null
           images: {}
           audios: {}
-          cb = () -> type?()
       @setState s, cb
 
     setConfig: (key, value, save) ->

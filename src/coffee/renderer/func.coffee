@@ -61,7 +61,7 @@ FuncMap =
     loopAudio = @Action.loadAudio(audio)
     yield "async"
     if loopAudio?
-      @Action.loadAudio loopAudio
+      # @Action.loadAudio loopAudio
       yield "async"
   "playAudio": (engine, inst) ->
     name = @getArg(inst, 0)
