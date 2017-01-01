@@ -30,6 +30,11 @@ pre {
   white-space: pre-wrap;
 }
 
+input {
+  font-size: 3vh;
+  padding: 0.2vh;
+}
+
 ruby rt {
   font-size: 0.4em;
 }
@@ -206,7 +211,7 @@ ruby rt {
 }
 
 .button:hover {
-  background-color: fade(#555555, 90%);
+  background-color: fade(#444444, 90%);
 }
 
 .saveView {
@@ -252,12 +257,23 @@ ruby rt {
 
 .toolbar {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: column-reverse;
   position: absolute;
   bottom: 30%;
   right: 0;
-    .save {
-
+    .save, .setting {
+      width: 18vh;
+      height: 7vh;
+      box-sizing: border-box;
+      border-radius: 7vh 0 0 7vh;
+      border: solid 1px fade(#333333, 50%);
+      justify-content: space-between;
+      padding: 0 2vh;
+      right: -12vh;
+      position: relative;
+    }
+    .save:hover, .setting:hover {
+      right: 0;
     }
 }
 

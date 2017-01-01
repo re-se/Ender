@@ -383,9 +383,17 @@ window.onload = () ->
           if @state.message?.length > 0 && !@config.hideMessageBox
             mainItems.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
 
+          saveButtonInner = [
+            <i key="save-button-icon" className="fa fa-floppy-o" aria-hidden="true"/>,
+            <span key="save-button-text"> セーブ </span>
+          ]
+          settingButtonInner = [
+            <i key="setting-button-icon" className="fa fa-cog" aria-hidden="true"/>,
+            <span key="setting-button-text"> 設定 </span>
+          ]
           mainItems.push <div key="toolbar" className="toolbar">
-            <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
-            <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
+            <Button key="save-button" inner={saveButtonInner} classes="save" onClick={@changeToSaveMode}/>
+            <Button key="setting-button" inner={settingButtonInner} classes="setting" onClick={@changeToSettingMode} />
           </div>
 
           items.push <div className="main-view" key="main-view">
