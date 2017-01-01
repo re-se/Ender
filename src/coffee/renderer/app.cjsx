@@ -41,8 +41,14 @@ window.onload = () ->
       @config = new Config config
       @config
       for prop in ["basePath", "savePath"]
-        if @config[prop]? && !path.isAbsolute(@config[prop])
-          @config.__defineGetter__ prop, ((key) -> (-> path.join app.getAppPath(), @_config[key]))(prop)
+        if @config[prop]? &&
+          @config.__defineGetter__ prop, ((key) ->
+            ->
+              if path.isAbsolute(@_config[key])
+                @_config[key]
+              else
+                path.join app.getAppPath(), @_config[key]
+          )(prop)
       @config.auto = false
       @audioContext = new AudioContext()
       @gainNodes = {}
@@ -312,10 +318,7 @@ window.onload = () ->
         else
           json = key
           for key, value of json
-            if key is "basePath" or key is "savePath"
-              @config[key] = json._origin[key]
-            else
-              @config[key] = value
+            @config[key] = value
         @engine?.config = @config
         if save
           fs.writeFile configPath, @config.toString("  ")
