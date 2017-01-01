@@ -283,10 +283,7 @@ window.onload = () ->
         @engine.setCurrentState save.filename, save.pc, =>
           @changeMode "main"
 
-    clear: (type) ->
-      cb = () =>
-        type?()
-        @engine.exec()
+    clear: (type, cb) ->
       s = switch type
         when "text"
           message: null
@@ -294,6 +291,7 @@ window.onload = () ->
           message: null
           images: {}
           audios: {}
+          cb = () -> type?()
       @setState s, cb
 
     setConfig: (key, value, save) ->

@@ -117,19 +117,20 @@ module.exports = class Ender
     else
       @Action.setText @addEndMarker(@currentMessage.concat @nextMessage), => @autoExec()
 
-  clear: (type, className, effect) ->
+  clear: (type, className, effect, cb) ->
     switch type
       when "text"
         @currentMessage = []
         @nextMessage = []
-        @Action.clear("text")
+        @Action.clear("text", cb)
       when "image"
-        @Action.clearImage(className, effect)
+        @Action.clearImage(className, effect, cb)
       else
         @currentMessage = []
         @nextMessage = []
         @history = ""
-        @Action.clear(type)
+        cb = type
+        @Action.clear(cb)
 
   clearAll: (cb) ->
     @history = ""

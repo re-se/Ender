@@ -22,7 +22,7 @@ FuncMap =
     type = @getArg(inst, 0)
     className = @getArg(inst, 1)
     effect = @getArg(inst, 2)
-    engine.clear(type, className, effect)
+    engine.clear(type, className, effect, engine.exec)
     loop
       yield "async"
       break if not engine.isAnimated
