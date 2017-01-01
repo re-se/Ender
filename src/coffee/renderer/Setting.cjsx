@@ -60,8 +60,8 @@ module.exports = React.createClass
   onClick: (e) ->
     e.stopPropagation()
     json = @genConfigJSON()
-    @props.config.config = json
-    @props.Action.setConfig @props.config, null, true
+    # @props.config.config = json
+    @props.Action.setConfig json, null, true
     @props.Action.changeMode "main"
   render: ->
     <div className="settingView">
