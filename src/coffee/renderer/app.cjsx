@@ -263,7 +263,7 @@ window.onload = () ->
       #   width: 100
       #   height: 100
       remote.getCurrentWindow().capturePage (img) =>
-        @screenshot = img
+        @screenshot = img.resize width: 200
         @changeMode("save")
 
     save: (target) ->
