@@ -6,8 +6,9 @@ window.onload = () ->
   app = remote.app
   fs = require 'fs'
   path = require 'path'
-  {ipcRenderer, remote} = require 'electron'
+  {ipcRenderer, remote, webFrame} = require 'electron'
   remote.getCurrentWindow().removeAllListeners()
+  webFrame.setZoomLevelLimits(1, 1)
   app = remote.app
   update = require 'react-addons-update'
   Engine = require './js/renderer/engine'
