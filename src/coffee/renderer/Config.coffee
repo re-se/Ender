@@ -38,7 +38,7 @@ class @Config
     out = "{\n"
     num = 0
     obj.forIn (key, value, index) =>
-      if key is "_origin" or key is "_config" or key is "config"
+      if !(value?) or key is "_origin" or key is "_config" or key is "config"
         return
       if typeof value is "string"
         if num > 0
