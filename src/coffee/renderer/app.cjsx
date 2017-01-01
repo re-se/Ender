@@ -41,12 +41,18 @@ window.onload = () ->
       @config = new Config config
       @config
       for prop in ["basePath", "savePath"]
-        if @config[prop]? && !path.isAbsolute(@config[prop])
-          @config.__defineGetter__ prop, ((key) -> (-> path.join app.getAppPath(), @_config[key]))(prop)
+        if @config[prop]?
+          @config.__defineGetter__ prop, ((key) ->
+            ->
+              if path.isAbsolute(@_config[key])
+                @_config[key]
+              else
+                path.join app.getAppPath(), @_config[key]
+          )(prop)
       @config.auto = false
       @audioContext = new AudioContext()
-      @gainNodes = {}
-      @loadGainNodes()
+      @audioNodes = {}
+      @loadAudioNodes()
       @loadSaveFiles()
       @bgmState = {}
     componentDidMount: ->
@@ -84,15 +90,30 @@ window.onload = () ->
             saves.push JSON.parse(file)
         @setState saves: saves
 
-    loadGainNodes: ->
+    loadAudioNodes: ->
+      @config.audioNode.forIn (key, node) =>
+        if key isnt "_origin" and key isnt "config" and key isnt "_config"
+          switch node.type
+            when "gain"
+              @audioNodes[key] = @audioContext.createGain()
+            when "delay"
+              @audioNodes[key] = @audioContext.createDelay(5.0)
+            when "convolver"
+              @audioNodes[key] = @audioContext.createConvolver()
+            when "biquadFilter"
+              @audioNodes[key] = @audioContext.createBiquadFilter()
+            when "dynamicsCompressor"
+              @audioNodes[key] = @audioContext.createDynamicsCompressor()
+            when "waveShaper"
+              @audioNodes[key] = @audioContext.createWaveShaper()
+      @config.audioNode.forIn (key, node) =>
+        if key isnt "_origin" and key isnt "config" and key isnt "_config"
+          con = if node.to? then @audioNodes[node.to] else @audioContext.destination
+          @audioNodes[key].connect con
+          console.log con
       @config.volume.forIn (key, node) =>
         if key isnt "_origin" and key isnt "config" and key isnt "_config"
-          @gainNodes[key] = @audioContext.createGain()
-          @gainNodes[key].gain.value = node / 100.0
-      @config.volume.forIn (key, node) =>
-        if key isnt "_origin" and key isnt "config" and key isnt "_config"
-          con = if key is "Master" then @audioContext.destination else @gainNodes["Master"]
-          @gainNodes[key].connect con
+          @audioNodes[key].gain.value = node / 100.0
 
     changeMode: (mode, cb) ->
       unless mode is "main"
@@ -199,53 +220,45 @@ window.onload = () ->
         node = @audioContext.createMediaElementSource dom
         @state.audios[name].node = node
     playAudio: (name) ->
-      # if @engine.isSkip
-      #   style = @_getAudioStyle name
-      #   if style.loop
-      #     @bgmState[name] = true
-      #   return
-      if @state.audios[name]?
-        if @state.audios[name].node?
-          style = @_getAudioStyle name
-          gain = @gainNodes[style.amp]
-          @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
-          (document.getElementById "audio-#{name}").play()
-        else
-          console.error "@state.audios[name].node is undefined"
+      if !@state.audios[name]?
+        console.error "@state.audios[#{name}] is undefined"
+        return
+      style = @genAudioStyle @state.audios[name]
+      if @engine.isSkip
+        if !style.loop
+          return
+      if @state.audios[name].node?
+        gain = @audioNodes[style.amp]
+        @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
+        (document.getElementById "audio-#{name}").play()
+      else
+        console.error "@state.audios[#{name}].node is undefined"
     stopAudio: (name) ->
-      # if @engine.isSkip
-      #   style = @_getAudioStyle name
-      #   if style.loop
-      #     bgmState[name] = false
-      #   return
+      if !@state.audios[name]?
+        console.error "@state.audios[#{name}] is undefined"
+        return
+      if @engine.isSkip
+        style = @genAudioStyle @state.audios[name]
+        if !style.loop
+          return
       if @state.audios[name]?
         audioDom = document.getElementById "audio-#{name}"
         console.log audioDom
         audioDom.pause()
         audioDom.currentTime = 0
     pauseAudio: (name) ->
-      # if @engine.isSkip
-      #   style = @_getAudioStyle name
-      #   if style.loop
-      #     bgmState[name] = false
+      if !@state.audios[name]?
+        console.error "@state.audios[#{name}] is undefined"
+        return
+      if @engine.isSkip
+        style = @genAudioStyle @state.audios[name]
+        if !style.loop
+          return
       if @state.audios[name]?
         (document.getElementById "audio-#{name}").pause()
-    playCurrentAudio: ->
-      for name, isPlay of @bgmState
-        if isPlay
-          @playAudio name
-    _getAudioStyle: (name) ->
-      style = {}
-      if @config.audio.hasOwnProperty @state.audios[name].type
-        Object.assign style, @config.audio[@state.audios[name].type]
-      if @state.audios[name].option
-        style.forIn (key, value) ->
-          if @state.audios[name].option.hasOwnProperty key
-            style[key] = @state.audios[name].option[key]
-      return style
     refreshGain: ->
-      @gainNodes.forIn (key, value) =>
-        @gainNodes[key].gain.value = @config.volume[key] / 100
+      @audioNodes.forIn (key, value) =>
+        @audioNodes[key].gain.value = @config.volume[key] / 100
 
     changeToSettingMode: (e) ->
       e?.stopPropagation()
@@ -312,10 +325,7 @@ window.onload = () ->
         else
           json = key
           for key, value of json
-            if key is "basePath" or key is "savePath"
-              @config[key] = json._origin[key]
-            else
-              @config[key] = value
+            @config[key] = value
         @engine?.config = @config
         if save
           fs.writeFile configPath, @config.toString("  ")
