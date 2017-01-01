@@ -204,6 +204,7 @@ window.onload = () ->
       style
     loadAudio: (audio) ->
       # merge audio style, Config(default) style and Option style
+      @engine.startLoad()
       style = @genAudioStyle(audio)
       newAudios = {}
       newAudios[audio.name] = audio
@@ -224,6 +225,8 @@ window.onload = () ->
       if @state.audios[name]?
         node = @audioContext.createMediaElementSource dom
         @state.audios[name].node = node
+        @engine.finishLoad()
+        @engine.exec()
     playAudio: (name) ->
       if !@state.audios[name]?
         console.error "@state.audios[#{name}] is undefined"
@@ -372,16 +375,21 @@ window.onload = () ->
       items = []
       switch @state.mode
         when "main"
+          mainItems = []
           if @state.name?
-            items.push <NameBox key="name" name={@state.name} />
+            mainItems.push <NameBox key="name" name={@state.name} />
           if @state.history?
-            items.push <HistoryView key="history" history={@state.history} />
+            mainItems.push <HistoryView key="history" history={@state.history} />
           if @state.message?.length > 0 && !@config.hideMessageBox
-            items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
+            mainItems.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
 
-          items.push <div key="toolbar" className="toolbar">
+          mainItems.push <div key="toolbar" className="toolbar">
             <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
             <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
+          </div>
+
+          items.push <div className="main-view" key="main-view">
+            {mainItems}
           </div>
         when "setting"
           items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} prev={@prevMode}/>
@@ -406,17 +414,18 @@ window.onload = () ->
         # <div id="inner" className="main-view-inner" key="main-view-#{@state.mode}" onClick={@onClick}>
         #     {items}
         # </div>
-        <ReactCSSTransitionGroup transitionName="main-view-anim"
-          transitionAppear={true}
-          transitionAppearTimeout={1500}
-          transitionEnter={true}
-          transitionEnterTimeout={500}
-          transitionLeave={false}
-          component="div">
-          <div id="inner" className="main-view-inner" key="main-view-#{@state.mode}" onClick={@onClick}>
-              {items}
-          </div>
-        </ReactCSSTransitionGroup>
+        <div id="inner" className="inner-view" key="inner-view" onClick={@onClick}>
+          <ReactCSSTransitionGroup transitionName="main-view-anim"
+            transitionAppear={true}
+            transitionAppearTimeout={1500}
+            transitionEnter={true}
+            transitionEnterTimeout={500}
+            transitionLeave={false}
+            component="div">
+            <div className="blackWall" key="main-view-#{@state.mode}"/>
+          </ReactCSSTransitionGroup>
+          {items}
+        </div>
       )
   ReactDOM.render(
     <Contents />

@@ -4,7 +4,7 @@
   font-weight: normal;
 }
 
-html, body, #contents, #inner, #contents > div {
+html, body, #contents, #inner{
   width: 100%;
   height: 100%;
   margin: 0;
@@ -13,7 +13,6 @@ html, body, #contents, #inner, #contents > div {
   overflow: hidden;
   font-family: mplus-1c;
   font-size: 3vh;
-  background-color: #222;
 }
 
 #cover {
@@ -295,18 +294,27 @@ ruby rt {
   }
 }
 
-.main-view-anim-appear {
+.blackWall {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 666666666;
+  background-color: #222;
   opacity: 0;
+  pointer-events: none;
+}
+.main-view-anim-appear {
+  opacity: 1;
 }
 .main-view-anim-appear-active {
-  opacity: 1;
+  opacity: 0;
   transition: opacity, 1.5s, cubic-bezier(0.465, 0.183, 0.153, 0.946);
 }
 .main-view-anim-enter {
-  opacity: 0;
+  opacity: 1;
 }
 .main-view-anim-enter-active {
-  opacity: 1;
+  opacity: 0;
   transition: opacity, 0.5s, cubic-bezier(0.465, 0.183, 0.153, 0.946);
 }
 

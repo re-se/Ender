@@ -17,9 +17,8 @@ module.exports = React.createClass
       console.log "loading #{audio.name}"
     onloaded = (e) =>
       audioDom = e.currentTarget
-      @props.Action.setAudio audio.name, audioDom
       console.log "loaded #{audio.name}"
-      @props.Action.engineExec()
+      @props.Action.setAudio audio.name, audioDom
     onEndSrcLoop = (e) =>
       audioDom = document.getElementById "audio-#{audio.name}_loop"
       # audioDom.play()

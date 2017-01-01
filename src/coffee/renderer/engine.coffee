@@ -10,6 +10,7 @@ module.exports = class Ender
     @pc = 0
     @fe = new FuncEngine(@Action)
     @load(@config.main)
+    @isLoaded = false
 
   load: (filename, cb) ->
     @filename = filename
@@ -73,6 +74,12 @@ module.exports = class Ender
 
   startAnimation: ->
     @isAnimated = true
+
+  finishLoad: ->
+    @isLoaded = false
+
+  startLoad: ->
+    @isLoaded = true
 
   changeStyle: (style) ->
     @style = Object.assign {}, @style, style
