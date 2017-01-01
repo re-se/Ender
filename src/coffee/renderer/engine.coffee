@@ -10,7 +10,6 @@ module.exports = class Ender
     @pc = 0
     @fe = new FuncEngine(@Action)
     @load(@config.main)
-    @isLoaded = false
 
   load: (filename, cb) ->
     @filename = filename
@@ -125,6 +124,7 @@ module.exports = class Ender
   _exec: =>
     @isAnimated = false
     @isTextAnimated = false
+    @isLoaded = false
     @style = {}
     imagesMap = {}
     @pc = 0

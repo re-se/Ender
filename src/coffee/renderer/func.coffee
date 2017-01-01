@@ -61,7 +61,6 @@ FuncMap =
     console.log "loadAudio:", audio
     loopAudio = @Action.loadAudio(audio)
     loop
-      console.log engine.isLoaded
       yield "async"
       break if not engine.isLoaded
     if loopAudio?
