@@ -4,7 +4,7 @@ module.exports = {
   fadeIn: (target, onComplete) ->
     tl = new TimelineMax(onComplete: onComplete)
     tl.to(target, 0, opacity: 0)
-      .to(target, 1, opacity: 1)
+      .to(target, 1, {opacity: 1, display: "block"})
     tl
   fadeOut: (target, onComplete) ->
     tl = new TimelineMax(onComplete: onComplete)

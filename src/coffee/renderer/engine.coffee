@@ -74,28 +74,6 @@ module.exports = class Ender
   startAnimation: ->
     @isAnimated = true
 
-  autoExec: ->
-    # if @config.skip
-    #   if @config.textSpeed > 0
-    #     @_config = @config.dup()
-    #     @Action.setConfig "textSpeed", 0
-    #   else
-    #     setTimeout =>
-    #       @exec() if @config.skip
-    #     , 0
-    #   return
-    # else
-    #   if @_config?
-    #     @_config.skip = false
-    #     @config = @_config
-    #     @_config = null
-    #     @Action.setConfig @config
-    #     return
-    if @config.auto
-      setTimeout =>
-        @exec() if @config.auto
-      , @config.autoSpeed
-
   changeStyle: (style) ->
     @style = Object.assign {}, @style, style
     @addMessage type: "style", value: @style
@@ -209,9 +187,17 @@ module.exports = class Ender
 
   exec: =>
     try
-      @g.next()
+      ret = @g.next()
+      @isAsync = ret.value is "async"
     catch error
       console.error error
+
+  autoExec: ->
+    if @config.auto and !@isAsync
+      setTimeout =>
+        if @config.auto and !@isAsync
+          @exec()
+      , @config.autoSpeed
 
 
   addEndMarker: (message, isNewPage) ->

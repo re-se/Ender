@@ -4,6 +4,7 @@ FuncMap =
     image.src = @getArg(inst, 0)
     image.className = @getArg(inst, 1)
     image.effect = @getArg(inst, 2)
+    image.callback = engine.exec
     id = @Action.setImage image
     loop
       yield "async"

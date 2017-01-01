@@ -130,19 +130,20 @@ window.onload = () ->
         cb = =>
           @engine.finishAnimation()
           effectName?()
-        return cb() if @state.mode isnt "main" || @config.skip
+        return cb() if !target.effect?
         node = document.getElementById(target.src)
         @tls.push effects[target.effect](node, cb)
       else
         cb = =>
           @engine.finishAnimation()
           callback?()
-        return cb() if @state.mode isnt "main" || @config.skip
         nodes = document.querySelectorAll target
         nodes = document.getElementsByClassName(target) if nodes.length < 1
         for node in nodes
           @tls.push effects[effectName](node, cb)
           cb = null
+      if @state.mode isnt "main" || @config.skip
+        @finishAnimation()
     finishAnimation: (className) ->
       for tl in @tls
         tl.progress(1, false)
@@ -153,30 +154,33 @@ window.onload = () ->
       , cb
     setName: (name) ->
       @setState name: name
-    setImage: (image) ->
-      # console.dir @state.images
-      fdiff = {}
-      fdiff[image.className] = "$set": [image]
+    setImage: (image, cb) ->
       arr = @state.images[image.className]
-      if arr?
-        arr = arr.concat image
-        cb = =>
-          @setState
-            images: update(@state.images, fdiff)
-            , @engine.exec
+      diff = {}
+      if image.callback?
+        origin = image.callback
+        if arr?
+          image.callback = =>
+            @startAnimation image, =>
+              fdiff = {}
+              fdiff[image.className] = "$set": [image]
+              @setState
+                images: update(@state.images, fdiff)
+                , origin
+          arr = arr.concat image
+        else
+          image.callback = => @startAnimation image, origin
+          arr = [image]
+        diff[image.className] = "$set": arr
+        @setState
+          images: update(@state.images, diff)
+          , cb
       else
         arr = [image]
-        cb = @engine.exec
-      diff = {}
-      diff[image.className] = "$set": arr
-      if image.effect?
-        callback = => @startAnimation(image, cb)
-      else
-        callback = cb
-      @setState
-        images: update(@state.images, diff)
-        , callback
-    #target: className(string), effect: name(string)
+        diff[image.className] = "$set": arr
+        @setState
+          images: update(@state.images, diff)
+          , cb
     clearImage: (target, effect, callback) ->
       diff = {}
       diff[target] = "$set": []
@@ -373,10 +377,7 @@ window.onload = () ->
             items.push <HistoryView key="history" history={@state.history} />
           if @state.message?.length > 0 && !@config.hideMessageBox
             items.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
-          imagePath = [@config.basePath]
-          imagePath.push @config.image.path if @config.image?.path?
-          imagePath = path.join.apply @, imagePath
-          items.push <ImageView key="images" images={@state.images} basePath={imagePath} />
+
           items.push <div key="toolbar" className="toolbar">
             <Button key="save-button" inner="セーブ" classes="save" onClick={@changeToSaveMode} />
             <Button key="setting-button" inner="設定" classes="setting" onClick={@changeToSettingMode} />
@@ -388,6 +389,10 @@ window.onload = () ->
         when "title"
           items.push <Title key="title-view" basePath={@config.basePath}
             Action={{@changeMode, engineLoad: => @engine.reload(@config.main)}} />
+      imagePath = [@config.basePath]
+      imagePath.push @config.image.path if @config.image?.path?
+      imagePath = path.join.apply @, imagePath
+      items.push <ImageView key="images" images={@state.images} basePath={imagePath} />
       items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode
