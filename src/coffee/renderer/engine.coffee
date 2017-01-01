@@ -18,10 +18,13 @@ module.exports = class Ender
     @g = @_exec()
     @clearAll cb
 
-  reload: (cb) ->
+  reload: (filename, cb) ->
+    if typeof filename isnt "string"
+      cb = filename
+      filename = @filename
     @insts = []
     @pc = 0
-    @load(@filename, cb)
+    @load(filename, cb)
 
   parse: ->
     mainPath = path.join(@config.basePath, @config.text.path, @filename)

@@ -23,10 +23,9 @@ FuncMap =
     className = @getArg(inst, 1)
     effect = @getArg(inst, 2)
     engine.clear(type, className, effect)
-    if effect?
-      loop
-        yield "async"
-        break if not engine.isAnimated
+    loop
+      yield "async"
+      break if not engine.isAnimated
   "skip": (engine) ->
     if engine.config.debug
       @Action.setConfig "skip", true

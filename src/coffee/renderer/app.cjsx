@@ -58,7 +58,9 @@ window.onload = () ->
       ipcRenderer.on 'show-setting', =>
         @changeToSettingMode()
       ipcRenderer.on 'show-title', =>
-        @changeMode 'title'
+        if window.confirm("タイトルに戻ります。よろしいですか？")
+          @clear =>
+            @changeMode 'title'
       Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
       @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
@@ -100,7 +102,6 @@ window.onload = () ->
       @engine.startAnimation()
       if typeof target isnt "string"
         cb = =>
-          console.info "koko"
           @engine.finishAnimation()
           effectName?()
         return cb() if @state.mode isnt "main" || @config.skip
@@ -145,7 +146,7 @@ window.onload = () ->
       if image.effect?
         callback = => @startAnimation(image, cb)
       else
-        callback = => cb()
+        callback = cb
       @setState
         images: update(@state.images, diff)
         , callback
@@ -282,12 +283,13 @@ window.onload = () ->
           @changeMode "main"
 
     clear: (type) ->
+      cb = () =>
+        type?()
+        @engine.exec()
       s = switch type
         when "text"
           message: null
         else
-          cb = ()=>
-            type?()
           message: null
           images: {}
           audios: {}
@@ -365,7 +367,7 @@ window.onload = () ->
           items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
         when "title"
           items.push <Title key="title-view" basePath={@config.basePath}
-            Action={{@changeMode, engineLoad: => @engine.reload()}} />
+            Action={{@changeMode, engineLoad: => @engine.reload(@config.main)}} />
       items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode
