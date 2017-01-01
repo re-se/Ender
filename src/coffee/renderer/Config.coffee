@@ -38,22 +38,26 @@ class @Config
     out = "{\n"
     num = 0
     obj.forIn (key, value, index) =>
-      if !(value?) or key is "_origin" or key is "_config" or key is "config"
+      if key is "_origin" or key is "_config" or key is "config"
         return
-      if typeof value is "string"
-        if num > 0
-          out += ",\n"
-        out += space + JSON.stringify(key) + ": " + JSON.stringify(value, space)
-      else if typeof value is "object"
-        if num > 0
-          out += ",\n"
-        out += space + "#{JSON.stringify(key)}: #{@.toString(space + "  ", if(value._origin)? then value._origin else value)}"
-      else if typeof value is "function"
-        return
-      else
-        if num > 0
-          out += ",\n"
-        out += space + "#{JSON.stringify(key)}: #{JSON.stringify(value, space)}"
+      switch typeof value
+        when "string"
+          if num > 0
+            out += ",\n"
+          out += space + JSON.stringify(key) + ": " + JSON.stringify(value, space)
+        when "object"
+          if num > 0
+            out += ",\n"
+          if !(value?)
+            out += space + "#{JSON.stringify(key)}: null"
+          else
+            out += space + "#{JSON.stringify(key)}: #{@.toString(space + " ", if(value._origin)? then value._origin else value)}"
+        when "function"
+          return
+        else
+          if num > 0
+            out += ",\n"
+          out += space + "#{JSON.stringify(key)}: #{JSON.stringify(value, space)}"
       num++
     out += "\n"
     out += space + "}"

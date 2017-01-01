@@ -7,44 +7,45 @@
   "@autoSpeed": 1000,
   "@textSpeed": 20,
   "text": {
-    "path": "scenario",
-    "styles": "message-1"
-    },
+   "path": "scenario",
+   "styles": "message-1"
+   },
   "image": {
-    "path": "image"
-    },
+   "path": "image"
+   },
   "audio": {
-    "bgm": {
-      "loop": true,
-      "loopStart": 0,
-      "loopEnd": 0,
-      "playbackRate": 1,
-      "amp": "BGM"
-      },
-    "se": {
-      "loop": false,
-      "loopStart": 0,
-      "loopEnd": 0,
-      "playbackRate": 1,
-      "amp": "SE"
-      }
+   "bgm": {
+    "loop": true,
+    "loopStart": 0,
+    "loopEnd": 0,
+    "playbackRate": 1,
+    "amp": "BGM"
     },
-  "audioNode": {
-    "Master": {
-      "type": "gain"
-      },
-    "BGM": {
-      "type": "gain",
-      "to": "Master"
-      },
-    "SE": {
-      "type": "gain",
-      "to": "Master"
-      }
-    },
-  "@volume": {
-    "@Master": 76,
-    "@BGM": 68,
-    "@SE": 60
+   "se": {
+    "loop": false,
+    "loopStart": 0,
+    "loopEnd": 0,
+    "playbackRate": 1,
+    "amp": "SE"
     }
+   },
+  "audioNode": {
+   "Master": {
+    "type": "gain",
+    "to": null
+    },
+   "BGM": {
+    "type": "gain",
+    "to": "Master"
+    },
+   "SE": {
+    "type": "gain",
+    "to": "Master"
+    }
+   },
+  "@volume": {
+   "@Master": 97,
+   "@BGM": 51,
+   "@SE": 54
+   }
   }
