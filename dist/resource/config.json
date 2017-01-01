@@ -18,24 +18,33 @@
       "loop": true,
       "loopStart": 0,
       "loopEnd": 0,
-      "playbackRate": 1
+      "playbackRate": 1,
+      "amp": "BGM"
       },
     "se": {
       "loop": false,
       "loopStart": 0,
       "loopEnd": 0,
-      "playbackRate": 1
+      "playbackRate": 1,
+      "amp": "SE"
       }
     },
   "audioNode": {
     "Master": {
+      "type": "gain"
+      },
+    "BGM": {
       "type": "gain",
-      "to": null
-    }
-  },
+      "to": "Master"
+      },
+    "SE": {
+      "type": "gain",
+      "to": "Master"
+      }
+    },
   "@volume": {
-    "@Master": 100,
-    "@BGM": 70,
+    "@Master": 76,
+    "@BGM": 68,
     "@SE": 60
     }
   }
