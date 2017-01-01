@@ -11,6 +11,16 @@ module.exports = {
     tl.to(target, 0, opacity: 1)
       .to(target, 1, opacity: 0)
     tl
+  show: (target, onComplete) ->
+    tl = new TimelineMax(onComplete: onComplete)
+    tl.to(target, 0, opacity: 0)
+      .to(target, 1, {opacity: 1, display: "block"})
+    tl
+  hide: (target, onComplete) ->
+    tl = new TimelineMax(onComplete: onComplete)
+    tl.to(target, 0, opacity: 1)
+      .to(target, 1, {opacity: 0, display: "none"})
+    tl
   shake: (target, onComplete) ->
     tl = new TimelineMax(onComplete: onComplete)
     tl.to(target, 0, {position: "absolute", left: 0, top: 0})

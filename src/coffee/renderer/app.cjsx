@@ -94,11 +94,11 @@ window.onload = () ->
           con = if key is "Master" then @audioContext.destination else @gainNodes["Master"]
           @gainNodes[key].connect con
 
-    changeMode: (mode) ->
+    changeMode: (mode, cb) ->
       unless mode is "main"
         @setConfig "auto", false
       @prevMode = @state.mode
-      @setState mode: mode
+      @setState mode: mode, cb
     Pause: ->
       @setConfig "auto", false
 
@@ -288,8 +288,11 @@ window.onload = () ->
     load: (target) ->
       save = @state.saves[target]
       if save?
+        cover = document.getElementById("cover")
+        effects.show(cover)
         @engine.setCurrentState save.filename, save.pc, =>
-          @changeMode "main"
+          @changeMode "main", ->
+            effects.hide(cover)
 
     clear: (type, cb) ->
       s = switch type
@@ -382,6 +385,7 @@ window.onload = () ->
           "engineExec": @engine?.exec
         }
       />
+      items.push <div key="cover" id="cover"/>
       return (
         <div id="inner" onClick={@onClick}>
           {items}
