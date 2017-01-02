@@ -62,7 +62,7 @@ module.exports = React.createClass
     json = @genConfigJSON()
     # @props.config.config = json
     @props.Action.setConfig json, null, true
-    @props.Action.changeMode "main"
+    @props.Action.changeMode @props.prev
   render: ->
     <div className="settingView">
       {@genConfigView @props.config}
