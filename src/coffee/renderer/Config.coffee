@@ -50,7 +50,7 @@ class @Config
           if !(value?)
             out += space + "#{JSON.stringify(key)}: null"
           else
-            out += space + "#{JSON.stringify(key)}: #{@.toString(space + " ", if(value._origin)? then value._origin else value)}"
+            out += space + "#{JSON.stringify(key)}: #{@.toString(space + "  ", if(value._origin)? then value._origin else value)}"
         when "function"
           return
         else
@@ -59,7 +59,7 @@ class @Config
           out += space + "#{JSON.stringify(key)}: #{JSON.stringify(value, space)}"
       num++
     out += "\n"
-    out += space + "}"
+    out += (if(space.length < 2) then space else space.substring(0, space.length - 2)) + "}"
     out
 
   hasPublic: ->
