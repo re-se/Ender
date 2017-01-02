@@ -12,6 +12,6 @@ module.exports = React.createClass
         else
           counts[image.src] = 0
         <Image basePath={@props.basePath} image={image} key="#{image.src}-#{counts[image.src]}"/>
-    <div className="images">
+    <div className="images" style={@props.style}>
         {items}
     </div>

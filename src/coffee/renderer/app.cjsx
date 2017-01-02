@@ -13,6 +13,7 @@ window.onload = () ->
   update = require 'react-addons-update'
   Engine = require './js/renderer/engine'
   {Button} = require './js/renderer/Button'
+  {ToolbarButton} = require './js/renderer/ToolbarButton'
   MessageBox = require './js/renderer/MessageBox'
   NameBox = require './js/renderer/NameBox'
   ImageView = require './js/renderer/ImageView'
@@ -315,6 +316,8 @@ window.onload = () ->
     load: (target) ->
       save = @state.saves[target]
       if save?
+        cover = document.getElementById("cover")
+        effects.show(cover)
         @engine.setCurrentState save.filename, save.pc, =>
           @changeMode "main"
 
@@ -327,6 +330,7 @@ window.onload = () ->
           message: null
           images: {}
           audios: {}
+          history: null
       @setState s, cb
 
     setConfig: (key, value, save) ->
@@ -345,11 +349,18 @@ window.onload = () ->
       # config = update(@state.config, diff)
       # @engine?.config = config
       # @setState config: config, => @autoExec()
+    showHistory: (e) ->
+      e?.stopPropagation()
+      @setState history: @engine?.history, =>
+        @isHistory = true
+    hideHistory: ->
+      @setState history: null, =>
+        @isHistory = false
     onClick: (e) ->
       switch @state.mode
         when "main"
-          if @state.history?
-            @setState history: null
+          if @isHistory
+            @hideHistory()
           else
             diff = {}
             diff.auto = $set: false
@@ -362,16 +373,21 @@ window.onload = () ->
       switch @state.mode
         when "main"
           @onClick() if e.keyCode is 13
+          @hideHistory() if e.keyCode is 27
         else
           @changeMode "main" if e.keyCode is 27
     onScroll: (e) ->
-      switch @state.mode
-        when "main"
-          if e.deltaY < 0 and !@state.history?
-            diff = {}
-            diff.auto = $set: false
-            @setConfig "auto", false
-            @setState history: @engine?.history
+      return if e.deltaY is 0
+      if !@wheeling?
+        switch @state.mode
+          when "main"
+            if e.deltaY < 0 and not @isHistory
+              @setConfig "auto", false
+              @showHistory()
+      clearTimeout @wheeling
+      @wheeling = setTimeout =>
+        @wheeling = undefined
+      ,100
     autoExec: ->
       @engine.autoExec()
     render: () ->
@@ -386,17 +402,10 @@ window.onload = () ->
           if @state.message?.length > 0 && !@config.hideMessageBox
             mainItems.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
 
-          saveButtonInner = [
-            <i key="save-button-icon" className="fa fa-floppy-o" aria-hidden="true"/>,
-            <span key="save-button-text"> セーブ </span>
-          ]
-          settingButtonInner = [
-            <i key="setting-button-icon" className="fa fa-cog" aria-hidden="true"/>,
-            <span key="setting-button-text"> 設定 </span>
-          ]
           mainItems.push <div key="toolbar" className="toolbar">
-            <Button key="save-button" inner={saveButtonInner} classes="save" onClick={@changeToSaveMode}/>
-            <Button key="setting-button" inner={settingButtonInner} classes="setting" onClick={@changeToSettingMode} />
+            <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>
+            <ToolbarButton key="save-button" icon="floppy-o" inner="セーブ" type="save" onClick={@changeToSaveMode}/>
+            <ToolbarButton key="setting-button" icon="cog" inner="設定" type="setting" onClick={@changeToSettingMode} />
           </div>
 
           items.push <div className="main-view" key="main-view">
@@ -412,7 +421,9 @@ window.onload = () ->
       imagePath = [@config.basePath]
       imagePath.push @config.image.path if @config.image?.path?
       imagePath = path.join.apply @, imagePath
-      items.push <ImageView key="images" images={@state.images} basePath={imagePath} />
+      imageStyle = {}
+      imageStyle["display"] = "none" unless @state.mode is "main"
+      items.push <ImageView style={imageStyle} key="images" images={@state.images} basePath={imagePath} />
       items.push <Audios key="audios" audios={@state.audios} config={@config}
         Action={
           "setAudio": @setAudioNode
