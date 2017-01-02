@@ -156,8 +156,11 @@ module.exports = class Ender
           when "name"
             @currentMessage = []
             @nextMessage = []
-            @Action.setName(inst.name)
-            @history += "#{inst.name}「"
+            name = inst.name
+            if name.length < 1 and @config.text.defaultName?
+              name = @config.text.defaultName
+            @Action.setName(name)
+            @history += "#{name}「"
           when "nameClear"
             @Action.setName(null)
             @history += "」\n"
