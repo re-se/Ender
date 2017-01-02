@@ -112,7 +112,6 @@ window.onload = () ->
         if key isnt "_origin" and key isnt "config" and key isnt "_config"
           con = if node.to? then @audioNodes[node.to] else @audioContext.destination
           @audioNodes[key].connect con
-          console.log con
       @config.volume.forIn (key, node) =>
         if key isnt "_origin" and key isnt "config" and key isnt "_config"
           @audioNodes[key].gain.value = node / 100.0
@@ -234,7 +233,7 @@ window.onload = () ->
         @engine.exec()
     playAudio: (name) ->
       if !@state.audios[name]?
-        console.error "@state.audios[#{name}] is undefined"
+        console.warn "@state.audios[#{name}] is undefined"
         return
       style = @genAudioStyle @state.audios[name]
       if @engine.isSkip
@@ -245,10 +244,10 @@ window.onload = () ->
         @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
         (document.getElementById "audio-#{name}").play()
       else
-        console.error "@state.audios[#{name}].node is undefined"
+        console.warn "@state.audios[#{name}].node is undefined"
     stopAudio: (name) ->
       if !@state.audios[name]?
-        console.error "@state.audios[#{name}] is undefined"
+        console.warn "@state.audios[#{name}] is undefined"
         return
       if @engine.isSkip
         style = @genAudioStyle @state.audios[name]
@@ -256,19 +255,21 @@ window.onload = () ->
           return
       if @state.audios[name]?
         audioDom = document.getElementById "audio-#{name}"
-        console.log audioDom
+        console.log "stop audio: #{name}"
         audioDom.pause()
         audioDom.currentTime = 0
     pauseAudio: (name) ->
       if !@state.audios[name]?
-        console.error "@state.audios[#{name}] is undefined"
+        console.warn "@state.audios[#{name}] is undefined"
         return
       if @engine.isSkip
         style = @genAudioStyle @state.audios[name]
         if !style.loop
           return
       if @state.audios[name]?
-        (document.getElementById "audio-#{name}").pause()
+        audioDom = document.getElementById "audio-#{name}"
+        console.log "pause audio: #{name}, current time: #{audioDom.currentTime}"
+        audioDom.pause()
     refreshGain: ->
       @audioNodes.forIn (key, value) =>
         @audioNodes[key].gain.value = @config.volume[key] / 100

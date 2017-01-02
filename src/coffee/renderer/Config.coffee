@@ -9,7 +9,6 @@ class @Config
     @config = {}
     for key, value of config
       if isObject value
-        console.log value
         value = new Config value, @_origin
         if value.hasPublic()
           key = "@#{key}" if key[0] isnt "@"
