@@ -313,6 +313,21 @@ ruby rt {
   }
 }
 
+.nowLoading-spinner-view {
+  position: absolute;
+  color: #eee;
+  font-size: 2vh;
+  bottom: 2vh;
+  right: 2vh;
+  z-index: 6666666666;
+  animation: flashing 1s ease -0.5s infinite alternate;
+}
+
+@keyframes flashing {
+  0% {opacity: 0}
+  100% {opacity: 1}
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
