@@ -226,11 +226,11 @@ window.onload = () ->
       loopAudio
 
     setAudioNode: (name, dom) ->
-      if @state.audios[name]?
+      if name? and dom? and @state.audios[name]?
         node = @audioContext.createMediaElementSource dom
         @state.audios[name].node = node
-        @engine.finishLoad()
-        @engine.exec()
+      @engine.finishLoad()
+      @engine.exec()
     playAudio: (name) ->
       if !@state.audios[name]?
         console.warn "@state.audios[#{name}] is undefined"

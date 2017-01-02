@@ -27,16 +27,15 @@ module.exports = React.createClass
       audioDom = e.currentTarget
       audioDom.currentTime = style.loopStart
       audioDom.play()
+    onError = (e) =>
+      @props.Action.setAudio audio.name, null
     src = path.join(basePath, audio.src)
     if style.loop
       if audio.loopSrc?
-        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndSrcLoop} onError={@onError}/>
+        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndSrcLoop} onError={onError}/>
       else if style.loopStart == 0
-        <audio src={src} id={"audio-" + audio.name} loop preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onError={@onError}/>
+        <audio src={src} id={"audio-" + audio.name} loop preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onError={onError}/>
       else
-        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndTimeLoop} onError={@onError}/>
+        <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onEnded={onEndTimeLoop} onError={onError}/>
     else
-      <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onError={@onError}/>
-
-  onError: (e) ->
-    @props.Action.engineExec()
+      <audio src={src} id={"audio-" + audio.name} preload="auto" ref="audio" onLoadStart={onload} onLoadedData={onloaded} onError={onError}/>
