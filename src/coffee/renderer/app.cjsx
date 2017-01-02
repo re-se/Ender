@@ -4,7 +4,6 @@ window.onload = () ->
   ReactDOM = require 'react-dom'
   {ipcRenderer, remote} = require 'electron'
   app = remote.app
-  ReactCSSTransitionGroup = require 'react-addons-css-transition-group'
   fs = require 'fs'
   path = require 'path'
   {ipcRenderer, remote, webFrame} = require 'electron'
@@ -58,6 +57,8 @@ window.onload = () ->
       @bgmState = {}
     componentDidMount: ->
       console.log "start!"
+      effects.show(cover)
+      effects.hide(cover)
       @prevMode = @state.mode
       # config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
       # @config = new Config config
@@ -117,10 +118,14 @@ window.onload = () ->
           @audioNodes[key].gain.value = node / 100.0
 
     changeMode: (mode, cb) ->
+      cover = document.getElementById("cover")
+      effects.show(cover)
       unless mode is "main"
         @setConfig "auto", false
       @prevMode = @state.mode
-      @setState mode: mode, cb
+      @setState mode: mode, =>
+        effects.hide(cover)
+        cb?()
     Pause: ->
       @setConfig "auto", false
 
@@ -309,11 +314,8 @@ window.onload = () ->
     load: (target) ->
       save = @state.saves[target]
       if save?
-        cover = document.getElementById("cover")
-        effects.show(cover)
         @engine.setCurrentState save.filename, save.pc, =>
-          @changeMode "main", ->
-            effects.hide(cover)
+          @changeMode "main"
 
     clear: (type, cb) ->
       s = switch type
@@ -419,19 +421,7 @@ window.onload = () ->
       />
       items.push <div key="cover" id="cover"/>
       return (
-        # <div id="inner" className="main-view-inner" key="main-view-#{@state.mode}" onClick={@onClick}>
-        #     {items}
-        # </div>
         <div id="inner" className="inner-view" key="inner-view" onClick={@onClick}>
-          <ReactCSSTransitionGroup transitionName="main-view-anim"
-            transitionAppear={true}
-            transitionAppearTimeout={1500}
-            transitionEnter={true}
-            transitionEnterTimeout={500}
-            transitionLeave={false}
-            component="div">
-            <div className="blackWall" key="main-view-#{@state.mode}"/>
-          </ReactCSSTransitionGroup>
           {items}
         </div>
       )
