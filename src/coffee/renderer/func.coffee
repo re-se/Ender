@@ -13,9 +13,11 @@ FuncMap =
     target = @getArg(inst, 0)
     effectName = @getArg(inst, 1)
     @Action.startAnimation target, effectName, engine.exec
-    loop
-      yield "async"
-      break if not engine.isAnimated
+    yield "async" while engine.isAnimated
+  "aeffect": (engine, inst) ->
+    target = @getArg(inst, 0)
+    effectName = @getArg(inst, 1)
+    @Action.startAnimation target, effectName
   "style": (engine, inst) ->
     style = @getArg(inst, 0)
     engine.changeStyle style
