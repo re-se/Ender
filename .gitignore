@@ -4,3 +4,4 @@ dist/
 pack/
 packages/
 !dist/resource
+!dist/vendor
