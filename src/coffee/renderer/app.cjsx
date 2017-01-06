@@ -38,17 +38,19 @@ window.onload = () ->
       tls: null
       saves: []
     componentWillMount: ->
-      config = JSON.parse fs.readFileSync(configPath, 'utf8')
+      try
+        config = JSON.parse fs.readFileSync(configPath, 'utf8')
+      catch e
+        console.warn e
       @config = new Config config
-      @config
       for prop in ["basePath", "savePath"]
         if @config[prop]?
           @config.__defineGetter__ prop, ((key) ->
             ->
-              if path.isAbsolute(@_config[key])
-                @_config[key]
+              if path.isAbsolute(@__config[key])
+                @__config[key]
               else
-                path.join app.getAppPath(), @_config[key]
+                path.join app.getAppPath(), @__config[key]
           )(prop)
       @config.auto = false
       @audioContext = new AudioContext()
@@ -66,7 +68,6 @@ window.onload = () ->
       window.addEventListener("keydown", @onKeyDown)
       window.addEventListener("wheel", @onScroll)
       window.ondragstart = window.ondragover = window.ondrop = (e) ->
-        console.log e
         e.preventDefault()
         false
       ipcRenderer.on 'show-setting', =>
@@ -94,28 +95,25 @@ window.onload = () ->
         @setState saves: saves
 
     loadAudioNodes: ->
-      @config.audioNode.forIn (key, node) =>
-        if key isnt "_origin" and key isnt "config" and key isnt "_config"
-          switch node.type
-            when "gain"
-              @audioNodes[key] = @audioContext.createGain()
-            when "delay"
-              @audioNodes[key] = @audioContext.createDelay(5.0)
-            when "convolver"
-              @audioNodes[key] = @audioContext.createConvolver()
-            when "biquadFilter"
-              @audioNodes[key] = @audioContext.createBiquadFilter()
-            when "dynamicsCompressor"
-              @audioNodes[key] = @audioContext.createDynamicsCompressor()
-            when "waveShaper"
-              @audioNodes[key] = @audioContext.createWaveShaper()
-      @config.audioNode.forIn (key, node) =>
-        if key isnt "_origin" and key isnt "config" and key isnt "_config"
-          con = if node.to? then @audioNodes[node.to] else @audioContext.destination
-          @audioNodes[key].connect con
-      @config.volume.forIn (key, node) =>
-        if key isnt "_origin" and key isnt "config" and key isnt "_config"
-          @audioNodes[key].gain.value = node / 100.0
+      @config.audioNode.forEach (key, node) =>
+        @audioNodes[key] = switch node.type
+          when "gain"
+            @audioContext.createGain()
+          when "delay"
+            @audioContext.createDelay(5.0)
+          when "convolver"
+            @audioContext.createConvolver()
+          when "biquadFilter"
+            @audioContext.createBiquadFilter()
+          when "dynamicsCompressor"
+            @audioContext.createDynamicsCompressor()
+          when "waveShaper"
+            @audioContext.createWaveShaper()
+      @config.audioNode.forEach (key, node) =>
+        con = if node.to? then @audioNodes[node.to] else @audioContext.destination
+        @audioNodes[key].connect con
+      @config.volume.forEach (key, node) =>
+        @audioNodes[key].gain.value = node / 100.0
 
     changeMode: (mode, cb) ->
       cover = document.getElementById("cover")

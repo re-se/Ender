@@ -11,7 +11,7 @@ module.exports = React.createClass
   genConfigView: (config, path="") ->
     items = []
     table = "table" if path is ""
-    for key, value of config.config
+    for key, value of config._config
       path = "#{path}/#{key}"
       tr = []
       tr.push <td key="#{path}-key">{key}</td>
@@ -52,7 +52,7 @@ module.exports = React.createClass
             newv = {}
             for key, value of v
               newv["@#{key}"] = value
-            new Config newv
+            new Config newv, false
           else
             console.log right
     ret

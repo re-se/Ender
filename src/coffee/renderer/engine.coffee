@@ -27,7 +27,9 @@ module.exports = class Ender
     @load(filename, cb)
 
   parse: ->
-    mainPath = path.join(@config.basePath, @config.text.path, @filename)
+    textPath = @config.text.path
+    textPath = "" if !textPath?
+    mainPath = path.join(@config.basePath, textPath, @filename)
     script = fs.readFileSync(mainPath).toString()
     @insts = parser.parse(script).concat @insts[@pc+1..]
 
