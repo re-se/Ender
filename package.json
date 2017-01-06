@@ -20,7 +20,7 @@
     "coffee-script": "^1.10.0",
     "del": "^2.2.2",
     "electron": "1.4.13",
-    "electron-connect": "^0.4.4",
+    "electron-connect": "^0.6.1",
     "electron-packager": "^8.4.0",
     "extend": "^3.0.0",
     "gulp": "^3.9.0",
@@ -33,6 +33,7 @@
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.7",
+    "minimist": "^1.2.0",
     "run-sequence": "^1.2.2"
   }
 }

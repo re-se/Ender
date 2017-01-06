@@ -9,7 +9,7 @@ runSequence = require 'run-sequence'
 packager = require 'electron-packager'
 __srcdir = path.join __dirname, 'src'
 __distdir = path.join __dirname, 'dist'
-
+args = [process.cwd()].concat(process.argv)
 gulp.task 'jade', () ->
   gulp.src path.join(__srcdir, 'index.jade'), locals: config
     .pipe $.plumber(
@@ -48,13 +48,13 @@ gulp.task 'less', () ->
 gulp.task 'compile', ['jade', 'cjsx', 'coffee', 'less', 'top']
 
 gulp.task 'watch', ['compile'], () ->
-  electron.start()
+  electron.start(args)
   gulp.watch path.join(__srcdir, '**/*.jade'), ['jade']
   gulp.watch path.join(__srcdir, 'css/*.less'), ['less']
   gulp.watch path.join(__srcdir, 'coffee/**/*.cjsx'), ['cjsx']
   gulp.watch path.join(__srcdir, 'coffee/**/*.coffee'), ['coffee']
   gulp.watch path.join(__srcdir, '*.coffee'), ['top']
-  gulp.watch [path.join(__distdir, '*.js'), path.join(__distdir, 'js/browser/*.js')], electron.restart
+  gulp.watch [path.join(__distdir, '*.js'), path.join(__distdir, 'js/browser/*.js')], -> electron.restart(args)
   gulp.watch [path.join(__distdir, 'index.html'), path.join(__distdir, '**/*') + '{html,js,css}'], electron.reload
 
 packageOpts =

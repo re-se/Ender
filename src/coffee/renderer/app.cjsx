@@ -1,8 +1,8 @@
+{ipcRenderer, remote} = require 'electron'
 
 window.onload = () ->
   React = require 'react'
   ReactDOM = require 'react-dom'
-  {ipcRenderer, remote} = require 'electron'
   app = remote.app
   fs = require 'fs'
   path = require 'path'
@@ -30,7 +30,7 @@ window.onload = () ->
 
   Contents = React.createClass
     getInitialState: ->
-      mode: "title"
+      mode: "start"
       message: null
       images: {}
       audios: {}
@@ -38,30 +38,41 @@ window.onload = () ->
       tls: null
       saves: []
     componentWillMount: ->
-      try
-        config = JSON.parse fs.readFileSync(configPath, 'utf8')
-      catch e
-        console.warn e
-      @config = new Config config
-      for prop in ["basePath", "savePath"]
-        if @config[prop]?
-          @config.__defineGetter__ prop, ((key) ->
-            ->
-              if path.isAbsolute(@__config[key])
-                @__config[key]
-              else
-                path.join app.getAppPath(), @__config[key]
-          )(prop)
-      @config.auto = false
-      @audioContext = new AudioContext()
-      @audioNodes = {}
-      @loadAudioNodes()
-      @loadSaveFiles()
-      @bgmState = {}
+      ipcRenderer.send 'req-path'
+      ipcRenderer.on 'set-config-path', (e, configpath) =>
+        if configpath?
+          configPath =
+            if path.isAbsolute(configpath)
+              configpath
+            else
+              path.join app.getAppPath(), configpath
+        try
+          config = JSON.parse fs.readFileSync(configPath, 'utf8')
+        catch e
+          console.warn e
+        @config = new Config config
+        for prop in ["basePath", "savePath"]
+          if @config[prop]?
+            @config.__defineGetter__ prop, ((key) ->
+              ->
+                if path.isAbsolute(@__config[key])
+                  @__config[key]
+                else
+                  path.join app.getAppPath(), @__config[key]
+            )(prop)
+        @config.auto = false
+        @audioContext = new AudioContext()
+        @audioNodes = {}
+        @loadAudioNodes()
+        @loadSaveFiles()
+        @bgmState = {}
+        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
+        @engine = new Engine(Action, @config)
+        @changeMode "title"
     componentDidMount: ->
       console.log "start!"
-      effects.show(cover)
-      effects.hide(cover)
+      # effects.show(cover)
+      # effects.hide(cover)
       @prevMode = @state.mode
       # config = JSON.parse fs.readFileSync('dist/resource/config.json', 'utf8')
       # @config = new Config config
@@ -76,8 +87,6 @@ window.onload = () ->
         if window.confirm("タイトルに戻ります。よろしいですか？")
           @clear =>
             @changeMode 'title'
-      Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
-      @engine = new Engine(Action, @config)
       # @setState config: config, @engine.exec
       # @engine.exec()
     componentWillUnmount: ->
@@ -390,45 +399,47 @@ window.onload = () ->
       @engine.autoExec()
     render: () ->
       items = []
-      switch @state.mode
-        when "main"
-          mainItems = []
-          if @state.name?
-            mainItems.push <NameBox key="name" name={@state.name} />
-          if @state.history?
-            mainItems.push <HistoryView key="history" history={@state.history} />
-          if @state.message?.length > 0 && !@config.hideMessageBox
-            mainItems.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
+      if @state.mode isnt "start"
+        switch @state.mode
+          when "main"
+            mainItems = []
+            if @state.name?
+              mainItems.push <NameBox key="name" name={@state.name} />
+            if @state.history?
+              mainItems.push <HistoryView key="history" history={@state.history} />
+            if @state.message?.length > 0 && !@config.hideMessageBox
+              mainItems.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
 
-          mainItems.push <div key="toolbar" className="toolbar">
-            <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>
-            <ToolbarButton key="save-button" icon="floppy-o" inner="セーブ" type="save" onClick={@changeToSaveMode}/>
-            <ToolbarButton key="setting-button" icon="cog" inner="設定" type="setting" onClick={@changeToSettingMode} />
-          </div>
+            mainItems.push <div key="toolbar" className="toolbar">
+              <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>
+              <ToolbarButton key="save-button" icon="floppy-o" inner="セーブ" type="save" onClick={@changeToSaveMode}/>
+              <ToolbarButton key="setting-button" icon="cog" inner="設定" type="setting" onClick={@changeToSettingMode} />
+            </div>
 
-          items.push <div className="main-view" key="main-view">
-            {mainItems}
-          </div>
-        when "setting"
-          items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} prev={@prevMode}/>
-        when "save"
-          items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
-        when "title"
-          items.push <Title key="title-view" basePath={@config.basePath}
-            Action={{@changeMode, engineLoad: => @engine.reload(@config.main)}} />
-      imagePath = [@config.basePath]
-      imagePath.push @config.image.path if @config.image?.path?
-      imagePath = path.join.apply @, imagePath
-      imageStyle = {}
-      imageStyle["display"] = "none" unless @state.mode is "main"
-      items.push <ImageView style={imageStyle} key="images" images={@state.images} basePath={imagePath} />
-      items.push <Audios key="audios" audios={@state.audios} config={@config}
-        Action={
-          "setAudio": @setAudioNode
-          "playAudio": @playAudio
-          "engineExec": @engine?.exec
-        }
-      />
+            items.push <div className="main-view" key="main-view">
+              {mainItems}
+            </div>
+          when "setting"
+            items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} prev={@prevMode}/>
+          when "save"
+            items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
+          when "title"
+            items.push <Title key="title-view" basePath={@config.basePath}
+              Action={{@changeMode, engineLoad: => @engine.reload(@config.main)}} />
+        imagePath = [@config.basePath]
+        imagePath.push @config.image.path if @config.image?.path?
+        imagePath = path.join.apply @, imagePath
+        imageStyle = {}
+        imageStyle["display"] = "none" unless @state.mode is "main"
+        items.push <ImageView style={imageStyle} key="images" images={@state.images} basePath={imagePath} />
+        items.push <Audios key="audios" audios={@state.audios} config={@config}
+          Action={
+            "setAudio": @setAudioNode
+            "playAudio": @playAudio
+            "engineExec": @engine?.exec
+          }
+        />
+
       items.push <div key="cover" id="cover"/>
       return (
         <div id="inner" className="inner-view" key="inner-view" onClick={@onClick}>
