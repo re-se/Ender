@@ -41,11 +41,11 @@ window.onload = () ->
       ipcRenderer.send 'req-path'
       ipcRenderer.on 'set-config-path', (e, configpath) =>
         if configpath?
-          configPath =
-            if path.isAbsolute(configpath)
-              configpath
-            else
-              path.join app.getAppPath(), configpath
+          if path.isAbsolute(configpath)
+            configPath = configpath
+          else
+            configPath = path.join app.getAppPath(), configpath
+        configDirPath = path.dirname configPath
         try
           config = JSON.parse fs.readFileSync(configPath, 'utf8')
         catch e
@@ -58,7 +58,7 @@ window.onload = () ->
                 if path.isAbsolute(@__config[key])
                   @__config[key]
                 else
-                  path.join app.getAppPath(), @__config[key]
+                  path.join configDirPath, @__config[key]
             )(prop)
         @config.auto = false
         @audioContext = new AudioContext()
@@ -95,13 +95,15 @@ window.onload = () ->
 
     loadSaveFiles: ->
       if @config.savePath?
-        filenames = fs.readdirSync @config.savePath
-        saves = []
-        for filename in filenames
-          if path.extname(filename) is ".SAVE"
-            file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
-            saves.push JSON.parse(file)
-        @setState saves: saves
+        try
+          filenames = fs.readdirSync @config.savePath
+          saves = []
+          for filename in filenames
+            if path.extname(filename) is ".SAVE"
+              file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
+              saves.push JSON.parse(file)
+          @setState saves: saves
+        catch e
 
     loadAudioNodes: ->
       @config.audioNode.forEach (key, node) =>
@@ -302,6 +304,10 @@ window.onload = () ->
         @changeMode("save")
 
     save: (target) ->
+      try
+        fs.statSync(@config.savePath)
+      catch error
+         fs.mkdirSync(@config.savePath)
       if @state.saves[target]?
         fs.unlink path.join(@config.savePath, @state.saves[target].self), (err) ->
           console.log err
