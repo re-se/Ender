@@ -45,21 +45,21 @@ window.onload = () ->
             configPath = configpath
           else
             configPath = path.join app.getAppPath(), configpath
-        configDirPath = path.dirname configPath
-        try
-          config = JSON.parse fs.readFileSync(configPath, 'utf8')
-        catch e
-          console.warn e
-        @config = new Config config
+        # configDirPath = path.dirname configPath
+        # try
+        #   config = JSON.parse fs.readFileSync(configPath, 'utf8')
+        # catch e
+        #   console.warn e
+        @config = new Config configPath
         for prop in ["basePath", "savePath"]
           if @config[prop]?
-            @config.__defineGetter__ prop, ((key) ->
+            @config.extendGetter prop, (key, originGetter) ->
               ->
-                if path.isAbsolute(@__config[key])
-                  @__config[key]
+                originValue = originGetter.call(@, key)
+                if path.isAbsolute(originValue)
+                  originValue
                 else
-                  path.join configDirPath, @__config[key]
-            )(prop)
+                  path.join @_configPath, originValue
         @config.auto = false
         @audioContext = new AudioContext()
         @audioNodes = {}

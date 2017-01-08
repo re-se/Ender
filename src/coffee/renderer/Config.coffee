@@ -8,6 +8,13 @@ app = remote.app
 
 class @Config
   constructor: (config, toplevel=true, isPublic=false) ->
+    if typeOf(config) is "String"
+      @_configPath = path.dirname config
+      try
+        config = JSON.parse fs.readFileSync(config, 'utf8')
+      catch error
+        console.warn error
+        config = {}
     config = {} if !config?
     @_origin = config
     @__config = {}
@@ -19,10 +26,9 @@ class @Config
         base = "dist/resource/_base.json"
         toplevel = false
       base = path.join(app.getAppPath(), base) if not path.isAbsolute base
-      baseObj = JSON.parse fs.readFileSync(base, 'utf8')
-      baseConfig = new Config baseObj, toplevel
-      baseConfig._forEach (key, value) =>
-        @addProperty key, value
+      @_baseConfig = new Config base, toplevel
+      @_baseConfig._forEach (key, value) =>
+        @addProperty key
     for key, value of config
       key = @toPublic(key) if isPublic
       @addProperty key, value
@@ -41,7 +47,10 @@ class @Config
     switch key[0]
       when "@"
         k = key[1..]
-        @__defineGetter__ k, ((_key) -> (-> @_config[_key]))(k)
+        @__defineGetter__ k, ((_key) -> (
+          ->
+            if @_config[_key]? then @_config[_key] else @_baseConfig?[_key]
+        ))(k)
         @__defineSetter__ k, ((_key) -> (
           (n) ->
             @_config[_key] = n
@@ -49,13 +58,24 @@ class @Config
         ))(k)
         @_config[k] = value
       else
-        @__defineGetter__ key, ((_key) -> (-> @__config[_key]))(key)
+        @__defineGetter__ key, ((_key) -> (
+          ->
+            if @__config[_key]? then @__config[_key] else @_baseConfig?[_key]
+        ))(key)
         @__defineSetter__ key, ((_key) -> (
           (n) ->
             @__config[_key] = n
             @_origin[_key] = n
         ))(key)
         @__config[key] = value
+
+  extendGetter: (key, f) ->
+    if @_origin[key]?
+      originGetter = @__lookupGetter__(key)
+      @__defineGetter__ key, f(key, originGetter)
+    else
+      @_baseConfig.extendGetter(key, f)
+
 
   forEach: (func, self) ->
     self = @ if !self?
