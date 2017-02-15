@@ -52,9 +52,12 @@ gulp.task 'less', () ->
     ).pipe $.less()
     .pipe gulp.dest(path.join(__distdir, 'css'))
 
-gulp.task 'compile', ['jade', 'cjsx', 'coffee', 'babel', 'less', 'top']
+gulp.task 'build', ->
+  runSequence 'compile', 'babel'
 
-gulp.task 'watch', ['compile'], () ->
+gulp.task 'compile', ['jade', 'cjsx', 'coffee', 'less', 'top']
+
+gulp.task 'watch', ['build'], () ->
   electron.start(args)
   gulp.watch path.join(__srcdir, '**/*.jade'), ['jade']
   gulp.watch path.join(__srcdir, 'css/*.less'), ['less']

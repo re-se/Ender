@@ -1,5 +1,3 @@
-/* @flow */
-
 import React from 'react';
 import ImageCell from './ImageCell';
 
@@ -30,15 +28,3 @@ export default class ImageView extends React.Component<void, Props, void> {
         </div>
     }
 }
-
-
-// module.exports = React.createClass
-//   render: ->
-//     counts = {}
-//     items = []
-//     for key, value of @props.images
-//       items.push value.map (image) =>
-//         if counts[image.src]?
-//           counts[image.src] += 1
-//         else
-//           counts[image.src] = 0
