@@ -1,5 +1,5 @@
 {
-  "basePath": "dist/resource",
+  "basePath": "",
   "savePath": "save",
   "main": "01.end",
   "debug": false,
