@@ -1,3 +1,5 @@
+// @flow
+
 const React = require('react');
 const path = require ('path');
 
@@ -8,7 +10,7 @@ type Props = {
 
 export default class ImageCell extends React.Component<void, Props, void> {
   props: Props;
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
   }
   render() {

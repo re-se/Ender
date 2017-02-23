@@ -1,3 +1,5 @@
+// @flow
+
 import React from 'react';
 import ImageCell from './ImageCell';
 
@@ -18,7 +20,7 @@ export default class ImageView extends React.Component<void, Props, void> {
       for (const key in this.props.images) {
         const value = this.props.images[key];
         const item = value.map((image: Image) => {
-          <ImageCell basePath={this.props.basePath} image={image}
+          return <ImageCell basePath={this.props.basePath} image={image}
             key={`${image.className}-${image.src}`} />
         });
         items.push(item);
@@ -28,3 +30,5 @@ export default class ImageView extends React.Component<void, Props, void> {
         </div>
     }
 }
+
+module.exports = ImageView; // for app

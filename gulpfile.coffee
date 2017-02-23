@@ -52,8 +52,8 @@ gulp.task 'less', () ->
     ).pipe $.less()
     .pipe gulp.dest(path.join(__distdir, 'css'))
 
-gulp.task 'build', ->
-  runSequence 'compile', 'babel'
+gulp.task 'build', (cb) ->
+  runSequence 'compile', 'babel', cb
 
 gulp.task 'compile', ['jade', 'cjsx', 'coffee', 'less', 'top']
 

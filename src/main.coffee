@@ -3,7 +3,6 @@ minimist = require 'minimist'
 console.log process.argv
 args = minimist(process.argv)
 # require('crash-reporter').start()
-console.log args
 mainWindow = null
 
 app.on('window-all-closed', () ->
