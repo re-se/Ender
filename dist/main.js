@@ -2,11 +2,12 @@ var BrowserWindow, Menu, app, args, gen_menu, ipcMain, mainWindow, minimist, ref
 
 ref = require('electron'), app = ref.app, BrowserWindow = ref.BrowserWindow, Menu = ref.Menu, ipcMain = ref.ipcMain;
 
-minimist = require('minimist');
+args = {};
 
-console.log(process.argv);
-
-args = minimist(process.argv);
+if (process.argv.slice(-1).includes("json")) {
+  minimist = require('minimist');
+  args = minimist(process.argv);
+}
 
 console.log(args);
 
