@@ -32,6 +32,7 @@ window.onload = () ->
     getInitialState: ->
       mode: "start"
       message: null
+      styles: {}
       images: {}
       audios: {}
       refs: {}
@@ -66,7 +67,7 @@ window.onload = () ->
         @loadAudioNodes()
         @loadSaveFiles()
         @bgmState = {}
-        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio}
+        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio, @setStyle}
         @engine = new Engine(Action, @config)
         @changeMode "title"
     componentDidMount: ->
@@ -344,6 +345,7 @@ window.onload = () ->
           images: {}
           audios: {}
           history: null
+          styles: {}
       @setState s, cb
 
     setConfig: (key, value, save) ->
@@ -362,6 +364,11 @@ window.onload = () ->
       # config = update(@state.config, diff)
       # @engine?.config = config
       # @setState config: config, => @autoExec()
+
+    setStyle: (target, className) ->
+      diff = {}
+      diff[target] = className
+      @setState styles: update(@state.styles, $merge: diff)
     showHistory: (e) ->
       e?.stopPropagation()
       @setState history: @engine?.history, =>
@@ -414,7 +421,9 @@ window.onload = () ->
             if @state.history?
               mainItems.push <HistoryView key="history" history={@state.history} />
             if @state.message?.length > 0 && !@config.hideMessageBox
-              mainItems.push <MessageBox key="message" styles={@config.text.styles} message={@state.message}/>
+              style = @state.styles["MessageBox"]
+              style = @config.text.styles unless style?
+              mainItems.push <MessageBox key="message" styles={style} message={@state.message}/>
 
             mainItems.push <div key="toolbar" className="toolbar">
               <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>

@@ -29,8 +29,8 @@ module.exports = React.createClass
             console.error m
         texts.push item if item?
 
-      <div className="messageBox">
-        <div className={@props.styles} >
+      <div className="messageBox #{@props.styles}">
+        <div className=".messageBox-inner">
           {texts}
         </div>
       </div>

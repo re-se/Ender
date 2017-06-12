@@ -1,6 +1,6 @@
 {app, BrowserWindow, Menu, ipcMain} = require('electron')
 args = {}
-if process.argv.slice(-1).includes("json")
+if process.argv.includes("--config")
   minimist = require 'minimist'
   args = minimist(process.argv)
 # require('crash-reporter').start()

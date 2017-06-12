@@ -4,7 +4,7 @@ ref = require('electron'), app = ref.app, BrowserWindow = ref.BrowserWindow, Men
 
 args = {};
 
-if (process.argv.slice(-1).includes("json")) {
+if (process.argv.includes("--config")) {
   minimist = require('minimist');
   args = minimist(process.argv);
 }

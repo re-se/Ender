@@ -79,7 +79,10 @@ FuncMap =
   "pauseAudio": (engine, inst) ->
     name = @getArg(inst, 0)
     @Action.pauseAudio(name)
-
+  "setStyle": (engine, inst) ->
+    target = @getArg(inst, 0)
+    className = @getArg(inst, 1)
+    @Action.setStyle(target, className)
 
 class @FuncEngine
   constructor: (@Action) ->
