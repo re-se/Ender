@@ -30,7 +30,7 @@ module.exports = React.createClass
         texts.push item if item?
 
       <div className="messageBox #{@props.styles}">
-        <div className=".messageBox-inner">
+        <div className="messageBox-inner">
           {texts}
         </div>
       </div>
