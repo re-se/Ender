@@ -8,8 +8,8 @@ console.log args
 mainWindow = null
 
 app.on('window-all-closed', () ->
-  if (process.platform != 'darwin')
-    app.quit()
+  # if (process.platform != 'darwin')
+  app.quit()
 )
 
 gen_menu = require('./menu_dev')
