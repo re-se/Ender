@@ -30,10 +30,10 @@ FuncMap =
       yield "async"
       break if not engine.isAnimated
   "skip": (engine) ->
-    if engine.config.debug && engine.config.debugParam.skip
+    if engine.config.debug && engine.config.debugParam?.skip
       @Action.setConfig "skip", true
   "stop": (engine) ->
-    if engine.config.debug && engine.config.debugParam.skip
+    if engine.config.debug && engine.config.debugParam?.skip
       @Action.setConfig "skip", false
     yield 0
   "set": (engine, inst) ->

@@ -85,7 +85,7 @@ window.onload = () ->
         Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio, @setStyle, @save}
         @engine = new Engine(Action, @config)
         @changeMode "title"
-        if @config.debug and @config.debugParam.autoload
+        if @config.debug and @config.debugParam?.autoload
           @load("autosave")
     componentDidMount: ->
       console.log "start!"
@@ -342,7 +342,7 @@ window.onload = () ->
       s.self = "#{s.date.format()}.SAVE"
       if target is "autosave"
         s.self = "autosave.SAVE"
-        s.pc -= @config.debugParam.pcOffset
+        s.pc -= @config.debugParam?.pcOffset
       diff = []
       diff[target] = $set: s
       newSaves = update @state.saves, diff
