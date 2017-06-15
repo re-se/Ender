@@ -14,9 +14,7 @@ console.log(args);
 mainWindow = null;
 
 app.on('window-all-closed', function() {
-  if (process.platform !== 'darwin') {
-    return app.quit();
-  }
+  return app.quit();
 });
 
 gen_menu = require('./menu_dev');

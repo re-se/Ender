@@ -27,6 +27,11 @@ window.onload = () ->
   configPath = path.join app.getAppPath(), 'dist/resource/config.json'
   utils = require './js/renderer/utils'
   utils.load()
+  toAbsolutePath = (p, prefix = app.getAppPath()) ->
+    if path.isAbsolute(p)
+      p
+    else
+      path.join prefix, p
 
   Contents = React.createClass
     getInitialState: ->
@@ -42,25 +47,33 @@ window.onload = () ->
       ipcRenderer.send 'req-path'
       ipcRenderer.on 'set-config-path', (e, configpath) =>
         if configpath?
-          if path.isAbsolute(configpath)
-            configPath = configpath
-          else
-            configPath = path.join app.getAppPath(), configpath
-        # configDirPath = path.dirname configPath
-        # try
-        #   config = JSON.parse fs.readFileSync(configPath, 'utf8')
-        # catch e
-        #   console.warn e
+          configpath = toAbsolutePath configpath
+
+        # Config の生成
         @config = new Config configPath
-        for prop in ["basePath", "savePath"]
-          if @config[prop]?
-            @config.extendGetter prop, (key, originGetter) ->
-              ->
-                originValue = originGetter.call(@, key)
-                if path.isAbsolute(originValue)
-                  originValue
-                else
-                  path.join @_configPath, originValue
+        # Config の特定の要素について返す値を整形
+        # basePath は @_configPath を用いて絶対パス化
+        prop = "basePath"
+        if @config[prop]?
+          @config.extendGetter prop, (key, originGetter) ->
+            ->
+              originValue = originGetter.call(@, key)
+              toAbsolutePath originValue, @_configPath
+        # savePath は アプリ直下のパスを用いて絶対パス化
+        prop = "savePath"
+        if @config[prop]?
+          # アプリケーションが存在するディレクトリのパスを取得
+          appPath = app.getAppPath()
+          to = "../"
+          # TODO: Mac 以外の環境についての調整
+          # Mac 用の調整
+          if path.extname(appPath) is ".asar"
+            to += "../../../"
+          appPath = path.resolve(appPath, to)
+          @config.extendGetter prop, (key, originGetter) ->
+            ->
+              originValue = originGetter.call(@, key)
+              toAbsolutePath originValue, appPath
         @config.auto = false
         @audioContext = new AudioContext()
         @audioNodes = {}
