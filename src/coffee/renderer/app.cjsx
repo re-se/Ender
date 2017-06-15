@@ -64,8 +64,10 @@ window.onload = () ->
         if @config[prop]?
           # アプリケーションが存在するディレクトリのパスを取得
           appPath = app.getAppPath()
-          to = "../"
+          to = ""
           # TODO: Mac 以外の環境についての調整
+          if path.extname(appPath) is ''
+            to += "../"
           # Mac 用の調整
           if path.extname(appPath) is ".asar"
             to += "../../../"
@@ -80,9 +82,11 @@ window.onload = () ->
         @loadAudioNodes()
         @loadSaveFiles()
         @bgmState = {}
-        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio, @setStyle}
+        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio, @setStyle, @save}
         @engine = new Engine(Action, @config)
         @changeMode "title"
+        if @config.debug and @config.debugParam.autoload
+          @load("autosave")
     componentDidMount: ->
       console.log "start!"
       # effects.show(cover)
@@ -101,8 +105,6 @@ window.onload = () ->
         if window.confirm("タイトルに戻ります。よろしいですか？")
           @clear =>
             @changeMode 'title'
-      # @setState config: config, @engine.exec
-      # @engine.exec()
     componentWillUnmount: ->
       window.removeEventListener("keydown", @onKeyDown)
       window.removeEventListener("scroll", @onScroll)
@@ -115,7 +117,11 @@ window.onload = () ->
           for filename in filenames
             if path.extname(filename) is ".SAVE"
               file = fs.readFileSync path.join(@config.savePath, filename), 'utf-8'
-              saves.push JSON.parse(file)
+              file = JSON.parse(file)
+              if path.parse(filename).name is "autosave"
+                saves["autosave"] = file
+              else
+                saves.push file
           @setState saves: saves
         catch e
 
@@ -334,12 +340,15 @@ window.onload = () ->
       s.thumbnail = @screenshot?.toDataURL()
       [s.filename, s.pc] = @engine.getCurrentState()
       s.self = "#{s.date.format()}.SAVE"
-
+      if target is "autosave"
+        s.self = "autosave.SAVE"
+        s.pc -= @config.debugParam.pcOffset
       diff = []
       diff[target] = $set: s
       newSaves = update @state.saves, diff
       @setState saves: newSaves
       fs.writeFile path.join(@config.savePath, s.self), JSON.stringify(s)
+
     load: (target) ->
       save = @state.saves[target]
       if save?

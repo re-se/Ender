@@ -199,6 +199,11 @@ module.exports = class Ender
 
   exec: =>
     try
+      if(!@isSkip and @config.debug and @config.debugParam.autosave)
+        offset = 1000
+        if !@date or @date + offset < Date.now()
+          @date = Date.now()
+          @Action.save("autosave")
       ret = @g.next()
       @isAsync = ret.value is "async"
     catch error
