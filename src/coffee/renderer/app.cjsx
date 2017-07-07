@@ -36,6 +36,7 @@ window.onload = () ->
   Contents = React.createClass
     getInitialState: ->
       mode: "start"
+      name: null
       message: null
       styles: {}
       images: {}
@@ -363,6 +364,7 @@ window.onload = () ->
           message: null
         else
           cb = () -> type?()
+          name: null
           message: null
           images: {}
           audios: {}
