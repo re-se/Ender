@@ -11,30 +11,31 @@ module.exports = React.createClass
   genConfigView: (config, path="") ->
     items = []
     table = "table" if path is ""
-    for key, value of config._config
+    for key of config._config
       path = "#{path}/#{key}"
       tr = []
       tr.push <td key="#{path}-key">{key}</td>
-      v = switch typeOf value
+      v = switch typeOf config[key]
         when "Boolean"
           <input type="checkbox" />
         when "Number"
-          step = value // 10
+          step = config[key] // 10
           if key is "Master" or key is "BGM" or key is "SE"
-            <input type="range" step={step} defaultValue={value} />
+            <input type="range" step={step} defaultValue={config[key]} />
           else
-            <input type="number" defaultValue={value} step={step} />
+            <input type="number" defaultValue={config[key]} step={step} />
         when "Object"
-          switch typeOf value._origin
+          switch typeOf config[key]._origin
             when "Array"
-              <input type="range" max={value[2]} min={value[1]} step={value[3]} defaultValue={value[0]} />
+              <input type="range" max={config[key][2]} min={config[key][1]} step={config[key][3]} defaultValue={config[key][0]} />
             else
-              @genConfigView(value, path)
+              @genConfigView(config[key], path)
         else
-          value
+          config[key]
       tr.push <td key="#{path}-value">{v}</td>
       items.push <tr key={path}>{tr}</tr>
     <table ref={table}><tbody>{items}</tbody></table>
+
   genConfigJSON: (table = @refs.table) ->
     ret = {}
     for tr in table.querySelector("tbody").childNodes
