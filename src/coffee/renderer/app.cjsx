@@ -52,7 +52,7 @@ window.onload = () ->
 
         # Config の生成
         @config = new Config configPath
-        # Config の特定の要素について返す値を整形
+        # Config の特定の要素についてGetterで返す値を整形
         # basePath は @_configPath を用いて絶対パス化
         prop = "basePath"
         if @config[prop]?
@@ -66,9 +66,9 @@ window.onload = () ->
           # アプリケーションが存在するディレクトリのパスを取得
           appPath = app.getAppPath()
           to = ""
-          # TODO: Mac 以外の環境についての調整
+          # Mac 以外の環境についての調整
           if path.extname(appPath) is ''
-            to += "../"
+            to += "./"
           # Mac 用の調整
           if path.extname(appPath) is ".asar"
             to += "../../../"
@@ -126,6 +126,7 @@ window.onload = () ->
           @setState saves: saves
         catch e
 
+    # AudioNodeの読み込みとルーティングを行う
     loadAudioNodes: ->
       @config.audioNode.forEach (key, node) =>
         @audioNodes[key] = switch node.type
@@ -141,9 +142,11 @@ window.onload = () ->
             @audioContext.createDynamicsCompressor()
           when "waveShaper"
             @audioContext.createWaveShaper()
+      # ルーティング。"to"のAUdioNodeに出力を接続する。"to"の指定がなければ実際に音が出る"destination"に接続
       @config.audioNode.forEach (key, node) =>
         con = if node.to? then @audioNodes[node.to] else @audioContext.destination
         @audioNodes[key].connect con
+      # 音量の設定
       @config.volume.forEach (key, node) =>
         @audioNodes[key].gain.value = node / 100.0
 
