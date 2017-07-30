@@ -1,16 +1,23 @@
 {
-  "basePath": "./",
+  "basePath": "dist/resource",
   "savePath": "save",
   "main": "01.end",
   "debug": false,
   "@auto": true,
-  "@autoSpeed": 1000,
-  "@textSpeed": 20,
+  "@autoSpeed": {
+    "$value": 1000,
+    "displayName": "オートプレイスピード"
+  },
+  "@textSpeed": {
+    "$value": 20,
+    "displayName": "テキストスピード"
+  },
   "text": {
+    "path": "scenario",
     "styles": "message-1"
   },
   "image": {
-
+    "path": "image"
   },
   "audio": {
     "bgm": {
@@ -43,8 +50,35 @@
     }
   },
   "@volume": {
-    "Master": 100,
-    "BGM": 50,
-    "SE": 50
+    "Master": {
+      "$value": 100,
+      "displayName": "マスター",
+      "type": "range",
+      "attrs": {
+        "max": 100,
+        "min": 0,
+        "step": 10
+      }
+    },
+    "BGM": {
+      "$value": 50,
+      "displayName": "BGM",
+      "type": "range",
+      "attrs": {
+        "max": 100,
+        "min": 0,
+        "step": 10
+      }
+    },
+    "SE": {
+      "$value": 20,
+      "displayName": "効果音",
+      "type": "range",
+      "attrs": {
+        "max": 100,
+        "min": 0,
+        "step": 10
+      }
+    }
   }
 }
