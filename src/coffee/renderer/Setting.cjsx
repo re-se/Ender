@@ -13,10 +13,11 @@ module.exports = React.createClass
     table = "table" if path is ""
     config.forEachPublicOnly (key, value) =>
       currentPath = "#{path}/#{key}"
+      configInput = config.getConfigInput(key)
       tr = []
-      tr.push <td key="#{currentPath}-key">{key}</td>
-      v = if config.getConfigInput(key)?
-        config.getConfigInput(key).genInputDom(currentPath)
+      tr.push <td key="#{currentPath}-key">{if configInput? then configInput.displayName else key}</td>
+      v = if configInput?
+        configInput.genInputDom(currentPath)
       else if value instanceof Config
         @genConfigView(value, currentPath)
       tr.push <td key="#{currentPath}-value">{v}</td>
