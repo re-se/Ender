@@ -380,9 +380,13 @@ window.onload = () ->
         if value?
           @config[key] = value
         else
-          json = key
-          for key, value of json
-            @config[key] = value
+          _setConfig = (json, config) =>
+            for key, value of json
+              if typeOf(value) != "Object"
+                config[key] = value
+              else
+                _setConfig(value, config[key])
+          _setConfig(key, @config)
         @engine?.config = @config
         if save
           fs.writeFile configPath, @config.toString("  ")
