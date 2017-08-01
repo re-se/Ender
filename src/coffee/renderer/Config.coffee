@@ -209,5 +209,14 @@ class @Config
   hasPublic: ->
     Object.getOwnPropertyNames(@_config).length > 0
 
+  # ConfigInput のインスタンスを取得
   getConfigInput: (key) ->
     return if @._config[key]? and @._config[key] instanceof ConfigInput then @._config[key] else @._baseConfig?.getConfigInput(key)
+
+  # ConfigInput の attrs を取得
+  getAttributes: (key) ->
+    return @getConfigInput(key).attrs
+
+  # ConfigInput の displayName を取得
+  getDisplayName: (key) ->
+    return @getConfigInput(key).displayName
