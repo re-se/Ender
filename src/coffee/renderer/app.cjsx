@@ -6,6 +6,7 @@ window.onload = () ->
   app = remote.app
   fs = require 'fs'
   path = require 'path'
+  os = require 'os'
   {ipcRenderer, remote, webFrame} = require 'electron'
   remote.getCurrentWindow().removeAllListeners()
   webFrame.setZoomLevelLimits(1, 1)
@@ -24,7 +25,6 @@ window.onload = () ->
   Title = require './js/renderer/Title'
   effects = require './js/renderer/effects'
   {Config} = require './js/renderer/Config'
-  configPath = path.join app.getAppPath(), 'dist/resource/config.json'
   utils = require './js/renderer/utils'
   utils.load()
   toAbsolutePath = (p, prefix = app.getAppPath()) ->
@@ -32,6 +32,34 @@ window.onload = () ->
       p
     else
       path.join prefix, p
+
+  # 各環境におけるアプリケーション(exe, app)のディレクトリを取得
+  getFixedAppPath = () ->
+    # アプリケーションが存在するディレクトリのパスを取得
+    appPath = app.getAppPath()
+    to = ""
+    #------------------------ パッケージ化した時の調整 ------------------------
+    # 環境ごとの調整
+    osName = os.type().toString()
+    # Windows
+    if osName.match('Windows')?
+      to += "../../"
+    # Mac
+    else if osName.match('Darwin')?
+      to += "../../../"
+
+    #------------------------ 開発環境時の調整 ------------------------
+    # Mac 以外の環境についての調整
+    # if path.extname(appPath) is ''
+    #   to += "./"
+    # # Mac 用の調整
+    # if path.extname(appPath) is ".asar"
+    #   to += "../../../"
+
+    appPath = path.resolve(appPath, to)
+    return appPath
+
+  configPath = path.join getFixedAppPath(), 'config.json'
 
   Contents = React.createClass
     getInitialState: ->
@@ -64,15 +92,7 @@ window.onload = () ->
         prop = "savePath"
         if @config[prop]?
           # アプリケーションが存在するディレクトリのパスを取得
-          appPath = app.getAppPath()
-          to = ""
-          # Mac 以外の環境についての調整
-          if path.extname(appPath) is ''
-            to += "./"
-          # Mac 用の調整
-          if path.extname(appPath) is ".asar"
-            to += "../../../"
-          appPath = path.resolve(appPath, to)
+          appPath = getFixedAppPath()
           @config.extendGetter prop, (key, originGetter) ->
             ->
               originValue = originGetter.call(@, key)
