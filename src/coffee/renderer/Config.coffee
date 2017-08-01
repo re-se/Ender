@@ -30,7 +30,8 @@ class @Config
       base = path.join(app.getAppPath(), base) if not path.isAbsolute base
       @_baseConfig = new Config base, toplevel
       @_baseConfig._forEach (key, value) =>
-        @addProperty(key, (if key[0] is "@" then value else undefined), true)
+        if !(config[key]?)
+          @addProperty(key, (if key[0] is "@" then value else undefined), true)
     for key, value of config
       key = @toPublic(key) if isPublic
       @addProperty key, value
@@ -92,7 +93,7 @@ class @Config
               else if @_origin[_key]
                 @_origin[_key] = n
               else
-                @_baseConfig?[_key] = n
+                @_origin[_key] = n
           ))(k)
           @_config[k] = value
           if isExpected
@@ -113,7 +114,8 @@ class @Config
               else if @_origin[_key]
                 @_origin[_key]["$value"] = n
               else
-                @_baseConfig?[_key] = n
+                @_origin[_key] = @_baseConfig?getConfigInput(key).dup()
+                @_origin[_key]["$value"] = n
           ))(k)
           @_config[k] = value
           if isExpected
