@@ -7,7 +7,6 @@ class @SaveView extends React.Component
     super(props)
     @state =
       selected: 0
-      nowLoading: false
   onClick: (id) ->
     () =>
       @setState selected: id
@@ -22,13 +21,12 @@ class @SaveView extends React.Component
       saves[key] = <Save key="save-#{key}" id={key} save={s}
         selected={key is @state.selected} onClick={@onClick(key)}/>
     onClickLoadButton = =>
-      @setState nowLoading: true
       @props.Action.load(@state.selected)
     utils = []
     utils.push <Button key="save-util-save" inner="セーブ" onClick={=> @props.Action.save(@state.selected)}/>
     utils.push <Button key="save-util-load" inner="ロード" onClick={onClickLoadButton}/>
     utils.push <Button key="save-util-back" inner="戻る" onClick={=> @props.Action.changeMode(@props.prev)}/>
-    utils.push <NowLoading key="save-util-nowLoading-spinner-view" isVisible={@state.nowLoading}/>
+    utils.push <NowLoading key="save-util-nowLoading-spinner-view" isVisible={@props.nowLoading}/>
 
     <div className="saveView">
       <div className="saveView-util">

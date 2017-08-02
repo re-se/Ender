@@ -49,7 +49,7 @@ window.onload = () ->
       to += "../../../"
 
     #------------------------ 開発環境時の調整 ------------------------
-    # Mac 以外の環境についての調整
+    # #Mac 以外の環境についての調整
     # if path.extname(appPath) is ''
     #   to += "./"
     # # Mac 用の調整
@@ -72,6 +72,7 @@ window.onload = () ->
       refs: {}
       tls: null
       saves: []
+      nowLoading: false
     componentWillMount: ->
       ipcRenderer.send 'req-path'
       ipcRenderer.on 'set-config-path', (e, configpath) =>
@@ -376,9 +377,11 @@ window.onload = () ->
     load: (target) ->
       save = @state.saves[target]
       if save?
+        @setState nowLoading: true
         cover = document.getElementById("cover")
         effects.show(cover)
         @engine.setCurrentState save.filename, save.pc, =>
+          @setState nowLoading: false
           @changeMode "main"
 
     clear: (type, cb) ->
@@ -488,7 +491,7 @@ window.onload = () ->
           when "setting"
             items.push <Setting key="setting" config={@config} Action={{@setConfig, @changeMode}} prev={@prevMode}/>
           when "save"
-            items.push <SaveView key="save-view" saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
+            items.push <SaveView key="save-view" nowLoading={@state.nowLoading} saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
           when "title"
             items.push <Title key="title-view" basePath={@config.basePath}
               Action={{@changeMode, engineLoad: => @engine.reload(@config.main)}} />
