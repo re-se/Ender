@@ -72,10 +72,12 @@ FuncMap =
         break if not engine.isLoaded
   "playAudio": (engine, inst) ->
     name = @getArg(inst, 0)
-    @Action.playAudio(name)
+    effect = @getArg(inst, 1)
+    @Action.playAudio(name, effect)
   "stopAudio": (engine, inst) ->
     name = @getArg(inst, 0)
-    @Action.stopAudio(name)
+    effect = @getArg(inst, 1)
+    @Action.stopAudio(name, effect)
   "pauseAudio": (engine, inst) ->
     name = @getArg(inst, 0)
     @Action.pauseAudio(name)

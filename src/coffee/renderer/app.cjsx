@@ -24,6 +24,7 @@ window.onload = () ->
   Audios = require './js/renderer/Audios'
   Title = require './js/renderer/Title'
   effects = require './js/renderer/effects'
+  audioEffects = require './js/renderer/audioEffects'
   {Config} = require './js/renderer/Config'
   utils = require './js/renderer/utils'
   utils.load()
@@ -293,7 +294,7 @@ window.onload = () ->
         @state.audios[name].node = node
       @engine.finishLoad()
       @engine.exec()
-    playAudio: (name) ->
+    playAudio: (name, effect) ->
       if !@state.audios[name]?
         console.warn "@state.audios[#{name}] is undefined"
         return
@@ -305,21 +306,31 @@ window.onload = () ->
         gain = @audioNodes[style.amp]
         @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
         (document.getElementById "audio-#{name}").play()
+        # 再生開始時のエフェクトを実行
+        if effect?
+          audioEffects[effect](@audioContext, gain)
       else
         console.warn "@state.audios[#{name}].node is undefined"
-    stopAudio: (name) ->
+    stopAudio: (name, effect) ->
       if !@state.audios[name]?
         console.warn "@state.audios[#{name}] is undefined"
         return
+      style = @genAudioStyle @state.audios[name]
       if @engine.isSkip
-        style = @genAudioStyle @state.audios[name]
         if !style.loop
           return
       if @state.audios[name]?
+        gainNode = @audioNodes[style.amp]
         audioDom = document.getElementById "audio-#{name}"
-        console.log "stop audio: #{name}"
-        audioDom.pause()
-        audioDom.currentTime = 0
+        if effect?
+          audioEffects[effect](@audioContext, gainNode, () ->
+            audioDom.pause()
+            audioDom.currentTime = 0
+            console.log "stop audio: #{name}"
+          )
+        else
+          console.log "stop audio: #{name}"
+
     pauseAudio: (name) ->
       if !@state.audios[name]?
         console.warn "@state.audios[#{name}] is undefined"
@@ -442,7 +453,7 @@ window.onload = () ->
         when "main"
           if @isHistory
             @hideHistory()
-          if @state.hideMessageBox
+          else if @state.hideMessageBox
             @showMessageBox()
           else
             diff = {}
@@ -460,7 +471,7 @@ window.onload = () ->
           if @state.hideMessageBox
             @showMessageBox()
           else
-            @hideMessageBox() if e.keyCode is 32
+            @hideMessageBox(e) if e.keyCode is 32
         else
           @changeMode "main" if e.keyCode is 27
     onScroll: (e) ->
@@ -477,11 +488,13 @@ window.onload = () ->
       ,100
 
     # メッセージウィンドウの非表示
-    hideMessageBox: () ->
+    hideMessageBox: (e) ->
+      e?.stopPropagation()
       @setState "hideMessageBox": true
 
     # メッセージウィンドウの表示
-    showMessageBox: () ->
+    showMessageBox: (e) ->
+      e?.stopPropagation()
       @setState "hideMessageBox": false
 
     autoExec: ->
@@ -501,11 +514,19 @@ window.onload = () ->
               style = @config.text.styles unless style?
               mainItems.push <MessageBox key="message" styles={style} message={@state.message}/>
 
-            mainItems.push <div key="toolbar" className="toolbar">
-              <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>
-              <ToolbarButton key="save-button" icon="floppy-o" inner="セーブ" type="save" onClick={@changeToSaveMode}/>
-              <ToolbarButton key="setting-button" icon="cog" inner="設定" type="setting" onClick={@changeToSettingMode} />
+            # サイドボタンを設定
+            toolbarButtons = []
+            toolbarButtons.push <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>
+            toolbarButtons.push <ToolbarButton key="save-button" icon="floppy-o" inner="セーブ" type="save" onClick={@changeToSaveMode}/>
+            toolbarButtons.push <ToolbarButton key="setting-button" icon="cog" inner="設定" type="setting" onClick={@changeToSettingMode} />
+            # メッセージウィンドウの表示/非表示でボタン切り替え
+            toolbarButtons.push if @state.hideMessageBox
+              <ToolbarButton key="messagebox-button" icon="window-restore" inner="戻す" type="messagebox" onClick={@showMessageBox} />
+            else
               <ToolbarButton key="messagebox-button" icon="window-close-o" inner="隠す" type="messagebox" onClick={@hideMessageBox} />
+
+            mainItems.push <div key="toolbar" className="toolbar">
+              {toolbarButtons}
             </div>
 
             items.push <div className="main-view" key="main-view">
