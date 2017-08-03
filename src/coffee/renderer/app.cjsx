@@ -39,22 +39,28 @@ window.onload = () ->
     appPath = app.getAppPath()
     to = ""
     #------------------------ パッケージ化した時の調整 ------------------------
-    # 環境ごとの調整
-    osName = os.type().toString()
-    # Windows
-    if osName.match('Windows')?
-      to += "../../"
-    # Mac
-    else if osName.match('Darwin')?
-      to += "../../../"
+    # # 環境ごとの調整
+    # osName = os.type().toString()
+    # # Windows
+    # if osName.match('Windows')?
+    #   to += "../../"
+    # # Mac
+    # else if osName.match('Darwin')?
+    #   to += "../../../"
 
     #------------------------ 開発環境時の調整 ------------------------
-    # #Mac 以外の環境についての調整
-    # if path.extname(appPath) is ''
-    #   to += "./"
-    # # Mac 用の調整
-    # if path.extname(appPath) is ".asar"
-    #   to += "../../../"
+    #Mac 以外の環境についての調整
+    if path.extname(appPath) is ''
+      to += "../"
+    # Mac 用の調整
+    if path.extname(appPath) is ".asar"
+      osName = os.type().toString()
+      # Windows
+      if osName.match('Windows')?
+        to += "../../"
+      # Mac
+      else if osName.match('Darwin')?
+        to += "../../../"
 
     appPath = path.resolve(appPath, to)
     return appPath
@@ -73,6 +79,7 @@ window.onload = () ->
       tls: null
       saves: []
       nowLoading: false
+      hideMessageBox: false
     componentWillMount: ->
       ipcRenderer.send 'req-path'
       ipcRenderer.on 'set-config-path', (e, configpath) =>
@@ -435,6 +442,8 @@ window.onload = () ->
         when "main"
           if @isHistory
             @hideHistory()
+          if @state.hideMessageBox
+            @showMessageBox()
           else
             diff = {}
             diff.auto = $set: false
@@ -448,6 +457,10 @@ window.onload = () ->
         when "main"
           @onClick() if e.keyCode is 13
           @hideHistory() if e.keyCode is 27
+          if @state.hideMessageBox
+            @showMessageBox()
+          else
+            @hideMessageBox() if e.keyCode is 32
         else
           @changeMode "main" if e.keyCode is 27
     onScroll: (e) ->
@@ -462,6 +475,15 @@ window.onload = () ->
       @wheeling = setTimeout =>
         @wheeling = undefined
       ,100
+
+    # メッセージウィンドウの非表示
+    hideMessageBox: () ->
+      @setState "hideMessageBox": true
+
+    # メッセージウィンドウの表示
+    showMessageBox: () ->
+      @setState "hideMessageBox": false
+
     autoExec: ->
       @engine.autoExec()
     render: () ->
@@ -470,11 +492,11 @@ window.onload = () ->
         switch @state.mode
           when "main"
             mainItems = []
-            if @state.name?
+            if @state.name? && !@state.hideMessageBox
               mainItems.push <NameBox key="name" name={@state.name} />
             if @state.history?
               mainItems.push <HistoryView key="history" history={@state.history} />
-            if @state.message?.length > 0 && !@config.hideMessageBox
+            if @state.message?.length > 0 && !@state.hideMessageBox
               style = @state.styles["MessageBox"]
               style = @config.text.styles unless style?
               mainItems.push <MessageBox key="message" styles={style} message={@state.message}/>
@@ -483,6 +505,7 @@ window.onload = () ->
               <ToolbarButton key="log-button" icon="file-text-o" inner="ログ" type="log" onClick={@showHistory}/>
               <ToolbarButton key="save-button" icon="floppy-o" inner="セーブ" type="save" onClick={@changeToSaveMode}/>
               <ToolbarButton key="setting-button" icon="cog" inner="設定" type="setting" onClick={@changeToSettingMode} />
+              <ToolbarButton key="messagebox-button" icon="window-close-o" inner="隠す" type="messagebox" onClick={@hideMessageBox} />
             </div>
 
             items.push <div className="main-view" key="main-view">
