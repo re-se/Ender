@@ -42,11 +42,6 @@ module.exports = (mainWindow) ->
           accelerator: 'CmdOrCtrl+M',
           role: 'minimize'
         },
-        {
-          label: '閉じる',
-          accelerator: 'CmdOrCtrl+W',
-          role: 'close'
-        },
       ]
     },
   ])
