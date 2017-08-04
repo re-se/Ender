@@ -139,7 +139,7 @@ Text = value:(Element)+ nl:(NL / &"#")? at:("@")? {
 Element
   = Interpolation
   / Ruby
-  / "\\" "\n" { return genObj("br"); }
+  / "\\" NL { return genObj("br"); }
   / Enphasize
   / SimpleText
 

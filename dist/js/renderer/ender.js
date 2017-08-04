@@ -1438,13 +1438,7 @@ function peg$parse(input, options) {
           if (peg$silentFails === 0) { peg$fail(peg$c34); }
         }
         if (s1 !== peg$FAILED) {
-          if (input.charCodeAt(peg$currPos) === 10) {
-            s2 = peg$c5;
-            peg$currPos++;
-          } else {
-            s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c6); }
-          }
+          s2 = peg$parseNL();
           if (s2 !== peg$FAILED) {
             peg$savedPos = s0;
             s1 = peg$c35();
