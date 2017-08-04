@@ -85,7 +85,7 @@ window.onload = () ->
       ipcRenderer.send 'req-path'
       ipcRenderer.on 'set-config-path', (e, configpath) =>
         if configpath?
-          configpath = toAbsolutePath configpath
+          configPath = toAbsolutePath configpath
 
         # Config の生成
         @config = new Config configPath
