@@ -465,6 +465,17 @@ window.onload = () ->
               @finishAnimation()
             else
               @engine?.exec()
+
+    # 右クリックイベント
+    onContextMenu: (e) ->
+      switch @state.mode
+        when "main"
+          # メッセージボックスの表示/非表示切り替え
+          if @state.hideMessageBox
+            @showMessageBox()
+          else
+            @hideMessageBox()
+
     onKeyDown: (e) ->
       switch @state.mode
         when "main"
@@ -557,7 +568,7 @@ window.onload = () ->
 
       items.push <div key="cover" id="cover"/>
       return (
-        <div id="inner" className="inner-view" key="inner-view" onClick={@onClick}>
+        <div id="inner" className="inner-view" key="inner-view" onClick={@onClick} onContextMenu={@onContextMenu}>
           {items}
         </div>
       )
