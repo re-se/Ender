@@ -329,6 +329,8 @@ window.onload = () ->
             console.log "stop audio: #{name}"
           )
         else
+          audioDom.pause()
+          audioDom.currentTime = 0
           console.log "stop audio: #{name}"
 
     pauseAudio: (name) ->
