@@ -16,38 +16,56 @@
     justify-content: space-around;
   }
 
-  .button.save-element {
-    width: 31%;
-    height: 20vh;
-    margin: 1vh;
-  }
-
-  .save-thumbnail {
-    width: 18vh;
-    height: 12.5vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    background-size: cover;
-  }
-  .save-info {
-    width: 50%;
-    height: 100%;
-    .save-date {
-      font-size: 2vh;
-    }
-    .save-text {
-      height: 70%;
-      font-size: 2.4vh;
-      overflow: hidden;
-    }
-  }
-
   .button {
     position: relative;
     background-color: inherit;
+    border-top-right-radius: 1vh;
+    border-top-left-radius: 1vh;
     border-bottom: 0.1vh solid white;
     color: white;
     cursor: pointer;
     transition: all, 250ms, cubic-bezier(0.465, 0.183, 0.153, 0.946);
+
+    &.save-element {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 31%;
+      height: 20vh;
+      margin: 1vh;
+      box-sizing: border-box;
+      padding-left: 1vh;
+      padding-right: 1vh;
+
+      &.selected {
+        border-bottom: 0.1vh solid rgba(117, 214, 255, 1);
+        box-shadow: 0 0 0.5vh 0.5vh rgba(172, 214, 251, 0.5);
+      }
+
+      &.selected::after {
+        height: 100%;
+      }
+
+      .save-thumbnail {
+        width: 18vh;
+        height: 12.5vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        background-size: cover;
+      }
+      .save-info {
+        width: 50%;
+        height: 100%;
+        .save-date {
+          font-size: 2vh;
+        }
+        .save-text {
+          height: 70%;
+          font-size: 2.4vh;
+          overflow: hidden;
+        }
+      }
+    }
   }
 
   .button:hover {
