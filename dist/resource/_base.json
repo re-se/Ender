@@ -3,14 +3,29 @@
   "savePath": "save",
   "main": "01.end",
   "debug": false,
-  "@auto": true,
+  "@auto": {
+    "$value": true,
+    "displayName": "オートプレイ"
+  },
   "@autoSpeed": {
     "$value": 1000,
-    "displayName": "オートプレイスピード"
+    "displayName": "オートプレイスピード",
+    "type": "range",
+    "attrs": {
+      "max": 100,
+      "min": 2000,
+      "step": 100
+    }
   },
   "@textSpeed": {
     "$value": 20,
-    "displayName": "テキストスピード"
+    "displayName": "テキストスピード",
+    "type": "range",
+    "attrs": {
+      "max": 5,
+      "min": 150,
+      "step": 5
+    }
   },
   "text": {
     "path": "scenario",

@@ -11,18 +11,26 @@ module.exports = React.createClass
   genConfigView: (config, path="") ->
     items = []
     table = "table" if path is ""
+    items = @_genConfigView(config, path)
+    <table ref={table}><tbody>{items}</tbody></table>
+
+  _genConfigView: (config, path="") ->
+    items = []
+    table = "table" if path is ""
     config.forEachPublicOnly (key, value) =>
       currentPath = "#{path}/#{key}"
       configInput = config.getConfigInput(key)
       tr = []
-      tr.push <td key="#{currentPath}-key">{if configInput? then configInput.displayName else key}</td>
-      v = if configInput?
-        configInput.genInputDom(currentPath)
+      if configInput?
+        tr.push <td key="#{currentPath}-key">{if configInput? then configInput.displayName else key}</td>
+        tr.push <td key="#{currentPath}-value">{configInput.genInputDom(currentPath)}</td>
+        items.push <tr key={currentPath}>{tr}</tr>
       else if value instanceof Config
-        @genConfigView(value, currentPath)
-      tr.push <td key="#{currentPath}-value">{v}</td>
-      items.push <tr key={currentPath}>{tr}</tr>
-    <table ref={table}><tbody>{items}</tbody></table>
+        tr.push <td colSpan=2 key="#{currentPath}-key">{if configInput? then configInput.displayName else key}</td>
+        items.push <tr key={currentPath}>{tr}</tr>
+        items= items.concat @_genConfigView(value, currentPath)
+    return items
+
 
   genConfigJSON: (config, path, table = @refs.table) ->
     ret = {}
@@ -72,7 +80,7 @@ module.exports = React.createClass
     <div className="settingView">
       {@genConfigView @props.config}
       <div className="setting-buttons">
-        <Button classes="setting-cancel" onClick={=> @props.Action.changeMode @props.prev} inner="cancel" />
-        <Button classes="setting-save" onClick={@onClick}inner="save" />
+        <Button classes="setting-cancel" onClick={=> @props.Action.changeMode @props.prev} inner="キャンセル" />
+        <Button classes="setting-save" onClick={@onClick}inner="セーブ" />
       </div>
     </div>

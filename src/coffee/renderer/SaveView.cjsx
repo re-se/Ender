@@ -13,7 +13,7 @@ class @SaveView extends React.Component
   render: ->
     id = 0
     saves = []
-    while saves.length < 8
+    while saves.length < 9
       saves.push <Save key="save-#{id}" id={id}
         selected={id is @state.selected} onClick={@onClick(id)}/>
       id++
@@ -29,10 +29,12 @@ class @SaveView extends React.Component
     utils.push <NowLoading key="save-util-nowLoading-spinner-view" isVisible={@props.nowLoading}/>
 
     <div className="saveView">
+      <div className="saveView-elements">
+        {saves}
+      </div>
       <div className="saveView-util">
         {utils}
       </div>
-      {saves}
     </div>
 
 class Save extends React.Component

@@ -87,6 +87,7 @@ window.onload = () ->
         if configpath?
           configPath = toAbsolutePath configpath
 
+        console.log configPath
         # Config の生成
         @config = new Config configPath
         # Config の特定の要素についてGetterで返す値を整形

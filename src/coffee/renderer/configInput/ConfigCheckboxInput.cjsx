@@ -7,7 +7,10 @@ class @ConfigCheckboxInput extends ConfigInput
 
   # 設定画面の表示に使用するDOMを生成する
   genInputDom: (path, cl) ->
-    <input className={cl} type="checkbox" defaultChecked={@value} name={@key} key={path + "-input"} id={path + "-input"}/>
+    <label key={path + "-label"}>
+      <input className={"input-checkbox #{cl}"} type="checkbox" defaultChecked={@value} name={@key} key={path + "-input"} id={path + "-input"}/>
+      <span key={path + "-parts"}></span>
+    </label>
 
   getType: () ->
     return "checkbox"

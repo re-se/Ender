@@ -12,7 +12,7 @@ app.on('window-all-closed', () ->
   app.quit()
 )
 
-gen_menu = require('./menu_prod')
+gen_menu = require('./menu_dev')
 
 app.on('ready', () ->
   # ブラウザ(Chromium)の起動, 初期画面のロード

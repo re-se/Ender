@@ -8,9 +8,14 @@ class @ConfigRangeInput extends ConfigInput
       @attrs.step = parseInt(@value / 10)
 
   # 設定画面の表示に使用するDOMを生成する
-  genInputDom: (path, cl) ->
+  genInputDom: (path, cl = "") ->
     doms = []
-    doms.push <input key={path + "-input"} id={path + "-input"} className={cl} type="range" defaultValue={@value} name={@key} step={@attrs.step} max={@attrs.max} min={@attrs.min} list={if @attrs.list? then @attrs.list.key else undefined}/>
+    # max より min の設定値が低い場合左右の反転処理を入れる
+    if @attrs? and @attrs.max? and @attrs.min? and @attrs.max < @attrs.min
+      doms.push <input key={path + "-input"} id={path + "-input"} className={"#{cl} input-range reverse-range"} type="range" defaultValue={@value} name={@key} step={Math.abs(@attrs.step)} max={@attrs.min} min={@attrs.max} list={if @attrs.list? then @attrs.list.key else undefined}/>
+    else
+      doms.push <input key={path + "-input"} id={path + "-input"} className={"#{cl} input-range"} type="range" defaultValue={@value} name={@key} step={@attrs.step} max={@attrs.max} min={@attrs.min} list={if @attrs.list? then @attrs.list.key else undefined}/>
+
     # list 属性の選択肢DOM作成
     if @attrs.list?
       optionDoms = []
