@@ -552,7 +552,7 @@ window.onload = () ->
             items.push <SaveView key="save-view" nowLoading={@state.nowLoading} saves={@state.saves} Action={{@save, @load, @changeMode}} prev={@prevMode}/>
           when "title"
             items.push <Title key="title-view" basePath={@config.basePath}
-              Action={{@changeMode, engineLoad: => @engine.reload(@config.main)}} />
+              Action={{@changeMode, @loadAudio, @playAudio, engineLoad: => @engine.reload(@config.main)}} />
         imagePath = [@config.basePath]
         imagePath.push @config.image.path if @config.image?.path?
         imagePath = path.join.apply @, imagePath
