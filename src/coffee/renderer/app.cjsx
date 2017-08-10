@@ -76,6 +76,7 @@ window.onload = () ->
       styles: {}
       images: {}
       audios: {}
+      movie: null
       refs: {}
       tls: null
       saves: []
@@ -113,7 +114,7 @@ window.onload = () ->
         @loadAudioNodes()
         @loadSaveFiles()
         @bgmState = {}
-        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio, @setStyle, @save}
+        Action = {@setText, @setName, @setImage, @clearImage, @clear, @startAnimation, @setConfig, @loadAudio, @playAudio, @stopAudio, @pauseAudio, @setStyle, @save, @playMovie, @end}
         @engine = new Engine(Action, @config)
         @changeMode "title"
         if @config.debug and @config.debugParam?.autoload
@@ -308,7 +309,7 @@ window.onload = () ->
         @state.audios[name].node?.connect if gain? then gain else @audioContext.destination
         (document.getElementById "audio-#{name}").play()
         # 再生開始時のエフェクトを実行
-        if effect?
+        if effect? and !@engine.isSkip
           audioEffects[effect](@audioContext, gain)
       else
         console.warn "@state.audios[#{name}].node is undefined"
@@ -323,7 +324,7 @@ window.onload = () ->
       if @state.audios[name]?
         gainNode = @audioNodes[style.amp]
         audioDom = document.getElementById "audio-#{name}"
-        if effect?
+        if effect? and !@engine.isSkip
           audioEffects[effect](@audioContext, gainNode, () ->
             audioDom.pause()
             audioDom.currentTime = 0
@@ -349,6 +350,14 @@ window.onload = () ->
     refreshGain: ->
       @audioNodes.forIn (key, value) =>
         @audioNodes[key].gain.value = @config.volume[key] / 100
+
+    playMovie: (src) ->
+      @engine.startMovie()
+      @setState movie: src
+
+    end: () ->
+      @clear =>
+        @changeMode 'title'
 
     changeToSettingMode: (e) ->
       e?.stopPropagation()
@@ -415,6 +424,7 @@ window.onload = () ->
           message: null
           images: {}
           audios: {}
+          movie: null
           history: null
           styles: {}
       @setState s, cb
@@ -566,6 +576,10 @@ window.onload = () ->
             "engineExec": @engine?.exec
           }
         />
+        if @state.movie?
+          onEnded = () =>
+            @engine.finishMovie()
+          items.push <video key="main-video" src={path.join @config.basePath, @state.movie} autoPlay onEnded={onEnded}/>
 
       items.push <div key="cover" id="cover"/>
       return (

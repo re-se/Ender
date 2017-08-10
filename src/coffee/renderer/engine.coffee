@@ -76,6 +76,12 @@ module.exports = class Ender
   startAnimation: ->
     @isAnimated = true
 
+  finishMovie: ->
+    @isPlayingMovie = false
+
+  startMovie: ->
+    @isPlayingMovie = true
+
   finishLoad: ->
     @isLoaded = false
 
@@ -127,6 +133,7 @@ module.exports = class Ender
     @isAnimated = false
     @isTextAnimated = false
     @isLoaded = false
+    @isPlayingMovie = false
     @style = {}
     imagesMap = {}
     @pc = 0

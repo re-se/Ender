@@ -85,6 +85,14 @@ FuncMap =
     target = @getArg(inst, 0)
     className = @getArg(inst, 1)
     @Action.setStyle(target, className)
+  "movie": (engine, inst) ->
+    src = @getArg(inst, 0)
+    @Action.playMovie(src)
+    loop
+      yield "async"
+      break if not engine.isPlayingMovie
+  "end": (engine, inst) ->
+    @Action.end()
 
 class @FuncEngine
   constructor: (@Action) ->
