@@ -18,8 +18,14 @@ gen_menu = require('./menu_dev')
 app.on('ready', () ->
   # ブラウザ(Chromium)の起動, 初期画面のロード
 
-  mainWindow = new BrowserWindow({width: 800, height: 600, useContentSize: true})
-  mainWindow.setMinimumSize(800, 600)
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
+    useContentSize: true,
+    minWidth: 800,
+    minHeight: 600
+  })
+  #mainWindow.setMinimumSize(800, 600)
   mainWindow.loadURL('file://' + __dirname + '/index.html')
   ipcMain.on 'req-path', ->
     mainWindow.send('set-config-path', args.config)
