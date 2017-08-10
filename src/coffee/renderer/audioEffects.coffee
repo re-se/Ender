@@ -9,6 +9,6 @@ module.exports = {
     targetGainValue = target.gain.value
     startTime = audioContext.currentTime
     target.gain.linearRampToValueAtTime(targetGainValue, startTime);
-    target.gain.linearRampToValueAtTime(0, startTime + 3);
-    setTimeout(onComplete, 4000)
+    target.gain.linearRampToValueAtTime(0, startTime + 2);
+    setTimeout(onComplete, 2000)
 }
