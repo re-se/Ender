@@ -1,5 +1,5 @@
 {
-  "basePath": "dist/resource",
+  "basePath": "",
   "savePath": "save",
   "main": "01.end",
   "debug": false,
@@ -28,11 +28,11 @@
     }
   },
   "text": {
-    "path": "scenario",
+    "path": "",
     "styles": "message-1"
   },
   "image": {
-    "path": "image"
+    "path": ""
   },
   "audio": {
     "bgm": {
