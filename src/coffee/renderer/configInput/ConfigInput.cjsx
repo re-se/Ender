@@ -11,11 +11,12 @@ class @ConfigInput
     console.warn ("genInputDom of Abstract must be overridden")
 
   getConfigJson: () ->
-    return
+    return {
       "$value": @value,
       "displayName": @displayName,
       "type": @getType(),
       "attrs": @attrs
+    }
 
   getType: () ->
     console.warn ("getType of Abstract must be overridden")
