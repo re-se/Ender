@@ -1,8 +1,14 @@
 {
-  "presets": [["env", {
-      "targets": {
-        "node": "current"
+  "presets": [
+    [
+      "env", {
+        "targets": {
+          "node": "current"
+        }
       }
-    }], "react"],
+    ],
+    "react",
+    "flow",
+  ],
   "ignore": ["node_modules/"]
 }

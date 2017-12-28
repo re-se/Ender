@@ -5,3 +5,6 @@
 [libs]
   src/decls/
 [options]
+
+[version]
+^0.41.0
