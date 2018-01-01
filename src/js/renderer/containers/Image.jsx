@@ -3,7 +3,7 @@ import React from 'react';
 export type Props = {
   classList: string[],
   path: string,
-  loadCallback: ()->void
+  loadCallback: ()=>void
 };
 
 const Image = ({classList, path, loadCallback}: Props) => (

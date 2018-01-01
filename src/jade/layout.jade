@@ -1,6 +1,7 @@
 doctype html
 mixin js(path)
-  script(type='text/javascript', src=path)
+  script(type='text/javascript')
+    | require('#{path}')
 mixin js_async(path)
   script(type='text/javascript', src="."+path, async='async')
 mixin css(path)
@@ -25,8 +26,6 @@ html(lang='ja')
     block header
   body
     .js-loader
-      //- +js('https://fb.me/react-with-addons-0.14.6.js')
-      //- +js('https://fb.me/react-dom-0.14.6.js')
-      +js('./js/renderer/app.js')
+      +js('./js/renderer/core/app.js')
       block loadFiles
     block contents

@@ -196,7 +196,7 @@ Identifier = Name
 
 Name = name:([a-zA-Z_] [a-zA-Z0-9_]*) { return name[0] + name[1].join(""); }
 
-Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
+Args = "(" __ arg1:Arg arg2:(__ "," __ Arg)*  __ ")" {
   var arg;
   if (arg1 || arg2.length > 0) {
     arg = [arg1];
@@ -210,7 +210,7 @@ Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
   return arg;
 }
 
-Arg = Object / String / Number / Bool / Var / Null
+Arg = Call / Object / String / Number / Bool / Var / Null
 
 Var = name:Name { return genVar(name) }
 

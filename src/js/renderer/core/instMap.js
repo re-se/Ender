@@ -1,18 +1,25 @@
 //@flow
-import Ender from './engine.js';
+import Ender from './engine.js'
+import funcMap from './funcMap'
 
 export type WaitInst = {
   type: string
-};
+}
 
 export type TextInst = {
   type: string,
-  value: {
+  args: {
     type: string,
     body: string,
     expr: string
   }
-};
+}
+
+export type FuncInst = {
+  type: string,
+  name: string,
+  args: any[],
+}
 
 const instMap = {
   wait: (engine: Ender, waitInst: WaitInst) => {
@@ -35,13 +42,13 @@ const instMap = {
 
   },
 
-  func: () => {
-
+  func: (engine: Ender, funcInst: FuncInst) => {
+    funcMap[funcInst.name](engine, funcInst.args)
   },
 
   funcdecl: () => {
 
   }
-};
+}
 
-export default instMap;
+export default instMap

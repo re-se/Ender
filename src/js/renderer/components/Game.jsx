@@ -1,14 +1,21 @@
-import React from 'react';
-import generateComponent from '../utils/generateComponent';
+import React from 'react'
+import { connect } from 'react-redux'
 
-export type Props = {
-  children: ComponentMaterial
-};
-
-const Game = ({children}: Props) => {
-  <div id="inner" className="inner-view" key="inner-view">
-   {generateComponent(children)}
-  </div>
+const Game = ({ children }) => {
+  if(children == null) {
+    children = []
+  }
+  return (
+    <div id="inner" className="inner-view" key="inner-view">
+      {children}
+    </div>
+  )
 }
 
-export default Game;
+const mapStateToProps = (state) => {
+  return {
+    children : state.components
+  }
+}
+
+export default connect(mapStateToProps)(Game)

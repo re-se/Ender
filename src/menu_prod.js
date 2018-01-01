@@ -1,13 +1,15 @@
-{app, Menu} = require('electron')
-name = app.getName()
+import {app, Menu} from 'electron'
+const name = app.getName()
 
-module.exports = (mainWindow) ->
-  showSetting = ->
+export default (mainWindow) => {
+  const showSetting = () => {
     mainWindow.send('show-setting', null)
-  backToTitle = ->
+  }
+  const backToTitle = () => {
     mainWindow.send('show-title', null)
+  }
 
-  Menu.buildFromTemplate([
+  return Menu.buildFromTemplate([
     {
       label: name,
       submenu: [
@@ -21,15 +23,18 @@ module.exports = (mainWindow) ->
       submenu: [
         {
           label: 'フルスクリーン表示',
-          accelerator: (() ->
-            if (process.platform == 'darwin')
+          accelerator: (() => {
+            if (process.platform == 'darwin') {
               return 'Ctrl+Command+F'
-            else
+            } else {
               return 'F11'
-          )(),
-          click: (item, focusedWindow) ->
-            if (focusedWindow)
+            }
+          })(),
+          click: (item, focusedWindow) => {
+            if (focusedWindow) {
               focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
+            }
+          }
         },
       ]
     },
@@ -45,3 +50,4 @@ module.exports = (mainWindow) ->
       ]
     },
   ])
+}

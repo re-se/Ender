@@ -1,17 +1,26 @@
 //@flow
 
-import fs from 'fs';
-import path from 'path';
-import parser from './ender.js';
-import instMap from './instMap.js';
+import fs from 'fs'
+import path from 'path'
+import parser from './parser.js'
+import instMap from './instMap.js'
 
 class Ender {
-  insts: Inst[];
-  pc: number;
+  insts: Inst[]
+  pc: number
+  store
 
-  constructor(scriptPath: string) {
-    this._loadScript(scriptPath);
-    this.pc = 0;
+  constructor(config) {
+    let textPath = (config.text && config.text.path) || ''
+    let scriptPath = path.join(config.basePath, textPath, config.main)
+
+    this._loadScript(scriptPath)
+    this.pc = 0
+    this.mainLoop = this._mainLoop()
+  }
+
+  setStore(store) {
+    this.store = store;
   }
 
   /**
@@ -19,8 +28,8 @@ class Ender {
    * @param {string} scriptPath スクリプトファイルのフルパス
    */
   _loadScript(scriptPath: string) {
-    let script = fs.readFileSync(scriptPath).toString();
-    this.insts = parser.parse(script);
+    const script = fs.readFileSync(scriptPath).toString()
+    this.insts = parser.parse(script)
   }
 
   /**
@@ -28,12 +37,17 @@ class Ender {
    * @return {[type]} [description]
    */
   exec() {
-    let inst = this.insts[this.pc];
-    // 命令実行
-    instMap[inst.type](this, inst);
+    this.mainLoop.next()
+  }
 
-    this.pc++;
+  *_mainLoop() {
+    while(this.pc < this.insts.length) {
+      const inst = this.insts[this.pc]
+      // 命令実行
+      instMap[inst.type](this, inst)
+      this.pc += 1
+    }
   }
 }
 
-export default Ender;
+export default Ender

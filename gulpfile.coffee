@@ -38,12 +38,12 @@ gulp.task 'coffee', () ->
     ).pipe $.coffee(bare: true)
     .pipe gulp.dest(path.join(__distdir, 'js'))
 
-gulp.task 'top', () ->
-  gulp.src(path.join(__srcdir, '*.coffee'))
-  .pipe $.plumber(
-    errorHandler: $.notify.onError('Error: <%= error.message %>')
-  ).pipe $.coffee(bare: true)
-  .pipe gulp.dest(__distdir)
+gulp.task 'top', ->
+  gulp.src path.join(__srcdir, '*.js')
+    .pipe $.plumber(
+      errorHandler: $.notify.onError('Error: <%= error.message %>')
+    ).pipe $.babel()
+    .pipe gulp.dest(__distdir)
 
 gulp.task 'less', () ->
   gulp.src path.join(__srcdir, 'css/*.less')
@@ -55,16 +55,14 @@ gulp.task 'less', () ->
 gulp.task 'build', (cb) ->
   runSequence 'compile', 'babel', cb
 
-gulp.task 'compile', ['jade', 'cjsx', 'coffee', 'less', 'top']
+gulp.task 'compile', ['jade', 'less', 'top']
 
 gulp.task 'watch', ['build'], () ->
   electron.start(args)
   gulp.watch path.join(__srcdir, '**/*.jade'), ['jade']
   gulp.watch path.join(__srcdir, 'css/*.less'), ['less']
-  gulp.watch path.join(__srcdir, 'coffee/**/*.cjsx'), ['cjsx']
-  gulp.watch path.join(__srcdir, 'coffee/**/*.coffee'), ['coffee']
   gulp.watch path.join(__srcdir, 'js/**/*'), ['babel']
-  gulp.watch path.join(__srcdir, '*.coffee'), ['top']
+  gulp.watch path.join(__srcdir, '*.js'), ['top']
   gulp.watch [path.join(__distdir, '*.js'), path.join(__distdir, 'js/browser/*.js')], -> electron.restart(args)
   gulp.watch [path.join(__distdir, 'index.html'), path.join(__distdir, '**/*') + '{html,js,css}'], electron.reload
 

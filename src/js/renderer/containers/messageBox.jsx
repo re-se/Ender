@@ -3,13 +3,13 @@ import React from 'react';
 export type Props = {
   classList: string[],
   path: string,
-  loadCallback: ()->void
+  loadCallback: ()=>void
 };
+
+const STRONG_RUBY_STRING = "﹅"
 
 class MessageBox extends React.Component
 {
-  const STRONG_RUBY_STRING = "﹅";
-
   render() {
     if(this.props.message) {
       return (
@@ -18,9 +18,9 @@ class MessageBox extends React.Component
               {this._generateMessageDoms(message)}
             </div>
         </div>
-      );
+      )
     } else {
-      return <div/>;
+      return <div/>
     }
 
   }
@@ -31,9 +31,9 @@ class MessageBox extends React.Component
    * @return {[type]}
    */
   _generateMessageDoms(message) {
-    let messageDoms = [];
-    let style = {};
-    let keyNum = -1;
+    let messageDoms = []
+    let style = {}
+    let keyNum = -1
     for(let word of message) {
       let key = "message-${keyNum}";
       switch(word.type) {
@@ -41,8 +41,8 @@ class MessageBox extends React.Component
         case "text":
           messageDoms.push(
             <span key={key} style={style}>{word.body}</span>
-          );
-          break;
+          )
+          break
         // 強調点付きメッセージ
         case "strong":
           messageDoms.push(
@@ -50,20 +50,20 @@ class MessageBox extends React.Component
               <rb>{word.body}</rb>
               <rt>{this._generateStrongRuby(word.body.length)}</rt>
             </ruby>
-          );
-          break;
+          )
+          break
         // 改行
         case "br":
           messageDoms.push(
             <br key={key} style={style}/>
-          );
-          break;
+          )
+          break
         // マーカー付きメッセージ
         case "marker":
           messageDoms.push(
             <span key={key} className="marker">{word.body}</span>
-          );
-          break;
+          )
+          break
         // ルビ
         case "ruby":
           messageDoms.push(
@@ -71,18 +71,18 @@ class MessageBox extends React.Component
               <rb>{word.kanji}</rb>
               <rt>{word.kana}</rt>
             </ruby>
-          );
-          break;
+          )
+          break
         // 書式、スタイル指定
         case "style":
-          style = word.value;
-          break;
+          style = word.value
+          break
         // 未定義の種別ならエラー
         default:
-          console.error(word);
+          console.error(word)
       }
     }
-    return messageDoms;
+    return messageDoms
   }
 
   /**
@@ -91,11 +91,11 @@ class MessageBox extends React.Component
    * @return {string}
    */
   _generateStrongRuby(wordCount: int) {
-    let ruby = "";
+    let ruby = ""
     for(let i = 0; i < wordCount; i++) {
-      ruby += this.STRONG_RUBY_STRING;
+      ruby += STRONG_RUBY_STRING
     }
-    return ruby;
+    return ruby
   }
 }
 
