@@ -26,7 +26,7 @@ const instMap = {
     //TODO
   },
 
-  text: (textInst: TextInst) => {
+  text: (engine: Ender, textInst: TextInst) => {
 
   },
 
