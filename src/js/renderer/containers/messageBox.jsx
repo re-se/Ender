@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 export type Props = {
   classList: string[],
@@ -35,7 +35,7 @@ class MessageBox extends React.Component
     let style = {}
     let keyNum = -1
     for(let word of message) {
-      let key = "message-${keyNum}";
+      let key = "message-${keyNum}"
       switch(word.type) {
         // 標準メッセージ
         case "text":
@@ -99,4 +99,4 @@ class MessageBox extends React.Component
   }
 }
 
-export default MessageBox;
+export default MessageBox
