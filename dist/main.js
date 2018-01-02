@@ -2,23 +2,15 @@
 
 var _electron = require('electron');
 
-var _menu_dev = require('./menu_dev');
-
-var _menu_dev2 = _interopRequireDefault(_menu_dev);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-let args = {};
-if (process.argv.includes("--config")) {
-  const minimist = require('minimist');
-  args = minimist(process.argv);
-}
-
 let mainWindow = null;
 
 _electron.app.on('window-all-closed', () => {
   _electron.app.quit();
 });
+
+let menuPath = process.env.NODE_ENV === "development" ? './menu_dev' : './menu_prod';
+
+const gen_menu = require(menuPath).default;
 
 _electron.app.on('ready', () => {
   // ブラウザ(Chromium)の起動, 初期画面のロード
@@ -32,10 +24,10 @@ _electron.app.on('ready', () => {
   // mainWindow.setMinimumSize(800, 600)
   mainWindow.loadURL('file://' + __dirname + '/index.html');
   _electron.ipcMain.on('request-config-path', () => {
-    mainWindow.send('set-config-path', args.config);
+    mainWindow.send('set-config-path', process.env.CONFIG_PATH);
   });
 
-  _electron.Menu.setApplicationMenu((0, _menu_dev2.default)(mainWindow));
+  _electron.Menu.setApplicationMenu(gen_menu(mainWindow));
 
   mainWindow.on('closed', () => {
     mainWindow = null;

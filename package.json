@@ -2,17 +2,33 @@
   "name": "Ender",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/main.js",
+  "main": "init.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "gulp",
     "flow": "flow",
-    "parsergen": "pegjs -o src/js/renderer/core/parser.js ender.pegjs"
+    "parsergen": "pegjs -o src/js/renderer/main/parser.js ender.pegjs",
+    "postinstall": "electron-builder install-app-deps",
+    "develop": "npm run private:compile && run-p -r \"private:serve  -- --config {1}\" \"private:watch\" --",
+    "lint": "eslint --no-ignore scripts src test *.js",
+    "pack": "run-s private:clean private:compile private:build:all",
+    "pack:mac": "run-s private:clean private:compile private:build:mac",
+    "pack:win": "run-s private:clean private:compile private:build:win",
+    "pack:linux": "run-s private:clean private:compile private:build:linux",
+    "private:build:all": "electron-builder -mwl",
+    "private:build:mac": "electron-builder --mac",
+    "private:build:win": "electron-builder --win",
+    "private:build:linux": "electron-builder --linux",
+    "private:watch": "gulp watch",
+    "private:serve": "babel-node scripts/serve.js",
+    "private:compile": "gulp build",
+    "private:clean": "rimraf build"
   },
   "keywords": [],
   "author": "se-se",
   "license": "ISC",
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "gsap": "^1.19.0",
     "react": "^15.3.0",
     "react-addons-update": "^15.3.0",
@@ -21,15 +37,20 @@
     "redux": "^3.5.2"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.1.8",
     "babel-preset-react": "^6.23.0",
+    "babel-preset-stage-0": "^6.24.1",
     "babelify": "^7.3.0",
+    "browser-sync": "^2.23.2",
     "browserify": "^14.1.0",
     "coffee-script": "^1.10.0",
     "del": "^2.2.2",
-    "electron": "1.4.13",
-    "electron-connect": "^0.6.1",
+    "electron": "^1.7.10",
+    "electron-builder": "^19.50.0",
     "electron-packager": "^8.4.0",
     "eslint": "^4.14.0",
     "eslint-plugin-flowtype": "^2.40.1",
@@ -48,7 +69,20 @@
     "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.7",
     "minimist": "^1.2.0",
+    "npm-run-all": "^4.1.2",
     "pegjs": "^0.10.0",
-    "run-sequence": "^1.2.2"
+    "rimraf": "^2.6.2",
+    "run-sequence": "^1.2.2",
+    "webpack": "^3.10.0"
+  },
+  "build": {
+    "productName": "sample",
+    "asar": false,
+    "files": [
+      "package.json",
+      "init.js",
+      "build/",
+      "node_modules/"
+    ]
   }
 }

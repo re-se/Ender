@@ -21,11 +21,8 @@ html(lang='ja')
     +css('./css/save.css')
     +css('./css/title.css')
     //- +css('https://fonts.googleapis.com/css?family=Titillium+Web:200,400,700')
-    script
-      | if(require('electron-connect')) require('electron-connect').client.create()
     block header
   body
     .js-loader
-      +js('./js/renderer/core/app.js')
       block loadFiles
     block contents
