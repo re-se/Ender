@@ -1,6 +1,8 @@
 //@flow
 import Ender from './engine.js'
 import funcMap from './funcMap'
+import { setMessage } from '../actions/actions'
+import store from './store'
 
 export type WaitInst = {
   type: string
@@ -8,11 +10,11 @@ export type WaitInst = {
 
 export type TextInst = {
   type: string,
-  args: {
+  value: {
     type: string,
-    body: string,
-    expr: string
-  }
+    body?: string,
+    expr?: string
+  }[]
 }
 
 export type FuncInst = {
@@ -22,12 +24,12 @@ export type FuncInst = {
 }
 
 const instMap = {
-  wait: (engine: Ender, waitInst: WaitInst) => {
+  wait: (waitInst: WaitInst) => {
     //TODO
   },
 
-  text: (engine: Ender, textInst: TextInst) => {
-
+  text: (textInst: TextInst) => {
+    store.dispatch(setMessage(textInst.value))
   },
 
   name: () => {
@@ -42,8 +44,8 @@ const instMap = {
 
   },
 
-  func: (engine: Ender, funcInst: FuncInst) => {
-    funcMap[funcInst.name](engine, funcInst.args)
+  func: (funcInst: FuncInst) => {
+    funcMap[funcInst.name](funcInst.args)
   },
 
   funcdecl: () => {

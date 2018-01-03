@@ -3,16 +3,15 @@ import { ipcRenderer } from 'electron'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
 
 import path from 'path'
 
 import Game from '../components/Game'
 import Ender from './engine'
 import Config from '../util/Config'
-import reducers from '../reducers/reducers'
 import { toAbsolutePath } from '../util/util'
-import type { Store } from '../types/types'
+import store from './store'
+import { setConfig, setEngine } from '../actions/actions'
 
 ipcRenderer.send('request-config-path')
 ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
@@ -34,14 +33,9 @@ ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
   initGame(config, new Ender(config))
 })
 
-
 const initGame = (config: Config, engine: Ender) => {
-  const store: Store = createStore(
-    reducers,
-    { config, engine, components: [] }
-  )
-
-  engine.setStore(store)
+  store.dispatch(setConfig(config))
+  store.dispatch(setEngine(engine))
 
   engine.exec()
 

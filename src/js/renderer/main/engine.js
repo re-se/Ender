@@ -2,6 +2,7 @@
 
 import fs from 'fs'
 import path from 'path'
+import { get } from 'lodash'
 import parser from './parser.js'
 import instMap from './instMap.js'
 
@@ -11,16 +12,12 @@ class Ender {
   store
 
   constructor(config) {
-    let textPath = (config.text && config.text.path) || ''
+    let textPath = get(config, 'text.path') || ''
     let scriptPath = path.join(config.basePath, textPath, config.main)
 
     this._loadScript(scriptPath)
     this.pc = 0
     this.mainLoop = this._mainLoop()
-  }
-
-  setStore(store) {
-    this.store = store;
   }
 
   /**
@@ -44,7 +41,7 @@ class Ender {
     while(this.pc < this.insts.length) {
       const inst = this.insts[this.pc]
       // 命令実行
-      instMap[inst.type](this, inst)
+      instMap[inst.type](inst)
       this.pc += 1
     }
   }

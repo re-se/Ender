@@ -36,10 +36,27 @@ const config = (state = null, action) => {
   }
 }
 
+const MessageBox = (
+  state = {
+    message: '',
+    classNames: [],
+  }, action
+) => {
+  switch(action.type) {
+    case 'SET_MESSAGE':
+      return { ...state, message: action.message }
+    case 'SET_MESSAGE_CLASSNAMES':
+      return { ...state, classNames: action.classNames }
+    default:
+      return state
+  }
+}
+
 const reducer = combineReducers({
   components,
   engine,
-  config
+  config,
+  MessageBox
 })
 
 export default reducer

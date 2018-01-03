@@ -9,9 +9,11 @@ import componentList from '../config/componentList'
 const generateComponent = (name: string, args: any[]) => {
   const Component = require(componentList[name].path).default
   let props = {}
-  componentList[name].args.forEach((key, i) => {
-    props[key] = args[i]
-  })
+  if (args) {
+    componentList[name].args.forEach((key, i) => {
+      props[key] = args[i]
+    })
+  }
   return <Component {...props} />
 }
 

@@ -1,4 +1,6 @@
 import React from 'react'
+import { get } from 'lodash'
+import { connect } from 'react-redux'
 
 export type Props = {
   classList: string[],
@@ -13,10 +15,10 @@ class MessageBox extends React.Component
   render() {
     if(this.props.message) {
       return (
-          <div className="ender-messageBox ${this.props.styles}">
-            <div className="ender-messageBox-inner">
-              {this._generateMessageDoms(message)}
-            </div>
+        <div className={`ender-messageBox ${this.props.classNames.join(' ')}`}>
+          <div className="ender-messageBox-inner">
+            {this._generateMessageDoms(this.props.message)}
+          </div>
         </div>
       )
     } else {
@@ -35,7 +37,7 @@ class MessageBox extends React.Component
     let style = {}
     let keyNum = -1
     for(let word of message) {
-      let key = "message-${keyNum}"
+      let key = `message-${++keyNum}`
       switch(word.type) {
         // 標準メッセージ
         case "text":
@@ -93,10 +95,19 @@ class MessageBox extends React.Component
   _generateStrongRuby(wordCount: int) {
     let ruby = ""
     for(let i = 0; i < wordCount; i++) {
-      ruby += STRONG_RUBY_STRING
+      ruby += get(this.props.config, 'text.strong') || STRONG_RUBY_STRING
     }
     return ruby
   }
 }
 
-export default MessageBox
+
+const mapStateToProps = (state) => {
+  return {
+    config : state.config,
+    message: state.MessageBox.message,
+    classNames: state.MessageBox.classNames
+  }
+}
+
+export default connect(mapStateToProps)(MessageBox)
