@@ -6,15 +6,6 @@ import engine from './engine'
 
 export default {
   layout: (args: FuncInst[]) => {
-    let components = []
-    for (const key in args) {
-      const component = args[key]
-      components.push(generateComponent(
-        component.name,
-        component.args,
-        `${engine.scriptPath}_${engine.pc}_${key}`
-      ))
-    }
-    store.dispatch(addComponents(components))
+    store.dispatch(addComponents(args))
   },
 }
