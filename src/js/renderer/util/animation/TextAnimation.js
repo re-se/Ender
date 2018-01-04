@@ -22,8 +22,8 @@ export default class TextAnimation extends Animation {
       const currentMessage = message[index]
       if (currentMessage.body) {
         while (position <= currentMessage.body.length) {
-          yield {index, position}
           position += 1
+          yield {index, position}
         }
       }
     }
