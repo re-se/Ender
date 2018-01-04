@@ -4,10 +4,13 @@ import engine from '../main/engine'
 /**
  * 描画予定のコンポーネントを保持する State
  */
-const components = (state = [], action) => {
+const components = (state = {}, action) => {
   switch(action.type) {
     case 'ADD_COMPONENTS':
-      return state.concat(action.components)
+      let nextState = { ...state }
+      nextState[action.key] =
+        (state[action.key] || []).concat(action.components)
+      return nextState
     default:
       return state
   }

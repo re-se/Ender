@@ -2,11 +2,13 @@ import React from 'react'
 import { connect } from 'react-redux'
 import generateComponent from '../util/generateComponent'
 
-const Game = ({ children = [] }) => {
+const Game = ({ components = {} }) => {
   let childComponents = []
-  for (const key in children) {
-    const child = children[key]
-    childComponents.push(generateComponent(child.name, child.args, key))
+  for (const key in components) {
+    const children = components[key]
+    childComponents.push(
+      generateComponent("Box", children, key)
+    )
   }
   return (
     <div id="inner" className="inner-view" key="inner-view">
@@ -17,7 +19,7 @@ const Game = ({ children = [] }) => {
 
 const mapStateToProps = (state) => {
   return {
-    children : state.components
+    components : state.components
   }
 }
 

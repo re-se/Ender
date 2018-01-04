@@ -4,10 +4,11 @@ export const resetState = (components) => {
 }
 
 // components
-export const addComponents = (components) => {
+export const addComponents = (components, key = 'default') => {
   return {
     type: 'ADD_COMPONENTS',
-    components
+    components,
+    key
   }
 }
 
