@@ -55,3 +55,10 @@ export const finishAnimation = () => {
     type: 'FINISH_ANIMATION',
   }
 }
+
+export const addImage = (image) => {
+  return {
+    type: 'ADD_IMAGE',
+    image
+  }
+}

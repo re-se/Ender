@@ -1,7 +1,17 @@
 export default {
   /* "コンポーネント名": [引数名の順番] */
   'Image': {
-    'path': '../containers/Image'
+    'path': '../containers/Image',
+    'getProps': (args) => {
+      return {
+        source: engine.eval(args[0]),
+        classList: [].concat(engine.eval(args[1])),
+        effect: engine.eval(args[2]),
+        callback: () => {
+          engine.exec()
+        }
+      }
+    }
   },
   'MessageBox': {
     'path': '../containers/MessageBox',
