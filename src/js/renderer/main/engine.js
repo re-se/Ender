@@ -14,7 +14,13 @@ class Ender {
   insts: Inst[]
   pc: number
   scriptPath: string
+  nameMap: Map
 
+  /**
+   * 初期化
+   * @param  {Config} config
+   * @return {void}
+   */
   init(config) {
     let textPath = get(config, 'text.path') || ''
     this.scriptPath = path.join(config.basePath, textPath, config.main)
@@ -22,6 +28,7 @@ class Ender {
     this._loadScript()
     this.pc = 0
     this.mainLoop = this._mainLoop()
+    this.nameMap = new Map()
   }
 
   /**
@@ -71,6 +78,37 @@ class Ender {
         }
       }
     }
+  }
+
+  eval(expr) {
+    if(expr instanceof object) {
+      switch (expr.type) {
+        case "var": return this.getVar(expr.name)
+        case "func": return instMap[expr.type](expr)
+        default: return expr
+      }
+    } else {
+      return expr
+    }
+  }
+
+  /**
+   * グローバル変数を取得
+   * @param  {string} name 変数名
+   * @return {any}
+   */
+   getVar(name) {
+    return this.nameMap.get(name)
+  }
+
+  /**
+   * スクリプトで使変数を設定する
+   * @param {string} name 変数名
+   * @param {any} value
+   * @return {any}
+   */
+  setVar(name, value) {
+    return this.nameMap.set(name, value)
   }
 }
 

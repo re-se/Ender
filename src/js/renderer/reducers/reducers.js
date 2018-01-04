@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import engine from '../main/engine'
 
 /**
  * 描画予定のコンポーネントを保持する State
@@ -41,7 +42,7 @@ const MessageBox = (
         let value = action.message[key]
         if (value.type === 'interpolation') {
           value.type = 'text'
-          value.body = value.expr // TODO: 変数展開
+          value.body = engine.getVar(value.expr) // TODO: 変数展開
         } else if (value.type === 'br') {
           value.body = LF
         }

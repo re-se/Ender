@@ -11,7 +11,6 @@ export function generateConfig(configPath) {
   config.extendGetter('basePath', function (key, getter) {
     return function () {
       let basePath = getter() || path.dirname(this._path)
-      console.log(basePath)
       return toAbsolutePath(basePath)
     }
   })
