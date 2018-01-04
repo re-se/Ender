@@ -11,14 +11,7 @@ const generateComponent = (name: string, args: any[], key: string) => {
   const Component = Module[name] || Module.default
   let props = {}
   if (args) {
-    componentList[name].args.forEach((key, i) => {
-      if (key.match(/\.\.\.$/)) {
-        key = key.slice(0, -3)
-        props[key] = args.slice(i)
-      } else {
-        props[key] = args[i]
-      }
-    })
+    props = componentList[name].getProps(args)
   }
   return <Component {...props} key={key} />
 }

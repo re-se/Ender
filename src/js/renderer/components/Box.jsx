@@ -5,12 +5,7 @@ export type Props = {
   children: ComponentMaterial
 };
 
-const Box = ({children = []}: Props) => {
-  let classNames = []
-  if (typeof children[0] === 'string' || children[0] instanceof Array) {
-    classNames.concat(children[0])
-    children = children.slice(1)
-  }
+const Box = ({classNames = [], children = []}: Props) => {
   let childComponents = []
   for (const key in children) {
     const child = children[key]
