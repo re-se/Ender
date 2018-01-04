@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 
 export type Props = {
   classList: string[],
-  path: string,
+  source: string,
   loadCallback: ()=>void
-};
+}
 
-const Image = ({classList, path, loadCallback}: Props) => (
-  <img className="ender-image {(classList.length > 0)? classList.join(' ') : 'image-default'}" src={path} onLoad={loadCallback} onError={loadCallback}/>
-);
+const Image = ({classNames = [], source = '', loadCallback = () => {}}: Props) => (
+  <img className="ender-image {classNames.join(' ') : 'image-default'}" src={source} onLoad={loadCallback} onError={loadCallback}/>
+)
 
-export default Image;
+export default Image
