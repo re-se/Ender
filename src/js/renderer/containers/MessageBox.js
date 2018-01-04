@@ -39,14 +39,12 @@ class MessageBox extends React.Component
     for(let i = 0; i <= index; i++) {
       let word = message[i]
       let key = `message-${i}`
-      let body = ''
-      let kana = ''
-      if (word.body) {
-        body = this.props.position == null ?
-          word.body :
-          word.body.slice(0, this.props.position)
-        if (word.kana && this.props.position >= word.body.length) {
-          kana = word.kana
+      let body = word.body
+      let kana = word.kana
+      if (this.props.position != null) {
+        body = word.body.slice(0, this.props.position)
+        if (word.kana && this.props.position < word.body.length) {
+          kana = ''
         }
       }
       switch(word.type) {
