@@ -9,6 +9,7 @@ app.on('window-all-closed', () => {
 let menuPath = process.env.NODE_ENV === "development" ? './menu_dev' : './menu_prod'
 
 const gen_menu = require(menuPath).default
+const loadDevtool = require('electron-load-devtool')
 
 app.on('ready', () => {
   // ブラウザ(Chromium)の起動, 初期画面のロード
@@ -30,4 +31,8 @@ app.on('ready', () => {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+
+  loadDevtool(loadDevtool.REDUX_DEVTOOLS)
+  loadDevtool(loadDevtool.REACT_DEVELOPER_TOOLS)
+  mainWindow.openDevTools()
 })

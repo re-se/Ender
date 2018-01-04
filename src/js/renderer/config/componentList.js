@@ -7,8 +7,13 @@ export default {
     'path': '../containers/MessageBox',
     'args': ['classNames'],
   },
+  // Box(classNames? : string|Array, children...: any[])
   "Box": {
     "path": "../components/Box",
-    "args": ["classList", "style"],
+    "args": ["children..."],
+  },
+  "ExecButton": {
+    'path': '../components/button/Button',
+    'args': ['classNames'],
   }
 }

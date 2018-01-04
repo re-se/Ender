@@ -5,27 +5,31 @@ import path from 'path'
 import { get } from 'lodash'
 import parser from './parser.js'
 import instMap from './instMap.js'
+import { GeneratorFunction } from '../util/util'
+import { remote } from 'electron'
+import { resetState } from '../actions/actions'
+import store from './store'
 
 class Ender {
   insts: Inst[]
   pc: number
+  scriptPath: string
   store
 
-  constructor(config) {
+  init(config) {
     let textPath = get(config, 'text.path') || ''
-    let scriptPath = path.join(config.basePath, textPath, config.main)
+    this.scriptPath = path.join(config.basePath, textPath, config.main)
 
-    this._loadScript(scriptPath)
+    this._loadScript()
     this.pc = 0
     this.mainLoop = this._mainLoop()
   }
 
   /**
    * スクリプトファイルを読み込む
-   * @param {string} scriptPath スクリプトファイルのフルパス
    */
-  _loadScript(scriptPath: string) {
-    const script = fs.readFileSync(scriptPath).toString()
+  _loadScript() {
+    const script = fs.readFileSync(this.scriptPath).toString()
     this.insts = parser.parse(script)
   }
 
@@ -38,13 +42,25 @@ class Ender {
   }
 
   *_mainLoop() {
-    while(this.pc < this.insts.length) {
+    while (this.pc < this.insts.length) {
       const inst = this.insts[this.pc]
       // 命令実行
-      instMap[inst.type](inst)
+      if (instMap[inst.type] instanceof GeneratorFunction) {
+        yield* instMap[inst.type](inst)
+      } else {
+        instMap[inst.type](inst)
+      }
+
       this.pc += 1
+
+      if (remote.process.env['NODE_ENV'] === 'development') {
+        if (this.pc >= this.insts.length) {
+          store.dispatch(resetState())
+          this.pc = 0
+        }
+      }
     }
   }
 }
 
-export default Ender
+export default new Ender()

@@ -13,24 +13,12 @@ const components = (state = [], action) => {
 }
 
 /**
- * 実行中のエンジンを保持する State
+ * コンフィグのパスを保持する State
  */
-const engine = (state = null, action) => {
+const configPath = (state = null, action) => {
   switch(action.type) {
-    case 'SET_ENGINE':
-      return action.engine
-    default:
-      return state
-  }
-}
-
-/**
- * コンフィグを保持する State
- */
-const config = (state = null, action) => {
-  switch(action.type) {
-    case 'SET_CONFIG':
-      return action.config
+    case 'SET_CONFIG_PATH':
+      return action.path
     default:
       return state
   }
@@ -38,7 +26,7 @@ const config = (state = null, action) => {
 
 const MessageBox = (
   state = {
-    message: '',
+    message: [],
     classNames: [],
   }, action
 ) => {
@@ -54,9 +42,17 @@ const MessageBox = (
 
 const reducer = combineReducers({
   components,
-  engine,
-  config,
-  MessageBox
+  configPath,
+  MessageBox,
 })
 
-export default reducer
+const rootReducer = (state, action) => {
+  switch(action.type) {
+    case 'RESET_STATE':
+      state = undefined
+      break
+  }
+  return reducer(state, action)
+}
+
+export default rootReducer

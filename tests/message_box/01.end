@@ -1,4 +1,5 @@
-\layout(\MessageBox())
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
 
 aaa
 bbb

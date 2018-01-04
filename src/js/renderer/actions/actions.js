@@ -1,3 +1,9 @@
+// root
+export const resetState = (components) => {
+  return { type: 'RESET_STATE' }
+}
+
+// components
 export const addComponents = (components) => {
   return {
     type: 'ADD_COMPONENTS',
@@ -5,21 +11,15 @@ export const addComponents = (components) => {
   }
 }
 
-export const setEngine = (engine) => {
+// configPath
+export const setConfigPath = (path) => {
   return {
-    type: 'SET_ENGINE',
-    engine
+    type: 'SET_CONFIG_PATH',
+    path
   }
 }
 
-export const setConfig = (config) => {
-  return {
-    type: 'SET_CONFIG',
-    config
-  }
-}
-
-// Message
+// MessageBox
 export const setMessage = (message) => {
   return {
     type: 'SET_MESSAGE',
@@ -27,7 +27,6 @@ export const setMessage = (message) => {
   }
 }
 
-// Message
 export const setMessageClassNames = (classNames) => {
   return {
     type: 'SET_MESSAGE_CLASSNAMES',

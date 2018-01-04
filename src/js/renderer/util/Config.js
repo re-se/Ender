@@ -1,7 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import { remote } from 'electron'
-const { app } = remote
 import { isPlainObject, cloneDeep } from 'lodash'
 import { toAbsolutePath } from './util'
 

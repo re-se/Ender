@@ -23,9 +23,14 @@ export type FuncInst = {
   args: any[],
 }
 
+export type ClearInst = {
+  type: string,
+  message?: bool,
+}
+
 const instMap = {
-  wait: (waitInst: WaitInst) => {
-    //TODO
+  wait: function* (waitInst: WaitInst) {
+    yield
   },
 
   text: (textInst: TextInst) => {
@@ -40,8 +45,10 @@ const instMap = {
 
   },
 
-  clear: () => {
-
+  clear: (clearInst) => {
+    if (clearInst.message) {
+      store.dispatch(setMessage([]))
+    }
   },
 
   func: (funcInst: FuncInst) => {
