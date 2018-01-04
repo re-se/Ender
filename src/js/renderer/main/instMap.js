@@ -1,8 +1,9 @@
 //@flow
 import Ender from './engine.js'
 import funcMap from './funcMap'
-import { setMessage } from '../actions/actions'
+import { setMessage, setMessagePosition, startAnimation } from '../actions/actions'
 import store from './store'
+import TextAnimation from '../util/animation/TextAnimation'
 
 export type WaitInst = {
   type: string
@@ -35,6 +36,9 @@ const instMap = {
 
   text: (textInst: TextInst) => {
     store.dispatch(setMessage(textInst.value))
+    const animation = new TextAnimation(textInst.value)
+    store.dispatch(setMessagePosition(animation.getInitialState()))
+    store.dispatch(startAnimation(animation))
   },
 
   name: () => {

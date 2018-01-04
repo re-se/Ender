@@ -7,14 +7,13 @@ import parser from './parser.js'
 import instMap from './instMap.js'
 import { GeneratorFunction } from '../util/util'
 import { remote } from 'electron'
-import { resetState } from '../actions/actions'
+import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
 
 class Ender {
   insts: Inst[]
   pc: number
   scriptPath: string
-  store
 
   init(config) {
     let textPath = get(config, 'text.path') || ''
@@ -38,7 +37,19 @@ class Ender {
    * @return {[type]} [description]
    */
   exec() {
-    this.mainLoop.next()
+    const animation = store.getState().animation
+    let isInterrupted = false
+    for (const key in animation) {
+      if (!animation[key].isFinished) {
+        animation[key].finish()
+        isInterrupted = true
+      }
+    }
+    if (isInterrupted) {
+      store.dispatch(finishAnimation())
+    } else {
+      this.mainLoop.next()
+    }
   }
 
   *_mainLoop() {

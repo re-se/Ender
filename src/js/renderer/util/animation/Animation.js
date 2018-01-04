@@ -1,6 +1,7 @@
 export default class Animation {
+  isFinished: bool
   constructor(callback: () => void) {
-
+    this.isFinished = false
   }
 
   start() {
@@ -8,7 +9,6 @@ export default class Animation {
   }
 
   finish() {
-
   }
 
   onExec() {

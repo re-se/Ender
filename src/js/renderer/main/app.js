@@ -9,6 +9,7 @@ import engine from './engine'
 import { toAbsolutePath } from '../util/util'
 import store from './store'
 import { setConfigPath, setEngine } from '../actions/actions'
+import { generateConfig } from './config'
 
 ipcRenderer.send('request-config-path')
 ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
@@ -19,7 +20,7 @@ ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
   console.log(configPath)
 
   store.dispatch(setConfigPath(configPath))
-  const config = require('./config').default
+  const config = generateConfig(configPath)
   engine.init(config)
   engine.exec()
 

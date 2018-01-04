@@ -35,22 +35,33 @@ class MessageBox extends React.Component
   _generateMessageDoms(message) {
     let messageDoms = []
     let style = {}
-    let keyNum = -1
-    for(let word of message) {
-      let key = `message-${++keyNum}`
+    let index = get(this.props, 'index', message.length - 1)
+    for(let i = 0; i <= index; i++) {
+      let word = message[i]
+      let key = `message-${i}`
+      let body = ''
+      let kana = ''
+      if (word.body) {
+        body = this.props.position == null ?
+          word.body :
+          word.body.slice(0, this.props.position)
+        if (word.kana && this.props.position >= word.body.length) {
+          kana = word.kana
+        }
+      }
       switch(word.type) {
         // 標準メッセージ
         case "text":
           messageDoms.push(
-            <span key={key} style={style}>{word.body}</span>
+            <span key={key} style={style}>{body}</span>
           )
           break
-        // 強調点付きメッセージ
+        // メッセージ(強調)
         case "strong":
           messageDoms.push(
             <ruby key={key} style={style}>
-              <rb>{word.body}</rb>
-              <rt>{this._generateStrongRuby(word.body.length)}</rt>
+              <rb>{body}</rb>
+              <rt>{this._generateStrongRuby(body.length)}</rt>
             </ruby>
           )
           break
@@ -60,18 +71,18 @@ class MessageBox extends React.Component
             <br key={key} style={style}/>
           )
           break
-        // マーカー付きメッセージ
+        // マーカー
         case "marker":
           messageDoms.push(
-            <span key={key} className="marker">{word.body}</span>
+            <span key={key} className="marker">{body}</span>
           )
           break
         // ルビ
         case "ruby":
           messageDoms.push(
             <ruby key={key} style={style}>
-              <rb>{word.kanji}</rb>
-              <rt>{word.kana}</rt>
+              <rb>{body}</rb>
+              <rt>{kana}</rt>
             </ruby>
           )
           break
@@ -106,7 +117,9 @@ const mapStateToProps = (state) => {
   return {
     config : state.config,
     message: state.MessageBox.message,
-    classNames: state.MessageBox.classNames
+    classNames: state.MessageBox.classNames,
+    index: state.MessageBox.index,
+    position: state.MessageBox.position
   }
 }
 

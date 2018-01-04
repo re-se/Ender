@@ -24,17 +24,56 @@ const configPath = (state = null, action) => {
   }
 }
 
+const LF = '\n'
 const MessageBox = (
   state = {
     message: [],
     classNames: [],
+    history: '',
+    index: null, // message 内の何番目の要素まで表示するか
+    position: null // 表示されている要素の内、最後の要素の何文字目まで表示するか
   }, action
 ) => {
   switch(action.type) {
     case 'SET_MESSAGE':
-      return { ...state, message: action.message }
+      let history = ''
+      for (const key in action.message) {
+        let value = action.message[key]
+        if (value.type === 'interpolation') {
+          value.type = 'text'
+          value.body = value.expr // TODO: 変数展開
+        } else if (value.type === 'br') {
+          value.body = LF
+        }
+        if (value.body) {
+          history += value.body
+        }
+      }
+      return {
+        ...state,
+        message: action.message,
+        history: state.history + history,
+      }
+    case 'SET_MESSAGE_POSITION':
+      return {
+        ...state,
+        position: action.position,
+        index: action.index
+      }
     case 'SET_MESSAGE_CLASSNAMES':
       return { ...state, classNames: action.classNames }
+    default:
+      return state
+  }
+}
+
+const animation = (state = [], action) => {
+  switch(action.type) {
+    case 'START_ANIMATION':
+      action.animation.start()
+      return state.concat(action.animation)
+    case 'FINISH_ANIMATION':
+      return []
     default:
       return state
   }
@@ -44,6 +83,7 @@ const reducer = combineReducers({
   components,
   configPath,
   MessageBox,
+  animation
 })
 
 const rootReducer = (state, action) => {

@@ -27,9 +27,31 @@ export const setMessage = (message) => {
   }
 }
 
+export const setMessagePosition = ({index, position}) => {
+  return {
+    type: 'SET_MESSAGE_POSITION',
+    index,
+    position
+  }
+}
+
 export const setMessageClassNames = (classNames) => {
   return {
     type: 'SET_MESSAGE_CLASSNAMES',
     classNames
+  }
+}
+
+// animation
+export const startAnimation = (animation) => {
+  return {
+    type: 'START_ANIMATION',
+    animation
+  }
+}
+
+export const finishAnimation = () => {
+  return {
+    type: 'FINISH_ANIMATION',
   }
 }
