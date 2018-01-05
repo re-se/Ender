@@ -8,7 +8,7 @@ import Game from '../components/Game'
 import engine from './engine'
 import { toAbsolutePath } from '../util/util'
 import store from './store'
-import { setConfigPath, setEngine } from '../actions/actions'
+import { setConfig, setEngine } from '../actions/actions'
 import { generateConfig } from './config'
 
 ipcRenderer.send('request-config-path')
@@ -19,8 +19,9 @@ ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
   }
   console.log(configPath)
 
-  store.dispatch(setConfigPath(configPath))
   const config = generateConfig(configPath)
+  store.dispatch(setConfig(config))
+
   engine.init(config)
   engine.exec()
 

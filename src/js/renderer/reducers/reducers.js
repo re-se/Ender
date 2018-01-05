@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import reduceReducers from 'reduce-reducers'
 import engine from '../main/engine'
 
 /**
@@ -16,15 +17,6 @@ const components = (state = {}, action) => {
   }
 }
 
-/**
- * コンフィグのパスを保持する State
- */
-const configPath = (state = null, action) => {
-  switch(action.type) {
-    case 'SET_CONFIG_PATH':
-      return action.path
-    default:
-      return state
   }
 }
 
@@ -93,20 +85,34 @@ const Image = (state = [], action) => {
   }
 }
 
+const config = (state = null, action) => {
+  switch(action.type) {
+    case 'SET_CONFIG':
+      return action.config
+    default:
+      return state
+  }
+}
+
 const reducer = combineReducers({
   components,
-  configPath,
   MessageBox,
-  animation
+  animation,
+  config,
 })
 
-const rootReducer = (state, action) => {
+const root = (state, action) => {
   switch(action.type) {
     case 'RESET_STATE':
-      state = undefined
-      break
+      return { config: state.config }
+    default:
+      return state
   }
-  return reducer(state, action)
 }
+
+const rootReducer = reduceReducers(
+  root,
+  reducer
+)
 
 export default rootReducer

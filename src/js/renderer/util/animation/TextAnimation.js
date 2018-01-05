@@ -8,7 +8,7 @@ export default class TextAnimation extends Animation {
   constructor(message) {
     super()
     this.position = this.positionGenerator(message)
-    const { config } = require('../../main/config')
+    const config = store.getState().config
     this.textSpeed = get(config, 'textSpeed', 1000)
     this.initialState = INITIAL_STATE
     if (this.textSpeed > 0) {

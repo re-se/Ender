@@ -12,11 +12,11 @@ export const addComponents = (components, key = 'default') => {
   }
 }
 
-// configPath
-export const setConfigPath = (path) => {
+// config
+export const setConfig = (config) => {
   return {
-    type: 'SET_CONFIG_PATH',
-    path
+    type: 'SET_CONFIG',
+    config
   }
 }
 

@@ -3,10 +3,8 @@ import Config from '../util/Config'
 import store from './store'
 import { toAbsolutePath } from '../util/util'
 
-let config = {}
-
 export function generateConfig(configPath) {
-  config = Config.generateConfig(configPath)
+  let config = Config.generateConfig(configPath)
   config.auto = false
   config.extendGetter('basePath', function (key, getter) {
     return function () {
@@ -16,5 +14,3 @@ export function generateConfig(configPath) {
   })
   return config
 }
-
-export { config }
