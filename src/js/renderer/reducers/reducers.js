@@ -31,7 +31,7 @@ const _evalMessage = (messageObject) => {
     let value = message[key]
     if (value.type === 'interpolation') {
       value.type = 'text'
-      value.body = engine.getVar(value.expr) // TODO: 変数展開
+      value.body = engine.eval(value.expr)
     } else if (value.type === 'br') {
       value.body = LF
     }

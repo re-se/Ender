@@ -2,7 +2,7 @@
 
 import fs from 'fs'
 import path from 'path'
-import { get } from 'lodash'
+import { set, get, has } from 'lodash'
 import parser from './parser.js'
 import instMap from './instMap.js'
 import { GeneratorFunction } from '../util/util'
@@ -14,7 +14,7 @@ class Ender {
   insts: Inst[]
   pc: number
   scriptPath: string
-  nameMap: Map
+  nameMap: {}
 
   /**
    * 初期化
@@ -28,7 +28,7 @@ class Ender {
     this._loadScript()
     this.pc = 0
     this.mainLoop = this._mainLoop()
-    this.nameMap = new Map()
+    this.nameMap = {}
   }
 
   /**
@@ -88,7 +88,7 @@ class Ender {
   }
 
   eval(expr) {
-    if(expr instanceof object) {
+    if(expr instanceof Object) {
       switch (expr.type) {
         case "var": return this.getVar(expr.name)
         case "func": return instMap[expr.type](expr)
@@ -100,22 +100,24 @@ class Ender {
   }
 
   /**
-   * グローバル変数を取得
-   * @param  {string} name 変数名
+   * 変数を取得
+   * @param  {string} path 変数のパス
    * @return {any}
    */
-   getVar(name) {
-    return this.nameMap.get(name)
+  getVar(path) {
+    if(!has(this.nameMap, path)) {
+      console.warn(`undefined variable: ${path}`)
+    }
+    return get(this.nameMap, path)
   }
 
   /**
-   * スクリプトで使変数を設定する
-   * @param {string} name 変数名
+   * スクリプトで使う変数を設定する
+   * @param {string} path 変数のパス
    * @param {any} value
-   * @return {any}
    */
-  setVar(name, value) {
-    return this.nameMap.set(name, value)
+  setVar(path, value) {
+    set(this.nameMap, path, this.eval(value))
   }
 }
 

@@ -26,4 +26,7 @@ export default {
   layout: (args: FuncInst[]) => {
     store.dispatch(addComponents(args))
   },
+  set: (args) => {
+    engine.setVar(args[0], args[1])
+  },
 }
