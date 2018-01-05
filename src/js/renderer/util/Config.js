@@ -3,7 +3,7 @@ import path from 'path'
 import { isPlainObject, cloneDeep } from 'lodash'
 import { toAbsolutePath } from './util'
 
-const defaultBaseConfigPath = "dist/resource/_base.json"
+const defaultBaseConfigPath = null // "dist/resource/_base.json"
 
 const toPublic = (key) => key[0] === '@' ? key : `@${key}`
 
@@ -76,7 +76,8 @@ export default class Config {
   }
 
   extendGetter(key, f) {
-    const getter = this.__lookupGetter__(key).bind(this) || (() => {})
+    let getter = this.__lookupGetter__(key) || (() => {})
+    getter = getter.bind(this)
     this.__defineGetter__(key, f(key, getter))
   }
 

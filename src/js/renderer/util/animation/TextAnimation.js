@@ -5,9 +5,9 @@ import store from '../../main/store'
 
 const INITIAL_STATE = {index: null, position: null}
 export default class TextAnimation extends Animation {
-  constructor(message) {
+  constructor(message, offset = 0) {
     super()
-    this.position = this.positionGenerator(message)
+    this.position = this.positionGenerator(message, offset)
     const config = store.getState().config
     this.textSpeed = get(config, 'textSpeed', 1000)
     this.initialState = INITIAL_STATE
@@ -16,14 +16,14 @@ export default class TextAnimation extends Animation {
     }
   }
 
-  *positionGenerator(message) {
+  *positionGenerator(message, offset) {
     let position = 0
-    for (const index in message) {
+    for (let index = offset; index < message.length; index++) {
       const currentMessage = message[index]
       if (currentMessage.body) {
-        while (position <= currentMessage.body.length) {
+        while (position < currentMessage.body.length) {
           position += 1
-          yield {index, position}
+          yield {index: index + 1, position}
         }
       }
     }
@@ -35,12 +35,15 @@ export default class TextAnimation extends Animation {
 
   start() {
     if (this.textSpeed > 0) {
+      let position = this.position.next()
+      if (position.done) {
+        this.finish()
+      }
       const intervalID = setInterval(() => {
-        const ret = this.position.next()
-        if (ret.done) {
+        store.dispatch(setMessagePosition(position.value))
+        position = this.position.next()
+        if (position.done) {
           this.finish()
-        } else {
-          store.dispatch(setMessagePosition(ret.value))
         }
       }, this.textSpeed)
       this.intervalID = intervalID

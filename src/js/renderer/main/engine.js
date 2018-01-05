@@ -40,6 +40,13 @@ class Ender {
   }
 
   /**
+   * 命令列の先読み
+   */
+  lookahead(n = 1) {
+    return this.insts[this.pc + n]
+  }
+
+  /**
    * 命令列を実行する
    * @return {[type]} [description]
    */

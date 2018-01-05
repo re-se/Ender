@@ -21,9 +21,15 @@ export const setConfig = (config) => {
 }
 
 // MessageBox
-export const setMessage = (message) => {
+export const clearMessage = () => {
   return {
-    type: 'SET_MESSAGE',
+    type: 'CLEAR_MESSAGE',
+  }
+}
+
+export const addMessage = (message) => {
+  return {
+    type: 'ADD_MESSAGE',
     message
   }
 }
