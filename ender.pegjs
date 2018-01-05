@@ -1,80 +1,80 @@
- {
-   function genObj(type) {
-      return {type: type};
-   }
+{
+  function genObj(type) {
+    return {type: type};
+  }
 
-   function genClear(type) {
-     var o = genObj("clear");
-     o[type] = true;
-     return o;
-   }
+  function genClear(type) {
+    var o = genObj("clear");
+    o[type] = true;
+    return o;
+  }
 
-   function genText(body) {
-     var o = genObj("text");
-     o.body = body;
-     return o;
-   }
+  function genText(body) {
+    var o = genObj("text");
+    o.body = body;
+    return o;
+  }
 
-   function genEnphasize(text) {
-     var o = genObj("strong");
-     o.body = text;
-     return o;
-   }
+  function genEnphasize(text) {
+    var o = genObj("strong");
+    o.body = text;
+    return o;
+  }
 
-   function genRuby(kanji, kana) {
-     var o = genObj("ruby");
-     o.body = kanji;
-     o.kanji = kanji;
-     o.kana = kana;
-     return o;
-   }
+  function genRuby(kanji, kana) {
+    var o = genObj("ruby");
+    o.body = kanji;
+    o.kanji = kanji;
+    o.kana = kana;
+    return o;
+  }
 
-   function genName(name) {
-     var o = genObj("name");
-     o.name = name;
-     return o;
-   }
+  function genName(name) {
+    var o = genObj("name");
+    o.name = name;
+    return o;
+  }
 
-   function genVar(name) {
-     var o = genObj("var");
-     o.name = name;
-     return o;
-   }
+  function genVar(name) {
+    var o = genObj("var");
+    o.name = name;
+    return o;
+  }
 
-   function genInterpolation(expr) {
-     var o = genObj("interpolation");
-     o.expr = expr;
-     return o;
-   }
+  function genInterpolation(expr) {
+    var o = genObj("interpolation");
+    o.expr = expr;
+    return o;
+  }
 
-   function genFunc(name, args) {
-     var o = genObj("func");
-     o.name = name;
-     o.args = args;
-     return o;
-   }
+  function genFunc(name, args) {
+    var o = genObj("func");
+    o.name = name;
+    o.args = args;
+    return o;
+  }
 
-   function genFuncDecl(name, args, body) {
-     var o = genObj("funcdecl");
-     o.name = name;
-     o.args = args;
-     o.body = body;
-     return o;
-   }
+  function genFuncDecl(name, args, body) {
+    var o = genObj("funcdecl");
+    o.name = name;
+    o.args = args;
+    o.body = body;
+    return o;
+  }
 
-   function toStr(arr) {
-     return arr.map(function(l) {
-       return l[1];
-     }).join("");
-   }
- }
+  function toStr(arr) {
+    return arr.map(function(l) {
+      return l[1];
+    }).join("");
+  }
+}
 
- FIle = lines:(_ Line)* __ {
-   var ret = [];
-   for(var i = 0; i < lines.length; i++) {
-     ret = ret.concat(lines[i][1]);
-   }
-   return ret;
+FIle = lines:(_ Line)* __ {
+  var ret = [];
+  for(var i = 0; i < lines.length; i++) {
+    ret = ret.concat(lines[i][1]);
+  }
+  return ret;
 }
 
 S = [ \t]
@@ -105,10 +105,10 @@ KP = "「" (KP / !"」" .)* "」" !EOL
 
 FuncDecl = "func" _ name:Name _ args:FuncArgs _ "{" lines:(__ !"}" Line)* __ "}" NL? {
   var body = [];
-   for(var i = 0; i < lines.length; i++) {
-     body = body.concat(lines[i][2]);
-   }
-   return genFuncDecl(name, args, body);
+  for(var i = 0; i < lines.length; i++) {
+    body = body.concat(lines[i][2]);
+  }
+  return genFuncDecl(name, args, body);
 }
 
 FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
@@ -152,13 +152,13 @@ Interpolation = "${" _ t:Assignable _ "}" {
 }
 
 Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
-	return genRuby(toStr(kanji), toStr(kana));
+  return genRuby(toStr(kanji), toStr(kana));
 }
 
 Escape = "\\" [「」{}@\\#*]
 
 SimpleText = line:(Escape / !(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#"/ "*") .)+ {
-   return genText(toStr(line));
+  return genText(toStr(line));
  }
 
 Enphasize = "*" text:(!("*") .)+ "*" {
