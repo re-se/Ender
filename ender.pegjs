@@ -143,12 +143,8 @@ Element
   / Enphasize
   / SimpleText
 
-Interpolation = "${" _ t:Assignable _ "}" {
-  var top = t[0];
-  var left = t[1];
-  var recv = t[2];
-  left[recv] = null;
-  return genInterpolation(top);
+Interpolation = "${" _ t:Expr _ "}" {
+  return genInterpolation(t);
 }
 
 Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
@@ -172,31 +168,22 @@ Call
   return genFunc(name, args);
 }
 
-VarDecl = t:Assignable _ "=" _ right:Arg EOL {
-  var top = t[0];
-  var left = t[1];
-  var recv = t[2];
-  left[recv] = right;
-  return genFunc("set", [top]);
+VarDecl = t:Assignable _ "=" _ right:Expr EOL {
+  return genFunc("set", [t, right]);
 }
+
 
 Assignable = recv:Identifier accessor:(Accessor)* {
-  var left = {};
-  var top = left;
-  for (var i = 0; i < accessor.length; i++) {
-    left = left[recv] = {};
-    recv = accessor[i];
-  }
-  return [top, left, recv];
+  return [].concat(recv, accessor).join('.');
 }
 
-Accessor = "." name:(Identifier / Name) {return name;}
+Accessor = "." name:(Identifier) {return name;}
 
 Identifier = Name
 
 Name = name:([a-zA-Z_] [a-zA-Z0-9_]*) { return name[0] + name[1].join(""); }
 
-Args = "(" __ arg1:Arg arg2:(__ "," __ Arg)*  __ ")" {
+Args = "(" __ arg1:Expr arg2:(__ "," __ Expr)*  __ ")" {
   var arg;
   if (arg1 || arg2.length > 0) {
     arg = [arg1];
@@ -210,9 +197,9 @@ Args = "(" __ arg1:Arg arg2:(__ "," __ Arg)*  __ ")" {
   return arg;
 }
 
-Arg = Call / Object / String / Number / Bool / Var / Null
+Expr = Call / Object / String / Number / Bool / Var / Null
 
-Var = name:Name { return genVar(name) }
+Var = name:Assignable { return genVar(name) }
 
 Bool = b:("true" / "false") {
   if(b === "true") {
@@ -242,11 +229,17 @@ SimpleObject = p:Property  {
   return obj;
 }
 
-Property = k:(Name / String / Number) _ ":" _ v:Arg {
+Property = k:(Name / String / Number) _ ":" _ v:Expr {
   return [k, v]
 }
 
-String = '"' str:(!'"' .)* '"' {
+String = SingleQuoted / DoubleQuoted
+
+DoubleQuoted = '"' str:(!'"' .)* '"'  {
+  return toStr(str);
+}
+
+SingleQuoted = "'" str:(!"'" .)* "'"  {
   return toStr(str);
 }
 
