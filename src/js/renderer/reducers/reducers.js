@@ -58,20 +58,19 @@ const MessageBox = (
   }, action
 ) => {
   switch(action.type) {
-    case 'CLEAR_MESSAGE': {
-        return {
-          ...state,
-          message: [],
-        }
+    case 'CLEAR_MESSAGE':
+      return {
+        ...state,
+        message: [],
       }
-    case 'ADD_MESSAGE': {
-        const { message, history, marker } = _evalMessage(action.message)
-        return {
-          ...state,
-          message: state.message.concat(message),
-          history: state.history + history,
-          marker: marker
-        }
+
+    case 'ADD_MESSAGE':
+      const { message, history, marker } = _evalMessage(action.message)
+      return {
+        ...state,
+        message: state.message.concat(message),
+        history: state.history + history,
+        marker: marker
       }
     case 'SET_MESSAGE_POSITION':
       return {
