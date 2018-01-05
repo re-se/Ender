@@ -30,7 +30,7 @@ export default class TextAnimation extends Animation {
   }
 
   getInitialState() {
-      return this.initialState
+    return this.initialState
   }
 
   start() {
@@ -38,6 +38,7 @@ export default class TextAnimation extends Animation {
       let position = this.position.next()
       if (position.done) {
         this.finish()
+        return
       }
       const intervalID = setInterval(() => {
         store.dispatch(setMessagePosition(position.value))

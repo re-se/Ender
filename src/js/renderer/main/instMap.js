@@ -42,6 +42,7 @@ const instMap = {
       beforeMessageLength
     )
     store.dispatch(setMessagePosition(animation.getInitialState()))
+    animation.start()
     store.dispatch(startAnimation(animation))
   },
 

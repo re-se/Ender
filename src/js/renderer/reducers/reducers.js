@@ -89,7 +89,6 @@ const MessageBox = (
 const animation = (state = [], action) => {
   switch(action.type) {
     case 'START_ANIMATION':
-      action.animation.start()
       return state.concat(action.animation)
     case 'FINISH_ANIMATION':
       return []
