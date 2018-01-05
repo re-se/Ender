@@ -23,14 +23,21 @@ export default class Config {
     }
     if (baseConfigPath != null && path !== baseConfigPath) {
       config.baseConfig = Config.generateConfig(baseConfigPath)
-      for (const key in config.baseConfig.keys()) {
-        if (!config[key]) {
-          config.__defineGetter__(key, () => this.config[accessibility][key] || this.baseConfig[key])
-          config.__defineSetter__(key, (value) => {
-            this.config[accessibility][key] = value
-          })
+      const accessibilities = ['public', 'private']
+      accessibilities.forEach((accessibility) => {
+        const keys = config.baseConfig.keys(accessibility)
+        for (const i in keys) {
+          const key = keys[i]
+          if (!config[key]) {
+            config.__defineGetter__(key, function() {
+              return this.config[accessibility][key] || this.baseConfig[key]
+            })
+            config.__defineSetter__(key, function(value) {
+              this.config[accessibility][key] = value
+            })
+          }
         }
-      }
+      })
     }
     return config
   }
@@ -40,6 +47,7 @@ export default class Config {
     this.config = {}
     this.config['public'] = {}
     this.config['private'] = {}
+    this.baseConfig = {}
     for (let key in this.configObject) {
       const value = this.configObject[key]
       if (isPublic) {
@@ -68,11 +76,12 @@ export default class Config {
   }
 
   extendGetter(key, f) {
-    const getter = this.__lookupGetter__(key) || (() => {})
-    this.__defineGetter__(key, f.call(this, key, getter))
+    const getter = this.__lookupGetter__(key).bind(this) || (() => {})
+    this.__defineGetter__(key, f(key, getter))
   }
 
-  keys() {
+  keys(accessibility = null) {
+    if (accessibility) return Object.keys(this.config[accessibility])
     return Object.keys(this.config['public']).concat(Object.keys(this.config['private']))
   }
 
