@@ -17,7 +17,7 @@ module.exports = {
   },
   "rules": {
     "semi": ["warn", "never"],
-    "indent": ["error", 2],
+    "indent": ["error", 2, {"SwitchCase": 1}],
     "flowtype/define-flow-type": 1,
     "flowtype/use-flow-type": 1,
   }
