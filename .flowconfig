@@ -4,7 +4,5 @@
 
 [libs]
   src/decls/
+  flow-typed/
 [options]
-
-[version]
-^0.41.0
