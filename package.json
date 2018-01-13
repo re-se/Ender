@@ -59,7 +59,7 @@
     "eslint-plugin-flowtype": "^2.40.1",
     "eslint-plugin-react": "^7.5.1",
     "extend": "^3.0.0",
-    "flow-bin": "^0.41.0",
+    "flow-bin": "^0.63.1",
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.2",
     "gulp-cjsx": "^3.0.0",
