@@ -5,6 +5,7 @@ import { addComponents, addImage } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import store from './store'
 import engine from './engine'
+import { toAbsolutePath } from '../util/util'
 
 /**
  * 関数命令の引数を取得する
@@ -46,4 +47,15 @@ export default {
   set: (args: any[]) => {
     engine.setVar(args[0], args[1])
   },
+  import: (args: string[]) => {
+    const path = toAbsolutePath(
+      engine.eval(args[0]),
+      store.getState().config.basePath
+    )
+    const css = require(path)
+    store.dispatch(addComponents({
+      name: 'Style',
+      args: [css],
+    }, 'style'))
+  }
 }

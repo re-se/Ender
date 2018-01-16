@@ -9,6 +9,7 @@ import { GeneratorFunction } from '../util/util'
 import { remote } from 'electron'
 import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
+import init from '../util/css-import'
 
 class Ender {
   insts: Inst[]
@@ -22,6 +23,7 @@ class Ender {
    * @return {void}
    */
   init(config) {
+    init()
     let textPath = get(config, 'text.path') || ''
     this.scriptPath = path.join(config.basePath, textPath, config.main)
 
@@ -80,6 +82,7 @@ class Ender {
 
       if (remote.process.env['NODE_ENV'] === 'development') {
         if (this.pc >= this.insts.length) {
+          yield
           store.dispatch(resetState())
           this.pc = 0
         }

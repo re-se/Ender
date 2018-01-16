@@ -1,5 +1,6 @@
 //@flow
 import {getFuncArgs} from '../main/funcMap'
+import engine from '../main/engine'
 
 /** デフォルトの画像のクラス名 */
 const DEFAULT_IMAGE_CLASSNAME = 'image-default'
@@ -30,7 +31,7 @@ export default {
     "getProps": (args) => {
       let classNames = []
       if (typeof args[0] === 'string' || args[0] instanceof Array) {
-        classNames.concat(args[0])
+        classNames = classNames.concat(engine.eval(args[0]))
         args = args.slice(1)
       }
       return {
@@ -45,5 +46,13 @@ export default {
       let classNames = [].concat(args[0])
       return { classNames }
     },
+  },
+  "Style": {
+    "path": "../components/Style",
+    "getProps": (args) => {
+      let style = args[0]
+      return { style }
+    },
   }
+
 }
