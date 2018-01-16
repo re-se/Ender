@@ -1,7 +1,20 @@
-import Animation from './Animation'
+//@flow
+import type Animation from './Animation'
 
-class ImageAnimation extends Animation {
-  constructor() {
+export default class ImageAnimation implements Animation {
+  effectName: string
+  isFinished: bool
+
+  constructor(effectName: string) {
+    this.isFinished = false
+    this.effectName = effectName
+  }
+
+  start() {
+
+  }
+
+  onExec() {
 
   }
 }

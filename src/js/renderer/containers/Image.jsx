@@ -1,13 +1,23 @@
+//@flow
 import React from 'react'
+import store from '../main/store'
+import { startAnimation } from '../actions/actions'
 
-export type Props = {
+import ImageAnimation from '../util/animation/ImageAnimation'
+
+type Props = {
+  src: string,
   classList: string[],
-  source: string,
-  loadCallback: ()=>void
+  effect: string
 }
 
-const Image = ({classNames = [], source = '', loadCallback = () => {}}: Props) => (
-  <img className="ender-image {classNames.join(' ') : 'image-default'}" src={source} onLoad={loadCallback} onError={loadCallback}/>
-)
+const Image = ({src, classList, effect}: Props) => {
+  const onLoad = () => {
+    store.dispatch(startAnimation(new ImageAnimation(effect)))
+  }
+  return (
+    <img className={`ender-image ${classList.join(' ')}`} src={src} onLoad={onLoad}/>
+  )
+}
 
 export default Image

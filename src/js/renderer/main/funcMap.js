@@ -1,32 +1,49 @@
+//@flow
 import generateComponent from '../util/generateComponent'
 import type { FuncInst } from './instMap'
 import { addComponents, addImage } from '../actions/actions'
+import ImageAnimation from '../util/animation/ImageAnimation'
 import store from './store'
 import engine from './engine'
 
-export type Image = {
-  source: string,
-  classList: string[],
-  effect: string,
-  callback: () => void
+/**
+ * 関数命令の引数を取得する
+ * @param {any[]} args
+ * @param {number} index
+ * @param {any | undefined} defaultValue
+ * @return {any | undefined}
+ */
+export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
+  if (args[index] !== undefined && args[index] !== '') {
+    return engine.eval(args[index])
+  } else {
+    return defaultValue
+  }
 }
 
 export default {
-  img: (args) => {
-    let image: Image = {
-      source: engine.eval(args[0]),
-      classList: [].concat(engine.eval(args[1])),
-      effect: engine.eval(args[2]),
-      callback: () => {
-        engine.exec()
-      }
-    }
-    store.dispatch(addImage(image))
+  /**
+   * 画像を描画する
+   * args {
+   *  1: src        画像のファイルパス
+   *  2: classList  クラス名
+   *  3: effect     描画時のエフェクト(FadeInなど)
+   * }
+   * @param  {any[]} args
+   * @return {void}
+   */
+  img: (args: string[]) => {
+    store.dispatch(addComponents({
+      name: 'Image',
+      args: args
+    }, 'image'))
   },
+
   layout: (args: FuncInst[]) => {
     store.dispatch(addComponents(args))
   },
-  set: (args) => {
+
+  set: (args: any[]) => {
     engine.setVar(args[0], args[1])
   },
 }

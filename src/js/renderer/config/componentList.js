@@ -1,15 +1,19 @@
+//@flow
+import {getFuncArgs} from '../main/funcMap'
+
+/** デフォルトの画像のクラス名 */
+const DEFAULT_IMAGE_CLASSNAME = 'image-default'
+
 export default {
   /* "コンポーネント名": [引数名の順番] */
   'Image': {
     'path': '../containers/Image',
-    'getProps': (args) => {
+    'getProps': (args: any[]) => {
       return {
-        source: engine.eval(args[0]),
-        classList: [].concat(engine.eval(args[1])),
-        effect: engine.eval(args[2]),
-        callback: () => {
-          engine.exec()
-        }
+        key: 'image',
+        src: getFuncArgs(args, 0),
+        classList: [].concat(getFuncArgs(args, 1, DEFAULT_IMAGE_CLASSNAME)),
+        effect: getFuncArgs(args, 2)
       }
     }
   },

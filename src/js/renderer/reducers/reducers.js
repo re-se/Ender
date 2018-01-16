@@ -96,16 +96,6 @@ const animation = (state = [], action) => {
   }
 }
 
-// Image
-const Image = (state = [], action) => {
-  switch (action.type) {
-    case 'ADD_IMAGE':
-      return state.concat(action.image)
-    default:
-      return state
-  }
-}
-
 const config = (state = null, action) => {
   switch(action.type) {
     case 'SET_CONFIG':

@@ -4,9 +4,10 @@ import { get } from 'lodash'
 import store from '../../main/store'
 
 const INITIAL_STATE = {index: null, position: null}
-export default class TextAnimation extends Animation {
+export default class TextAnimation implements Animation {
+  isFinished: bool
   constructor(message, offset = 0) {
-    super()
+    this.isFinished = false
     this.position = this.positionGenerator(message, offset)
     const config = store.getState().config
     this.textSpeed = get(config, 'textSpeed', 1000)

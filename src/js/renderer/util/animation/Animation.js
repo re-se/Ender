@@ -14,3 +14,12 @@ export default class Animation {
   onExec() {
   }
 }
+
+// interface Animation {
+//   isFinished: bool,
+//   start(): void,
+//   finish(): void,
+//   onExec(): void,
+// }
+
+// export default Animation
