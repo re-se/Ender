@@ -57,7 +57,7 @@ class Ender {
     let isInterrupted = false
     for (const key in animation) {
       if (!animation[key].isFinished) {
-        animation[key].finish()
+        animation[key].onExec()
         isInterrupted = true
       }
     }
