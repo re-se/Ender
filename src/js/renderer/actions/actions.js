@@ -64,8 +64,8 @@ export const finishAnimation = () => {
 }
 
 export const addImage = (image) => {
-  return {
-    type: 'ADD_IMAGE',
-    image
-  }
+  return addComponents({
+    name: 'Image',
+    args: image
+  }, 'image')
 }

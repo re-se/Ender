@@ -11,12 +11,21 @@ type Props = {
   effect: string
 }
 
+const getImageId = (src, classList) => {
+  return src.replace(/[\/\.\\]/, '') + classList.join('-')
+}
+
 const Image = ({src, classList, effect}: Props) => {
   const onLoad = () => {
-    store.dispatch(startAnimation(new ImageAnimation(effect)))
+    const imageAnimation = new ImageAnimation(
+      `#${getImageId(src, classList)}`,
+      effect
+    )
+    imageAnimation.start()
+    store.dispatch(startAnimation(imageAnimation))
   }
   return (
-    <img className={`ender-image ${classList.join(' ')}`} src={src} onLoad={onLoad}/>
+    <img className={`ender-image ${classList.join(' ')}`} src={src} onLoad={onLoad} id={getImageId(src, classList)}/>
   )
 }
 
