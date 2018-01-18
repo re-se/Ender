@@ -1,20 +1,20 @@
 // @flow
+import Animation from './Animation'
 import { setMessagePosition } from '../../actions/actions'
 import { get } from 'lodash'
 import store from '../../main/store'
 
-type State = {
-  index: ?number,
-  position: ?number
+type TextAnimationState = {
+  index?: number,
+  position?: number
 }
-const INITIAL_STATE: State = {index: null, position: null}
-export default class TextAnimation implements Animation {
-  isFinished = false
+const INITIAL_STATE: TextAnimationState = {index: null, position: null}
+export default class TextAnimation extends Animation {
   position: Iterator<State>
   textSpeed: number
-  initialState: State
+  initialState: TextAnimationState
   constructor(message, offset = 0) {
-    this.isFinished = false
+    super()
     this.position = this.positionGenerator(message, offset)
     const config = store.getState().config
     this.textSpeed = get(config, 'textSpeed', 1000)
@@ -24,7 +24,7 @@ export default class TextAnimation implements Animation {
     }
   }
 
-  *positionGenerator(message, offset): Generator<> {
+  *positionGenerator(message, offset): Generator<TextAnimationState> {
     let position = 0
     for (let index = offset; index < message.length; index++) {
       const currentMessage = message[index]

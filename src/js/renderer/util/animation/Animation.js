@@ -1,7 +1,7 @@
+//@flow
 export default class Animation {
-  isFinished: bool
+  isFinished = false
   constructor(callback: () => void) {
-    this.isFinished = false
   }
 
   start() {
@@ -14,12 +14,3 @@ export default class Animation {
   onExec() {
   }
 }
-
-// interface Animation {
-//   isFinished: bool,
-//   start(): void,
-//   finish(): void,
-//   onExec(): void,
-// }
-
-// export default Animation

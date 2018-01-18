@@ -34,10 +34,7 @@ export default {
    * @return {void}
    */
   img: (args: string[]) => {
-    store.dispatch(addComponents({
-      name: 'Image',
-      args: args
-    }, 'image'))
+    store.dispatch(addImage(args))
   },
 
   layout: (args: FuncInst[]) => {
@@ -47,6 +44,7 @@ export default {
   set: (args: any[]) => {
     engine.setVar(args[0], args[1])
   },
+
   import: (args: string[]) => {
     const path = toAbsolutePath(
       engine.eval(args[0]),
