@@ -1,7 +1,7 @@
 //@flow
 export default class Animation {
   isFinished = false
-  constructor(callback: () => void) {
+  constructor() {
   }
 
   start() {

@@ -5,26 +5,30 @@ import { get } from 'lodash'
 import store from '../../main/store'
 
 type TextAnimationState = {
-  index?: number,
-  position?: number
+  index: ?number,
+  position: ?number
 }
 const INITIAL_STATE: TextAnimationState = {index: null, position: null}
 export default class TextAnimation extends Animation {
-  position: Iterator<State>
+  position: Iterator<TextAnimationState>
   textSpeed: number
   initialState: TextAnimationState
-  constructor(message, offset = 0) {
+  intervalID: IntervalID
+  constructor(message: Message[], offset: number = 0) {
     super()
     this.position = this.positionGenerator(message, offset)
     const config = store.getState().config
     this.textSpeed = get(config, 'textSpeed', 1000)
     this.initialState = INITIAL_STATE
     if (this.textSpeed > 0) {
-      this.initialState = this.position.next().value
+      const { value } = this.position.next()
+      if (value !== undefined) {
+        this.initialState = value
+      }
     }
   }
 
-  *positionGenerator(message, offset): Generator<TextAnimationState> {
+  *positionGenerator(message: Message[], offset: number): Generator<TextAnimationState, void, void> {
     let position = 0
     for (let index = offset; index < message.length; index++) {
       const currentMessage = message[index]

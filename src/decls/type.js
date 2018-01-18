@@ -4,7 +4,9 @@ declare type ReduxInitAction = { type: '@@INIT' };
 
 declare type Action = ReduxInitAction;
 
-declare type Store = ReduxStore<State, Action>;
+declare type State = {
+  animation: Animation[]
+}
 
 declare type Dispatch = ReduxDispatch<Action>;
 
@@ -13,6 +15,13 @@ declare type ImageState = {
   src: string,
   classList: string[],
   effect: string
+}
+
+
+
+declare type Message = {
+  type: string,
+  body: ?string
 }
 
 declare module './ender.js' {
