@@ -1,16 +1,11 @@
 //@flow
 export default class Animation {
   isFinished = false
-  constructor() {
-  }
+  constructor() {}
 
-  start() {
+  start() {}
 
-  }
+  finish() {}
 
-  finish() {
-  }
-
-  onExec() {
-  }
+  onExec() {}
 }
