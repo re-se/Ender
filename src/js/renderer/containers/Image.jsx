@@ -29,7 +29,7 @@ const Image = ({src, classList, effect}: Props) => {
   const config = store.getState().config
   const srcPath = path.join(
     config.basePath,
-    get(config, 'image.path') || '',
+    get(config, 'image.path', ''),
     src
   )
   return (

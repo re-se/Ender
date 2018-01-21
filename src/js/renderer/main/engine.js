@@ -24,7 +24,7 @@ class Ender {
    */
   init(config) {
     init()
-    let textPath = get(config, 'text.path') || ''
+    let textPath = get(config, 'text.path', '')
     this.scriptPath = path.join(config.basePath, textPath, config.main)
 
     this._loadScript()
