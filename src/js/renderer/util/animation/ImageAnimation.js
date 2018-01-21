@@ -6,7 +6,8 @@ import { updateAnimationStyle } from '../../actions/actions'
 export type AnimationStyle = {
   startStyle?: Object,
   endStyle: Object,
-  animationStyle: Object
+  animationStyle: Object,
+  animeController: any //TODO:Animejsの返り値
 }
 
 export default class ImageAnimation extends Animation {
@@ -22,6 +23,7 @@ export default class ImageAnimation extends Animation {
   startStyle: Object
   endStyle: Object
   animationStyle: Object
+  animeController: any //TODO:Animejsの返り値
 
   constructor(selector: string, effectName: string) {
     super()
@@ -47,6 +49,9 @@ export default class ImageAnimation extends Animation {
 
   finish() {
     this.isFinished = true
+    this.animeController.pause()
+    this.animationStyle = this.endStyle
+    store.dispatch(updateAnimationStyle(this))
   }
 
   onExec() {

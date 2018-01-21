@@ -8,7 +8,7 @@ export default (selector: string, onUpdate: Function): AnimationStyle => {
   }
   let animationStyle = Object.assign({}, startStyle)
 
-  anime({
+  let animeController = anime({
     targets: animationStyle,
     opacity: 1,
     easing: 'linear',
@@ -17,10 +17,11 @@ export default (selector: string, onUpdate: Function): AnimationStyle => {
   })
 
   return {
-    startStyle: startStyle,
+    startStyle,
     endStyle: {
       opacity: 1
     },
-    animationStyle: animationStyle
+    animationStyle,
+    animeController
   }
 }
