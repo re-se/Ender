@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import generateComponent from '../util/generateComponent'
+import AnimationStyle from './AnimationStyle'
 
 const Game = ({ components = {} }) => {
   let childComponents = []
@@ -13,6 +14,7 @@ const Game = ({ components = {} }) => {
   return (
     <div id="inner" className="inner-view" key="inner-view">
       {childComponents}
+      <AnimationStyle />
     </div>
   )
 }

@@ -63,9 +63,18 @@ export const finishAnimation = () => {
   }
 }
 
+// Image
 export const addImage = (image) => {
   return addComponents({
     name: 'Image',
     args: image
   }, 'image')
+}
+
+// AnimationStyle
+export const updateAnimationStyle = (animation) => {
+  return {
+    type: 'UPDATE_ANIMATION_STYLE',
+    animation
+  }
 }

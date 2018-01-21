@@ -96,6 +96,22 @@ const animation = (state = [], action) => {
   }
 }
 
+const animationStyle = (state = {}, action) => {
+  switch(action.type) {
+    case 'UPDATE_ANIMATION_STYLE':
+      const selector = action.animation.selector
+      return Object.assign({}, state, {
+        [selector]: Object.assign(
+          {},
+          state[selector],
+          action.animation.animationStyle
+        )
+      })
+    default:
+      return state
+  }
+}
+
 const config = (state = null, action) => {
   switch(action.type) {
     case 'SET_CONFIG':
@@ -109,6 +125,7 @@ const reducer = combineReducers({
   components,
   MessageBox,
   animation,
+  animationStyle,
   config,
 })
 

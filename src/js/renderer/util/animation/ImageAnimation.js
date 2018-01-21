@@ -1,37 +1,55 @@
 //@flow
 import Animation from './Animation'
-import { TimelineMax } from 'gsap'
+import store from '../../main/store'
+import { updateAnimationStyle } from '../../actions/actions'
+
+export type AnimationStyle = {
+  startStyle?: Object,
+  endStyle: Object,
+  animationStyle: Object
+}
 
 export default class ImageAnimation extends Animation {
   selector: string
   effectName: string
-  timeline: TimelineMax
-  animation: Function
+  /**
+   * エフェクト名に対応したアニメーションを生成する関数
+   * @param  {string} エフェクト名
+   * @param  {Function} アップデート関数
+   * @return {AnimationStyle}
+   */
+  animation: (string, Function) => AnimationStyle
+  startStyle: Object
+  endStyle: Object
+  animationStyle: Object
 
   constructor(selector: string, effectName: string) {
     super()
     this.selector = selector
     this.effectName = effectName
     this.animation = require(`./image/${effectName}`).default
-    this.timeline = this._loadTimeline()
-  }
-
-  _loadTimeline() {
-    let self = this
-    const timeline = new TimelineMax(() => {
-      self.isFinished = true
-    })
-    this.animation(timeline, this.selector)
-    return timeline
   }
 
   start() {
-    console.log(this.selector)
-    this.timeline.play()
+    const animationStyle = this.animation(
+      this.selector,
+      () => {
+        store.dispatch(updateAnimationStyle(this))
+      }
+    )
+
+    this.startStyle = animationStyle.startStyle? animationStyle.startStyle : {}
+    this.endStyle = animationStyle.endStyle
+    this.animationStyle = animationStyle.animationStyle
+
+    store.dispatch(updateAnimationStyle(this))
+  }
+
+  finish() {
+    this.isFinished = true
   }
 
   onExec() {
-    this.timeline.progress(1, false)
-    this.isFinished = true
+    this.finish()
   }
 }

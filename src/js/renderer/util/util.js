@@ -8,3 +8,24 @@ export const toAbsolutePath = (originPath, prefix = app.getAppPath()) => {
 }
 
 export const GeneratorFunction = (function*(){}).constructor
+
+/**
+ * JSON を CSS のフォーマットの文字列に変換する
+ * @param  {Object} json
+ * @return {string}
+ */
+export const toCss = (json: Object) => {
+  let css = '';
+  for(const key in json) {
+    const child = json[key]
+    // selector: style の場合
+    if(typeof(child) === 'object') {
+      css += `${key} {${toCss(child)}}\n`
+    }
+    // attribute: value の場合
+    else {
+      css += `${key}: ${child};\n`
+    }
+  }
+  return css
+}

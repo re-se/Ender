@@ -2,6 +2,8 @@
 import React from 'react'
 import store from '../main/store'
 import { startAnimation } from '../actions/actions'
+import { get } from 'lodash'
+import path from 'path'
 
 import ImageAnimation from '../util/animation/ImageAnimation'
 
@@ -21,11 +23,17 @@ const Image = ({src, classList, effect}: Props) => {
       `#${getImageId(src, classList)}`,
       effect
     )
-    imageAnimation.start()
     store.dispatch(startAnimation(imageAnimation))
+    imageAnimation.start()
   }
+  const config = store.getState().config
+  const srcPath = path.join(
+    config.basePath,
+    get(config, 'image.path') || '',
+    src
+  )
   return (
-    <img className={`ender-image ${classList.join(' ')}`} src={src} onLoad={onLoad} id={getImageId(src, classList)}/>
+    <img className={`ender-image ${classList.join(' ')}`} src={srcPath} onLoad={onLoad} id={getImageId(src, classList)}/>
   )
 }
 
