@@ -1,19 +1,19 @@
 import React from 'react'
-import { get } from 'lodash'
-import { connect } from 'react-redux'
+import {get} from 'lodash'
+import {connect} from 'react-redux'
+import engine from '../main/engine'
 
 export type Props = {
   classList: string[],
   path: string,
-  loadCallback: ()=>void
-};
+  loadCallback: () => void,
+}
 
-const STRONG_RUBY_STRING = "﹅"
+const STRONG_RUBY_STRING = '﹅'
 
-class MessageBox extends React.Component
-{
+class MessageBox extends React.Component {
   render() {
-    if(this.props.message) {
+    if (this.props.message) {
       return (
         <div className={`ender-messageBox ${this.props.classNames.join(' ')}`}>
           <div className="ender-messageBox-inner">
@@ -22,9 +22,8 @@ class MessageBox extends React.Component
         </div>
       )
     } else {
-      return <div/>
+      return <div />
     }
-
   }
 
   /**
@@ -36,7 +35,7 @@ class MessageBox extends React.Component
     let messageDoms = []
     let style = {}
     let index = this.props.index || message.length
-    for(let i = 0; i < index; i++) {
+    for (let i = 0; i < index; i++) {
       let word = message[i]
       let key = `message-${i}`
       let body = word.body
@@ -47,15 +46,17 @@ class MessageBox extends React.Component
           kana = ''
         }
       }
-      switch(word.type) {
+      switch (word.type) {
         // 標準メッセージ
-        case "text":
+        case 'text':
           messageDoms.push(
-            <span key={key} style={style}>{body}</span>
+            <span key={key} style={style}>
+              {body}
+            </span>
           )
           break
         // メッセージ(強調)
-        case "strong":
+        case 'strong':
           messageDoms.push(
             <ruby key={key} style={style}>
               <rb>{body}</rb>
@@ -64,13 +65,11 @@ class MessageBox extends React.Component
           )
           break
         // 改行
-        case "br":
-          messageDoms.push(
-            <br key={key} style={style}/>
-          )
+        case 'br':
+          messageDoms.push(<br key={key} style={style} />)
           break
         // ルビ
-        case "ruby":
+        case 'ruby':
           messageDoms.push(
             <ruby key={key} style={style}>
               <rb>{body}</rb>
@@ -79,7 +78,7 @@ class MessageBox extends React.Component
           )
           break
         // 書式、スタイル指定
-        case "style":
+        case 'style':
           style = word.value
           break
         // 未定義の種別ならエラー
@@ -93,7 +92,9 @@ class MessageBox extends React.Component
         messageDoms.pop()
       }
       messageDoms.push(
-        <span key='marker' className="marker">{marker}</span>
+        <span key="marker" className="marker">
+          {marker}
+        </span>
       )
     }
     return messageDoms
@@ -105,23 +106,21 @@ class MessageBox extends React.Component
    * @return {string}
    */
   _generateStrongRuby(wordCount: int) {
-    let ruby = ""
-    for(let i = 0; i < wordCount; i++) {
-      ruby += get(this.props.config, 'text.strong') || STRONG_RUBY_STRING
+    let ruby = ''
+    for (let i = 0; i < wordCount; i++) {
+      ruby += engine.getVar('config.text.strong', STRONG_RUBY_STRING)
     }
     return ruby
   }
 }
 
-
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    config : state.config,
     message: state.MessageBox.message,
     marker: state.MessageBox.marker,
     classNames: state.MessageBox.classNames,
     index: state.MessageBox.index,
-    position: state.MessageBox.position
+    position: state.MessageBox.position,
   }
 }
 

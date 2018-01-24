@@ -1,11 +1,11 @@
 //@flow
 import generateComponent from '../util/generateComponent'
-import type { FuncInst } from './instMap'
-import { addComponents, addImage } from '../actions/actions'
+import type {FuncInst} from './instMap'
+import {addComponents, addImage} from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import store from './store'
 import engine from './engine'
-import { toAbsolutePath } from '../util/util'
+import {toAbsolutePath} from '../util/util'
 
 /**
  * 関数命令の引数を取得する
@@ -48,12 +48,17 @@ export default {
   import: (args: string[]) => {
     const path = toAbsolutePath(
       engine.eval(args[0]),
-      store.getState().config.basePath
+      engine.getVar('config.basePath')
     )
     const css = require(path)
-    store.dispatch(addComponents({
-      name: 'Style',
-      args: [css],
-    }, 'style'))
-  }
+    store.dispatch(
+      addComponents(
+        {
+          name: 'Style',
+          args: [css],
+        },
+        'style'
+      )
+    )
+  },
 }

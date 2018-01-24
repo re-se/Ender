@@ -3,6 +3,7 @@ import Animation from './Animation'
 import {setMessagePosition} from '../../actions/actions'
 import {get} from 'lodash'
 import store from '../../main/store'
+import engine from '../../main/engine'
 
 type TextAnimationState = {
   index: ?number,
@@ -17,8 +18,7 @@ export default class TextAnimation extends Animation {
   constructor(message: Message[], offset: number = 0) {
     super()
     this.position = this.positionGenerator(message, offset)
-    const config = store.getState().config
-    this.textSpeed = get(config, 'textSpeed', 1000)
+    this.textSpeed = engine.getVar('config.textSpeed', 1000)
     this.initialState = INITIAL_STATE
     if (this.textSpeed > 0) {
       const {value} = this.position.next()

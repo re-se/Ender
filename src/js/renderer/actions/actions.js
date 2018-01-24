@@ -1,6 +1,6 @@
 // root
-export const resetState = (components) => {
-  return { type: 'RESET_STATE' }
+export const resetState = components => {
+  return {type: 'RESET_STATE'}
 }
 
 // components
@@ -8,15 +8,7 @@ export const addComponents = (components, key = 'default') => {
   return {
     type: 'ADD_COMPONENTS',
     components,
-    key
-  }
-}
-
-// config
-export const setConfig = (config) => {
-  return {
-    type: 'SET_CONFIG',
-    config
+    key,
   }
 }
 
@@ -27,10 +19,10 @@ export const clearMessage = () => {
   }
 }
 
-export const addMessage = (message) => {
+export const addMessage = message => {
   return {
     type: 'ADD_MESSAGE',
-    message
+    message,
   }
 }
 
@@ -38,22 +30,22 @@ export const setMessagePosition = ({index, position}) => {
   return {
     type: 'SET_MESSAGE_POSITION',
     index,
-    position
+    position,
   }
 }
 
-export const setMessageClassNames = (classNames) => {
+export const setMessageClassNames = classNames => {
   return {
     type: 'SET_MESSAGE_CLASSNAMES',
-    classNames
+    classNames,
   }
 }
 
 // animation
-export const startAnimation = (animation) => {
+export const startAnimation = animation => {
   return {
     type: 'START_ANIMATION',
-    animation
+    animation,
   }
 }
 
@@ -64,17 +56,20 @@ export const finishAnimation = () => {
 }
 
 // Image
-export const addImage = (image) => {
-  return addComponents({
-    name: 'Image',
-    args: image
-  }, 'image')
+export const addImage = image => {
+  return addComponents(
+    {
+      name: 'Image',
+      args: image,
+    },
+    'image'
+  )
 }
 
 // AnimationStyle
-export const updateAnimationStyle = (animation) => {
+export const updateAnimationStyle = animation => {
   return {
     type: 'UPDATE_ANIMATION_STYLE',
-    animation
+    animation,
   }
 }

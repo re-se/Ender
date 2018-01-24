@@ -1,15 +1,15 @@
 // @flow
-import { ipcRenderer } from 'electron'
+import {ipcRenderer} from 'electron'
 import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
+import {render} from 'react-dom'
+import {Provider} from 'react-redux'
 
 import Game from '../components/Game'
 import engine from './engine'
-import { toAbsolutePath } from '../util/util'
+import {toAbsolutePath} from '../util/util'
 import store from './store'
-import { setConfig, setEngine } from '../actions/actions'
-import { generateConfig } from './config'
+import {setEngine} from '../actions/actions'
+import {generateConfig} from './config'
 
 ipcRenderer.send('request-config-path')
 ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
@@ -20,7 +20,6 @@ ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
   console.log(configPath)
 
   const config = generateConfig(configPath)
-  store.dispatch(setConfig(config))
 
   engine.init(config)
   engine.exec()

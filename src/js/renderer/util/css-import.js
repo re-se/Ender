@@ -1,8 +1,10 @@
 import hook from 'css-modules-require-hook'
 import store from '../main/store'
-export default function () {
+import engine from '../main/engine'
+
+export default function() {
   hook({
-    rootDir: store.getState().config.basePath,
+    rootDir: engine.getVar('config.basePath'),
     generateScopedName: '[local]',
     append: [
       // Rewrite css urls
@@ -13,12 +15,12 @@ export default function () {
       // })
       (css, result) => {
         css.exports = css.source.input.css
-      }
+      },
     ],
-    processCss: function (css) {
+    processCss: function(css) {
       if (!document || !document.head) {
         return css
       }
-    }
+    },
   })
 }
