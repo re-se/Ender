@@ -3,6 +3,12 @@
     return {type: type};
   }
 
+  function genComment(body) {
+    var o = genObj("comment");
+    o.body = body;
+    return o;
+  }
+
   function genClear(type) {
     var o = genObj("clear");
     o[type] = true;
@@ -93,7 +99,7 @@ Line
   / Text
   / Br
 
-Comment = "#" (!NL .)* NL { return null; }
+Comment = "#" c:((!NL .)*) NL { return genComment(toStr(c)); }
 
 Say = name:(Escape / !(NL / "「") .)* !KP "「" lines:(Call / Text / Br)* "」" {
   name = toStr(name);

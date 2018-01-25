@@ -1,12 +1,17 @@
 //@flow
 import engine from './engine.js'
 import funcMap from './funcMap'
-import { addMessage, clearMessage, setMessagePosition, startAnimation } from '../actions/actions'
+import {
+  addMessage,
+  clearMessage,
+  setMessagePosition,
+  startAnimation,
+} from '../actions/actions'
 import store from './store'
 import TextAnimation from '../util/animation/TextAnimation'
 
 export type WaitInst = {
-  type: string
+  type: string,
 }
 
 export type TextInst = {
@@ -14,8 +19,8 @@ export type TextInst = {
   value: {
     type: string,
     body?: string,
-    expr?: string
-  }[]
+    expr?: string,
+  }[],
 }
 
 export type FuncInst = {
@@ -26,11 +31,11 @@ export type FuncInst = {
 
 export type ClearInst = {
   type: string,
-  message?: bool,
+  message?: boolean,
 }
 
 const instMap = {
-  wait: function* (waitInst: WaitInst) {
+  wait: function*(waitInst: WaitInst) {
     yield
   },
 
@@ -46,15 +51,11 @@ const instMap = {
     store.dispatch(startAnimation(animation))
   },
 
-  name: () => {
+  name: () => {},
 
-  },
+  nameClear: () => {},
 
-  nameClear: () => {
-
-  },
-
-  clear: (clearInst) => {
+  clear: clearInst => {
     if (clearInst.message) {
       store.dispatch(clearMessage())
     }
@@ -64,9 +65,9 @@ const instMap = {
     funcMap[funcInst.name](funcInst.args)
   },
 
-  funcdecl: () => {
+  funcdecl: () => {},
 
-  }
+  comment: () => {},
 }
 
 export default instMap
