@@ -7,21 +7,18 @@ const Game = ({ components = {} }) => {
   let childComponents = []
   for (const key in components) {
     const children = components[key]
-    childComponents.push(
-      generateComponent("Box", children, key)
-    )
+    childComponents.push(generateComponent('Box', children, key))
   }
   return (
     <div id="inner" className="inner-view" key="inner-view">
       {childComponents}
-      <AnimationStyle />
     </div>
   )
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    components : state.components
+    components: state.components,
   }
 }
 

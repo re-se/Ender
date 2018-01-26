@@ -1,4 +1,5 @@
 //@flow
+import anime from 'animejs'
 import Animation from './Animation'
 import store from '../../main/store'
 import { updateAnimationStyle } from '../../actions/actions'
@@ -6,55 +7,59 @@ import { updateAnimationStyle } from '../../actions/actions'
 export type AnimationStyle = {
   startStyle?: Object,
   endStyle: Object,
-  animationStyle: Object,
-  animeController: any //TODO:Animejsの返り値
+  animeController: any, //TODO:Animejsの返り型
 }
 
 export default class ImageAnimation extends Animation {
-  selector: string
   effectName: string
   /**
    * エフェクト名に対応したアニメーションを生成する関数
    * @param  {string} エフェクト名
-   * @param  {Function} アップデート関数
    * @return {AnimationStyle}
    */
-  animation: (string, Function) => AnimationStyle
-  startStyle: Object
+  animation: string => AnimationStyle
+  startStyle: Object | null
   endStyle: Object
-  animationStyle: Object
-  animeController: any //TODO:Animejsの返り値
+  animationController: any //TODO:Animejsの返り型
 
   constructor(selector: string, effectName: string) {
     super()
     this.selector = selector
+    this.selectorClassNames = getClassNamesFromSelector(selector)
+
     this.effectName = effectName
+
     this.animation = require(`./image/${effectName}`).default
+
+    const animationStyle = this.animation(this.selector)
+    this.startStyle = animationStyle.startStyle || null
+    this.endStyle = animationStyle.endStyle
+    this.animationController = animationStyle.animeController
   }
 
   start() {
-    const animationStyle = this.animation(
-      this.selector,
-      () => {
-        store.dispatch(updateAnimationStyle(this))
-      }
-    )
-
-    this.startStyle = animationStyle.startStyle? animationStyle.startStyle : {}
-    this.endStyle = animationStyle.endStyle
-    this.animationStyle = animationStyle.animationStyle
-
-    store.dispatch(updateAnimationStyle(this))
+    this.animationController.play()
+    this.isStarted = true
   }
 
   finish() {
+    this.animationController.pause()
+    anime.remove(this.selector)
     this.isFinished = true
-    this.animeController.pause()
-    this.animationStyle = this.endStyle
-    store.dispatch(updateAnimationStyle(this))
   }
 
   onExec() {
     this.finish()
   }
+}
+
+const selectorClassPattern = /\.([^ \.]+)/g
+
+const getClassNamesFromSelector = (selector: string) => {
+  let classNames = selector.match(selectorClassPattern)
+  return classNames == null
+    ? []
+    : classNames.map(className => {
+        return className.substring(1)
+      })
 }

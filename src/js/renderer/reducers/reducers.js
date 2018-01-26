@@ -1,8 +1,8 @@
-import {combineReducers} from 'redux'
+import { combineReducers } from 'redux'
 import reduceReducers from 'reduce-reducers'
 import engine from '../main/engine'
 import store from '../main/store'
-import {get} from 'lodash'
+import { get } from 'lodash'
 
 /**
  * 描画予定のコンポーネントを保持する State
@@ -10,7 +10,7 @@ import {get} from 'lodash'
 const components = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_COMPONENTS':
-      let nextState = {...state}
+      let nextState = { ...state }
       nextState[action.key] = (state[action.key] || []).concat(
         action.components
       )
@@ -25,7 +25,7 @@ const _evalMessage = messageObject => {
   let message = [...messageObject]
   let history = ''
   if (message.length === 0) {
-    return {message, history}
+    return { message, history }
   }
   for (const key in message) {
     let value = message[key]
@@ -48,7 +48,7 @@ const _evalMessage = messageObject => {
   } else {
     next = 'wait'
   }
-  return {message, history, next}
+  return { message, history, next }
 }
 
 const MessageBox = (
@@ -70,7 +70,7 @@ const MessageBox = (
       }
 
     case 'ADD_MESSAGE':
-      const {message, history, next} = _evalMessage(action.message)
+      const { message, history, next } = _evalMessage(action.message)
       return {
         ...state,
         message: state.message.concat(message),
@@ -84,7 +84,7 @@ const MessageBox = (
         index: action.index,
       }
     case 'SET_MESSAGE_CLASSNAMES':
-      return {...state, classNames: action.classNames}
+      return { ...state, classNames: action.classNames }
     default:
       return state
   }
@@ -97,22 +97,6 @@ const animation = (state = [], action) => {
     case 'FINISH_ANIMATION':
       return state.filter(animation => {
         return !animation.isFinished
-      })
-    default:
-      return state
-  }
-}
-
-const animationStyle = (state = {}, action) => {
-  switch (action.type) {
-    case 'UPDATE_ANIMATION_STYLE':
-      const selector = action.animation.selector
-      return Object.assign({}, state, {
-        [selector]: Object.assign(
-          {},
-          state[selector],
-          action.animation.animationStyle
-        ),
       })
     default:
       return state
