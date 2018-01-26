@@ -1,8 +1,19 @@
 \layout(\Box(\MessageBox()))
 \layout(\ExecButton("full"))
 
+config.text.periodWait = true
+config.text.speed = 100
+
 aaa
 bbb
 
 *ccc*
 {ddd|eee}
+
+fff@ggg
+
+hhh\
+iii
+
+あああ。いいい@ううう
+えええ。\おおお

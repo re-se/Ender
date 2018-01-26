@@ -132,14 +132,22 @@ FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
 }
 
 Text = value:(Element)+ nl:(NL / &"#")? at:("@")? {
+  // flatten
+  value = Array.prototype.concat.apply([], value)
   if(nl) {
     value = value.concat(genObj("br"));
   }
-  var ret = {type:"text", value: value};
+  var ret = [{type:"text", value: value}];
   if(nl || at) {
-    return [ret, genObj("wait")];
+    ret.push(genObj("wait"));
   }
   return ret;
+}
+
+PERIOD = $("。")+
+
+Period = p: $PERIOD {
+  return [genText(p), genObj("period")]
 }
 
 Element
@@ -147,6 +155,7 @@ Element
   / Ruby
   / "\\" NL { return genObj("br"); }
   / Enphasize
+  / Period
   / SimpleText
 
 Interpolation = "${" _ t:Expr _ "}" {
@@ -157,10 +166,10 @@ Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
   return genRuby(toStr(kanji), toStr(kana));
 }
 
-Escape = "\\" [「」{}@\\#*]
+Escape = "\\" w:[「」{}@\\#*] {return w } / p:PERIOD "\\" {return p }
 
-SimpleText = line:(Escape / !(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#"/ "*") .)+ {
-  return genText(toStr(line));
+SimpleText = line:(Escape / $(!(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#"/ "*" / PERIOD) .))+ {
+  return genText(line.join(''));
  }
 
 Enphasize = "*" text:(!("*") .)+ "*" {

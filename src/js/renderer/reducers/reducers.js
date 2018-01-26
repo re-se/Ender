@@ -21,7 +21,6 @@ const components = (state = {}, action) => {
 }
 
 const LF = '\n'
-const DEFAULT_MARKER = ['▽', '▼']
 const _evalMessage = messageObject => {
   let message = [...messageObject]
   let history = ''
@@ -41,14 +40,15 @@ const _evalMessage = messageObject => {
     }
   }
 
-  const config = engine.getVar('config')
-  const markers = get(config, 'text.marker', DEFAULT_MARKER)
-  // 改ページの場合、wait -> clear になっている
-  const marker =
-    engine.lookahead(2) && engine.lookahead(2).type !== 'clear'
-      ? markers[0]
-      : markers[1]
-  return {message, history, marker}
+  // 改ページの場合、命令列の最後 or wait -> clear になっている
+  const nextInst2 = engine.lookahead(2)
+  let next
+  if (!nextInst2 || nextInst2.type === 'clear') {
+    next = 'clear'
+  } else {
+    next = 'wait'
+  }
+  return {message, history, next}
 }
 
 const MessageBox = (
@@ -56,7 +56,7 @@ const MessageBox = (
     message: [],
     classNames: [],
     history: '',
-    marker: null,
+    next: null,
     index: null, // message 内の何番目の要素まで表示するか
     position: null, // 表示されている要素の内、最後の要素の何文字目まで表示するか
   },
@@ -70,12 +70,12 @@ const MessageBox = (
       }
 
     case 'ADD_MESSAGE':
-      const {message, history, marker} = _evalMessage(action.message)
+      const {message, history, next} = _evalMessage(action.message)
       return {
         ...state,
         message: state.message.concat(message),
         history: state.history + history,
-        marker: marker,
+        next: next,
       }
     case 'SET_MESSAGE_POSITION':
       return {
@@ -95,7 +95,9 @@ const animation = (state = [], action) => {
     case 'START_ANIMATION':
       return state.concat(action.animation)
     case 'FINISH_ANIMATION':
-      return []
+      return state.filter(animation => {
+        return !animation.isFinished
+      })
     default:
       return state
   }

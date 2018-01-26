@@ -62,9 +62,8 @@ class Ender {
         isInterrupted = true
       }
     }
-    if (isInterrupted) {
-      store.dispatch(finishAnimation())
-    } else {
+    store.dispatch(finishAnimation())
+    if (!isInterrupted) {
       this.mainLoop.next()
     }
   }

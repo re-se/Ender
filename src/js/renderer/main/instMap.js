@@ -43,7 +43,7 @@ const instMap = {
     const beforeMessageLength = store.getState().MessageBox.message.length
     store.dispatch(addMessage(textInst.value))
     const animation = new TextAnimation(
-      store.getState().MessageBox.message,
+      [...store.getState().MessageBox.message],
       beforeMessageLength
     )
     store.dispatch(setMessagePosition(animation.getInitialState()))
