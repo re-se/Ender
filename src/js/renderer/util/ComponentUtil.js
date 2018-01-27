@@ -35,20 +35,26 @@ export default class ComponentUtil {
 
   /**
    * 指定のコンポーネントがセレクタの対象になるか判定
-   * 現状並列のクラスのみに対応
    * @param  {ComponentState} component
-   * @param  {string[]} selectorClassNames
+   * @param  {Selector[]} selector
    * @return {boolean}
    */
   static matchSelector(
     component: ComponentState,
-    selectorClassNames: string[]
+    selector: Selector[]
   ): boolean {
     let classNames = component.props.classNames || []
+    let idName = component.props.id || ''
 
-    for (const selectorClassName of selectorClassNames) {
-      if (!classNames.includes(selectorClassName)) {
-        return false
+    for (const selectorElement of selector) {
+      if (selectorElement.type === 'classSelector') {
+        if (!classNames.includes(selectorElement.value)) {
+          return false
+        }
+      } else if (selectorElement.type === 'idSelector') {
+        if (idName !== selectorElement.value) {
+          return false
+        }
       }
     }
     return true

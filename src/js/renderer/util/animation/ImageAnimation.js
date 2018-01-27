@@ -31,7 +31,7 @@ export default class ImageAnimation extends Animation {
    * @param  {string} エフェクト名
    * @return {AnimationStyle}
    */
-  animation: string => AnimationStyle
+  animation: (string, () => void) => AnimationStyle
   /**
    * アニメーション終了時点でのスタイル
    * @type {any}
@@ -44,16 +44,16 @@ export default class ImageAnimation extends Animation {
   animationController: any
 
   constructor(selector: string, effectName: string) {
-    super()
-    this.selector = selector
-    this.selectorClassNames = getClassNamesFromSelector(selector)
+    super(selector)
     this.effectName = effectName
     this.animation = require(`./image/${effectName}`).default
   }
 
   start() {
     // アニメーションを作成
-    const animationStyle = this.animation(this.selector)
+    const animationStyle = this.animation(this.selector, () => {
+      this.finish()
+    })
 
     // アニメオブジェクトに終了状態とコントローラーを保持
     this.endStyle = animationStyle.endStyle
@@ -74,29 +74,10 @@ export default class ImageAnimation extends Animation {
     this.isFinished = true
 
     // アニメーション対象のコンポーネントに終了状態のスタイルをさす
-    store.dispatch(updateComponentStyle(this.selector, this.endStyle))
+    store.dispatch(updateComponentStyle(this.selectorTree, this.endStyle))
   }
 
   onExec() {
     this.finish()
   }
-}
-
-/**
- * セレクタを解釈する正規表現
- */
-const selectorClassPattern = /\.([^ \.]+)/g
-
-/**
- * セレクタの文字列を解釈して配列に整理する
- * @param  {string} selector
- * @return {string[]}
- */
-const getClassNamesFromSelector = (selector: string) => {
-  let classNames = selector.match(selectorClassPattern)
-  return classNames == null
-    ? []
-    : classNames.map(className => {
-        return className.substring(1)
-      })
 }

@@ -41,6 +41,6 @@ export default class AnimationUtil {
     if (animation.isStarted) {
       return false
     }
-    return ComponentUtil.matchSelector(component, animation.selectorClassNames)
+    return ComponentUtil.matchSelector(component, animation.selectorTree)
   }
 }

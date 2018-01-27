@@ -32,5 +32,11 @@ declare type ComponentState = {
 declare type ComponentProps = {
   classNames?: string[],
   children?: ComponentState[],
+  style?: any,
   //and more...
+}
+
+declare type Selector = {
+  type: 'idSelector' | 'classSelector',
+  value: string,
 }

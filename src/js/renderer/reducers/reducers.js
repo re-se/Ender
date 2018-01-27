@@ -19,16 +19,44 @@ const components = (state = {}, action) => {
       )
       return nextState
     case 'UPDATE_COMPONENT_STYLE':
-      return updateComponentStyle(state, action.style)
+      return updateComponentStyle(state, action.selector, action.style)
     default:
       return state
   }
 }
 
-const updateComponentStyle = (state, style) => {
-  let nextState = { ...state }
+const updateComponentStyle = (state, selector: Selector[], style) => {
+  let nextState = {}
 
   for (const key in state) {
+    nextState[key] = _updateComponentStyle(state[key], selector, style)
+  }
+
+  return nextState
+}
+
+const _updateComponentStyle = (
+  components: ComponentState[],
+  selector: Selector[],
+  style: any
+): ComponentState[] => {
+  let nextState = [...components]
+  for (const index in components) {
+    let component = components[index]
+
+    if (ComponentUtil.matchSelector(component, selector)) {
+      nextState[index].props.style = components[index].props.style
+        ? { ...components[index].props.style, ...style }
+        : { ...style }
+    }
+
+    if (component.props.children) {
+      nextState[index].props.children = updateComponentStyle(
+        components[index].props.children,
+        selector,
+        style
+      )
+    }
   }
   return nextState
 }

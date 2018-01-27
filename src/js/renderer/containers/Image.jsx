@@ -35,6 +35,7 @@ export default class Image extends React.Component {
         className={`ender-image ${this.props.classNames.join(' ')}`}
         src={srcPath}
         id={getImageId(this.props.src, this.props.classNames)}
+        style={this.props.style}
       />
     )
   }

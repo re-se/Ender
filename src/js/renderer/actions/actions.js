@@ -15,6 +15,7 @@ export const addComponents = (components, key = 'default') => {
 export const updateComponentStyle = (selector, style) => {
   return {
     type: 'UPDATE_COMPONENT_STYLE',
+    selector,
     style,
   }
 }
