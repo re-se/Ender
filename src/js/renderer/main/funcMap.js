@@ -1,5 +1,4 @@
 //@flow
-import generateComponent from '../util/generateComponent'
 import type { FuncInst } from './instMap'
 import { addComponents, addImage } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'

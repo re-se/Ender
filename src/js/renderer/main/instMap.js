@@ -24,7 +24,7 @@ export type TextInst = {
 }
 
 export type FuncInst = {
-  type: string,
+  type: 'func',
   name: string,
   args: any[],
 }
