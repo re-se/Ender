@@ -2,7 +2,7 @@
 import type { FuncInst } from '../main/instMap'
 import Animation from './animation/Animation'
 import ComponentUtil from './ComponentUtil'
-import { startAnimation, updateComponentStyle } from '../actions/actions'
+import { startAnimation } from '../actions/actions'
 import store from '../main/store'
 
 export default class AnimationUtil {
@@ -13,11 +13,6 @@ export default class AnimationUtil {
    */
   static setAnimation(animation: Animation): void {
     store.dispatch(startAnimation(animation))
-    if (animation.startStyle) {
-      store.dispatch(
-        updateComponentStyle(animation.selector, animation.startStyle)
-      )
-    }
   }
 
   /**
@@ -30,10 +25,6 @@ export default class AnimationUtil {
       for (let animation of animations) {
         // 多重起動防止
         if (!animation.isStarted) {
-          // アニメーションに初期値があったらエレメントスタイルに初期値をさす
-          if (animation.startStyle) {
-            //TODO:指定コンポーネントのStateにスタイル差す方法
-          }
           animation.start()
         }
       }
@@ -47,7 +38,7 @@ export default class AnimationUtil {
    * @return {boolean}
    */
   static isAvailableAnimation(animation: Animation, component: ComponentState) {
-    if (!animation.isStarted) {
+    if (animation.isStarted) {
       return false
     }
     return ComponentUtil.matchSelector(component, animation.selectorClassNames)

@@ -1,16 +1,30 @@
 //@flow
-import anime from 'animejs'
 import Animation from './Animation'
 import store from '../../main/store'
 import { updateComponentStyle } from '../../actions/actions'
+import { AnimationLibrary } from './library/AnimationLibrary'
+import Animejs from './library/Animejs'
 
+/**
+ * アニメーションファイル(./image 配下)が返却する情報の型
+ */
 export type AnimationStyle = {
-  startStyle?: Object,
   endStyle: Object,
-  animeController: any, //TODO:Animejsの返り型
+  animeController: any,
 }
 
+/**
+ * 外部アニメーションライブラリを扱うラッパー
+ * ここに代入するライブラリが使用される
+ * @type {AnimetionLibrary}
+ */
+const animeLibrary: AnimationLibrary = new Animejs()
+
 export default class ImageAnimation extends Animation {
+  /**
+   * エフェクト名 ./image 配下にあるアニメーションのファイル名を指す
+   * @type {string}
+   */
   effectName: string
   /**
    * エフェクト名に対応したアニメーションを生成する関数
@@ -18,34 +32,48 @@ export default class ImageAnimation extends Animation {
    * @return {AnimationStyle}
    */
   animation: string => AnimationStyle
-  startStyle: Object | null
-  endStyle: Object
-  animationController: any //TODO:Animejsの返り型
+  /**
+   * アニメーション終了時点でのスタイル
+   * @type {any}
+   */
+  endStyle: any
+  /**
+   * アニメーションライブラリを操作するコントローラー
+   * @type {any}
+   */
+  animationController: any
 
   constructor(selector: string, effectName: string) {
     super()
     this.selector = selector
     this.selectorClassNames = getClassNamesFromSelector(selector)
-
     this.effectName = effectName
-
     this.animation = require(`./image/${effectName}`).default
-
-    const animationStyle = this.animation(this.selector)
-    this.startStyle = animationStyle.startStyle || null
-    this.endStyle = animationStyle.endStyle
-    this.animationController = animationStyle.animeController
   }
 
   start() {
-    this.animationController.play()
+    // アニメーションを作成
+    const animationStyle = this.animation(this.selector)
+
+    // アニメオブジェクトに終了状態とコントローラーを保持
+    this.endStyle = animationStyle.endStyle
+    this.animationController = animationStyle.animeController
+
+    // アニメーション開始
+    animeLibrary.start(this)
+
+    // アニメオブジェクトを開始状態にする
     this.isStarted = true
   }
 
   finish() {
-    this.animationController.pause()
-    anime.remove(this.selector)
+    // アニメーションを止める
+    animeLibrary.finish(this)
+
+    // アニメオブジェクトを終了状態にする
     this.isFinished = true
+
+    // アニメーション対象のコンポーネントに終了状態のスタイルをさす
     store.dispatch(updateComponentStyle(this.selector, this.endStyle))
   }
 
@@ -54,8 +82,16 @@ export default class ImageAnimation extends Animation {
   }
 }
 
+/**
+ * セレクタを解釈する正規表現
+ */
 const selectorClassPattern = /\.([^ \.]+)/g
 
+/**
+ * セレクタの文字列を解釈して配列に整理する
+ * @param  {string} selector
+ * @return {string[]}
+ */
 const getClassNamesFromSelector = (selector: string) => {
   let classNames = selector.match(selectorClassPattern)
   return classNames == null

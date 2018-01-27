@@ -3,18 +3,22 @@ import path from 'path'
 import engine from '../main/engine'
 import AnimationUtil from '../util/AnimationUtil'
 import ImageAnimation from '../util/animation/ImageAnimation'
+import { startAnimation } from '../actions/actions'
+import store from '../main/store'
 
 const getImageId = (src, classNames) => {
   return src.replace(/[\/\.\\]/, '') + classNames.join('-')
 }
 
 export default class Image extends React.Component {
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.effect) {
-      AnimationUtil.setAnimation(
-        new ImageAnimation(
-          `#${getImageId(this.props.src, this.props.classNames)}`,
-          this.props.effect
+      store.dispatch(
+        startAnimation(
+          new ImageAnimation(
+            `#${getImageId(this.props.src, this.props.classNames)}`,
+            this.props.effect
+          )
         )
       )
     }
