@@ -1,0 +1,10 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+config.text.periodWait = true
+config.text.speed = 100
+
+前*あああ*後
+前{あああ|いいい}後
+前{あああああああああ|いいい}後
+前{あああ|いいいいいいいいい}後
