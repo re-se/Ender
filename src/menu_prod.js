@@ -1,7 +1,7 @@
-import {app, Menu} from 'electron'
+import { app, Menu } from 'electron'
 const name = app.getName()
 
-export default (mainWindow) => {
+export default mainWindow => {
   const showSetting = () => {
     mainWindow.send('show-setting', null)
   }
@@ -13,10 +13,10 @@ export default (mainWindow) => {
     {
       label: name,
       submenu: [
-        {label: '設定', accelerator: 'CmdOrCtrl+,', click: showSetting},
-        {label: 'タイトルに戻る', click: backToTitle},
-        {label: '終了', accelerator: 'CmdOrCtrl+Q', click: app.quit}
-      ]
+        { label: '設定', accelerator: 'CmdOrCtrl+,', click: showSetting },
+        { label: 'タイトルに戻る', click: backToTitle },
+        { label: '終了', accelerator: 'CmdOrCtrl+Q', click: app.quit },
+      ],
     },
     {
       label: '表示',
@@ -34,9 +34,9 @@ export default (mainWindow) => {
             if (focusedWindow) {
               focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
             }
-          }
+          },
         },
-      ]
+      ],
     },
     {
       label: 'ウィンドウ',
@@ -45,9 +45,9 @@ export default (mainWindow) => {
         {
           label: '最小化',
           accelerator: 'CmdOrCtrl+M',
-          role: 'minimize'
+          role: 'minimize',
         },
-      ]
+      ],
     },
   ])
 }

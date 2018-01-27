@@ -1,6 +1,6 @@
 import React from 'react'
-import {get} from 'lodash'
-import {connect} from 'react-redux'
+import { get } from 'lodash'
+import { connect } from 'react-redux'
 import engine from '../main/engine'
 
 export type Props = {
@@ -10,7 +10,7 @@ export type Props = {
 }
 
 const STRONG_RUBY_STRING = '﹅'
-const DEFAULT_MARKER = {wait: '▽', clear: '▼'}
+const DEFAULT_MARKER = { wait: '▽', clear: '▼' }
 
 class MessageBox extends React.Component {
   render() {

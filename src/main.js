@@ -1,4 +1,4 @@
-import {app, BrowserWindow, Menu, ipcMain} from 'electron'
+import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 
 let mainWindow = null
 
@@ -6,7 +6,8 @@ app.on('window-all-closed', () => {
   app.quit()
 })
 
-let menuPath = process.env.NODE_ENV === "development" ? './menu_dev' : './menu_prod'
+let menuPath =
+  process.env.NODE_ENV === 'development' ? './menu_dev' : './menu_prod'
 
 const gen_menu = require(menuPath).default
 const loadDevtool = require('electron-load-devtool')
@@ -18,7 +19,7 @@ app.on('ready', () => {
     height: 600,
     useContentSize: true,
     minWidth: 800,
-    minHeight: 600
+    minHeight: 600,
   })
   // mainWindow.setMinimumSize(800, 600)
   mainWindow.loadURL('file://' + __dirname + '/index.html')

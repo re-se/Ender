@@ -1,7 +1,7 @@
 import { app, Menu } from 'electron'
 const name = app.getName()
 
-export default (mainWindow) => {
+export default mainWindow => {
   const showSetting = () => {
     mainWindow.send('show-setting', null)
   }
@@ -13,33 +13,37 @@ export default (mainWindow) => {
     {
       label: name,
       submenu: [
-        {label: 'Preferences...', accelerator: 'CmdOrCtrl+,', click: showSetting},
         {
-          type: 'separator'
+          label: 'Preferences...',
+          accelerator: 'CmdOrCtrl+,',
+          click: showSetting,
         },
-        {label: 'Back to Title', click: backToTitle},
         {
-          type: 'separator'
+          type: 'separator',
+        },
+        { label: 'Back to Title', click: backToTitle },
+        {
+          type: 'separator',
         },
         {
           label: 'Hide ' + name,
           accelerator: 'Command+H',
-          role: 'hide'
+          role: 'hide',
         },
         {
           label: 'Hide Others',
           accelerator: 'Command+Alt+H',
-          role: 'hideothers'
+          role: 'hideothers',
         },
         {
           label: 'Show All',
-          role: 'unhide'
+          role: 'unhide',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
-        {label: 'Exit', accelerator: 'CmdOrCtrl+Q', click: app.quit}
-      ]
+        { label: 'Exit', accelerator: 'CmdOrCtrl+Q', click: app.quit },
+      ],
     },
     {
       label: 'Edit',
@@ -47,37 +51,37 @@ export default (mainWindow) => {
         {
           label: 'Undo',
           accelerator: 'CmdOrCtrl+Z',
-          role: 'undo'
+          role: 'undo',
         },
         {
           label: 'Redo',
           accelerator: 'Shift+CmdOrCtrl+Z',
-          role: 'redo'
+          role: 'redo',
         },
         {
-          type: 'separator'
+          type: 'separator',
         },
         {
           label: 'Cut',
           accelerator: 'CmdOrCtrl+X',
-          role: 'cut'
+          role: 'cut',
         },
         {
           label: 'Copy',
           accelerator: 'CmdOrCtrl+C',
-          role: 'copy'
+          role: 'copy',
         },
         {
           label: 'Paste',
           accelerator: 'CmdOrCtrl+V',
-          role: 'paste'
+          role: 'paste',
         },
         {
           label: 'Select All',
           accelerator: 'CmdOrCtrl+A',
-          role: 'selectall'
+          role: 'selectall',
         },
-      ]
+      ],
     },
     {
       label: 'View',
@@ -89,7 +93,7 @@ export default (mainWindow) => {
             if (focusedWindow) {
               focusedWindow.reload()
             }
-          }
+          },
         },
         {
           label: 'Toggle Full Screen',
@@ -104,7 +108,7 @@ export default (mainWindow) => {
             if (focusedWindow) {
               focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
             }
-          }
+          },
         },
         {
           label: 'Toggle Developer Tools',
@@ -119,9 +123,9 @@ export default (mainWindow) => {
             if (focusedWindow) {
               focusedWindow.toggleDevTools()
             }
-          }
+          },
         },
-      ]
+      ],
     },
     {
       label: 'Window',
@@ -130,14 +134,14 @@ export default (mainWindow) => {
         {
           label: 'Minimize',
           accelerator: 'CmdOrCtrl+M',
-          role: 'minimize'
+          role: 'minimize',
         },
         {
           label: 'Close',
           accelerator: 'CmdOrCtrl+W',
-          role: 'close'
+          role: 'close',
         },
-      ]
+      ],
     },
     {
       label: 'Help',
@@ -147,9 +151,9 @@ export default (mainWindow) => {
           label: 'Learn More',
           click: () => {
             require('electron').shell.openExternal('http://electron.atom.io')
-          }
+          },
         },
-      ]
+      ],
     },
   ])
 }

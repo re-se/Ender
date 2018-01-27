@@ -6,9 +6,7 @@ class Button extends React.Component {
   render() {
     let classNames = []
     classNames = classNames.concat(this.props.classNames)
-    return (
-      <div onClick={this.onClick} className={`${classNames.join(' ')}`}></div>
-    )
+    return <div onClick={this.onClick} className={`${classNames.join(' ')}`} />
   }
 }
 

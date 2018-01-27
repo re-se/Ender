@@ -1,3 +1,3 @@
 // @flow
 
-type Inst = any;
+type Inst = any

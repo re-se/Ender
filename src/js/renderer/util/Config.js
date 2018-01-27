@@ -5,10 +5,10 @@ import { toAbsolutePath } from './util'
 
 const defaultBaseConfigPath = null // "dist/resource/_base.json"
 
-const toPublic = (key) => key[0] === '@' ? key : `@${key}`
+const toPublic = key => (key[0] === '@' ? key : `@${key}`)
 
 export default class Config {
-  static generateConfig (path) {
+  static generateConfig(path) {
     let configObject = null
     if (path) {
       configObject = JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -24,7 +24,7 @@ export default class Config {
     if (baseConfigPath != null && path !== baseConfigPath) {
       config.baseConfig = Config.generateConfig(baseConfigPath)
       const accessibilities = ['public', 'private']
-      accessibilities.forEach((accessibility) => {
+      accessibilities.forEach(accessibility => {
         const keys = config.baseConfig.keys(accessibility)
         for (const i in keys) {
           const key = keys[i]
@@ -70,7 +70,7 @@ export default class Config {
     this.__defineGetter__(key, () => {
       return this.config[accessibility][key] || this.baseConfig[key]
     })
-    this.__defineSetter__(key, (value) => {
+    this.__defineSetter__(key, value => {
       this.config[accessibility][key] = value
     })
   }
@@ -83,13 +83,15 @@ export default class Config {
 
   keys(accessibility = null) {
     if (accessibility) return Object.keys(this.config[accessibility])
-    return Object.keys(this.config['public']).concat(Object.keys(this.config['private']))
+    return Object.keys(this.config['public']).concat(
+      Object.keys(this.config['private'])
+    )
   }
 
   toObject() {
     let output = {}
     const accessibilities = ['public', 'private']
-    accessibilities.forEach((accessibility) => {
+    accessibilities.forEach(accessibility => {
       for (let key in this.config[accessibility]) {
         const value = this.config[accessibility][key]
         if (accessibility === 'public') {
@@ -102,6 +104,6 @@ export default class Config {
   }
 
   toString() {
-    return JSON.stringify(this.toObject(), null, "  ")
+    return JSON.stringify(this.toObject(), null, '  ')
   }
 }

@@ -1,11 +1,11 @@
 //@flow
 import generateComponent from '../util/generateComponent'
-import type {FuncInst} from './instMap'
-import {addComponents, addImage} from '../actions/actions'
+import type { FuncInst } from './instMap'
+import { addComponents, addImage } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import store from './store'
 import engine from './engine'
-import {toAbsolutePath} from '../util/util'
+import { toAbsolutePath } from '../util/util'
 
 /**
  * 関数命令の引数を取得する

@@ -1,29 +1,27 @@
 import type { Store as ReduxStore, Dispatch as ReduxDispatch } from 'redux'
 
-declare type ReduxInitAction = { type: '@@INIT' };
+declare type ReduxInitAction = { type: '@@INIT' }
 
-declare type Action = ReduxInitAction;
+declare type Action = ReduxInitAction
 
 declare type State = {
-  animation: Animation[]
+  animation: Animation[],
 }
 
-declare type Dispatch = ReduxDispatch<Action>;
+declare type Dispatch = ReduxDispatch<Action>
 
 declare type ImageState = {
   key: 'image',
   src: string,
   classList: string[],
-  effect: string
+  effect: string,
 }
-
-
 
 declare type Message = {
   type: string,
-  body: ?string
+  body: ?string,
 }
 
 declare module './ender.js' {
-  declare module.exports: any;
+  declare module.exports: any
 }

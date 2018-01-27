@@ -9,8 +9,8 @@ class Inst {
    * @return {string}
    */
   getName(): string {
-    console.warn("unimplemented method! ${this.constructor.name}");
-    return "";
+    console.warn('unimplemented method! ${this.constructor.name}')
+    return ''
   }
 
   /**
@@ -18,6 +18,6 @@ class Inst {
    * @return {void}
    */
   exec(): void {
-    console.warn("unimplemented method! ${this.constructor.name}");
+    console.warn('unimplemented method! ${this.constructor.name}')
   }
 }

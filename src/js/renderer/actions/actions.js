@@ -1,6 +1,6 @@
 // root
 export const resetState = components => {
-  return {type: 'RESET_STATE'}
+  return { type: 'RESET_STATE' }
 }
 
 // components
@@ -26,7 +26,7 @@ export const addMessage = message => {
   }
 }
 
-export const setMessagePosition = ({index, position}) => {
+export const setMessagePosition = ({ index, position }) => {
   return {
     type: 'SET_MESSAGE_POSITION',
     index,

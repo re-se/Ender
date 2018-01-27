@@ -2,10 +2,10 @@ import React from 'react'
 import generateComponent from '../util/generateComponent'
 
 export type Props = {
-  children: ComponentMaterial
-};
+  children: ComponentMaterial,
+}
 
-const Box = ({classNames = [], children = []}: Props) => {
+const Box = ({ classNames = [], children = [] }: Props) => {
   let childComponents = []
   for (const key in children) {
     const child = children[key]
@@ -13,9 +13,7 @@ const Box = ({classNames = [], children = []}: Props) => {
   }
 
   return (
-    <div className={`ender-box ${classNames.join(' ')}`}>
-      { childComponents }
-    </div>
+    <div className={`ender-box ${classNames.join(' ')}`}>{childComponents}</div>
   )
 }
 

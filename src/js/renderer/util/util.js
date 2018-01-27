@@ -4,10 +4,12 @@ import { remote } from 'electron'
 const { app } = remote
 
 export const toAbsolutePath = (originPath, prefix = app.getAppPath()) => {
-  return path.isAbsolute(originPath) ? originPath : path.join(prefix, originPath)
+  return path.isAbsolute(originPath)
+    ? originPath
+    : path.join(prefix, originPath)
 }
 
-export const GeneratorFunction = (function*(){}).constructor
+export const GeneratorFunction = function*() {}.constructor
 
 /**
  * JSON を CSS のフォーマットの文字列に変換する
@@ -15,15 +17,14 @@ export const GeneratorFunction = (function*(){}).constructor
  * @return {string}
  */
 export const toCss = (json: Object) => {
-  let css = '';
-  for(const key in json) {
+  let css = ''
+  for (const key in json) {
     const child = json[key]
     // selector: style の場合
-    if(typeof(child) === 'object') {
+    if (typeof child === 'object') {
       css += `${key} {${toCss(child)}}\n`
-    }
-    // attribute: value の場合
-    else {
+    } else {
+      // attribute: value の場合
       css += `${key}: ${child};\n`
     }
   }

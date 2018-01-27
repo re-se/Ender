@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Style = ({style}) => {
+const Style = ({ style }) => {
   return <style>{style}</style>
 }
 

@@ -6,8 +6,8 @@ import { toAbsolutePath } from '../util/util'
 export function generateConfig(configPath) {
   let config = Config.generateConfig(configPath)
   config.auto = false
-  config.extendGetter('basePath', function (key, getter) {
-    return function () {
+  config.extendGetter('basePath', function(key, getter) {
+    return function() {
       let basePath = getter() || path.dirname(this._path)
       return toAbsolutePath(basePath)
     }

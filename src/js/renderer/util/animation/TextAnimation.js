@@ -1,7 +1,7 @@
 // @flow
 import Animation from './Animation'
-import {setMessagePosition} from '../../actions/actions'
-import {get} from 'lodash'
+import { setMessagePosition } from '../../actions/actions'
+import { get } from 'lodash'
 import store from '../../main/store'
 import engine from '../../main/engine'
 
@@ -9,7 +9,7 @@ type TextAnimationState = {
   index: ?number,
   position: ?number,
 }
-const INITIAL_STATE: TextAnimationState = {index: null, position: null}
+const INITIAL_STATE: TextAnimationState = { index: null, position: null }
 export default class TextAnimation extends Animation {
   message: Message[]
   position: Iterator<TextAnimationState>
@@ -40,12 +40,12 @@ export default class TextAnimation extends Animation {
         currentMessage.type === 'period'
       ) {
         this.stop()
-        yield {index: index + 1, position}
+        yield { index: index + 1, position }
       }
       if (currentMessage.body) {
         while (position < currentMessage.body.length) {
           position += 1
-          yield {index: index + 1, position}
+          yield { index: index + 1, position }
         }
       }
     }
