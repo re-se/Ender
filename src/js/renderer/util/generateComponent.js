@@ -9,28 +9,31 @@ import type { FuncInst } from '../main/instMap'
 
 /**
  * React コンポーネントのインスタンスを生成する
+ * @param {ComponentState} component
  * @return {React.Component}
  */
-const generateComponent = (name: string, args: any[], key: string) => {
-  const Module = require(componentList[name].path)
-  const Component = Module[name] || Module.default
-  const component: FuncInst = { type: 'func', name, args }
+const generateComponent = (component: ComponentState) => {
+  const Module = require(componentList[component.name].path)
+  const Component = Module[component.name] || Module.default
 
-  let props = ComponentUtil.getProps(component)
+  console.log(component, store.getState())
+
   let animationStart = AnimationUtil.generateAnimationStartFunc(
     getAnimations(component)
   )
-  return <Component {...props} key={key} refs={animationStart} />
+  return (
+    <Component {...component.props} key={component.key} refs={animationStart} />
+  )
 }
 
 export default generateComponent
 
 /**
  * 該当するアニメーションを取得
- * @param  {FuncInst} classNames
+ * @param  {ComponentState} classNames
  * @return {Animation[]}
  */
-const getAnimations = (component: FuncInst): Animation[] => {
+const getAnimations = (component: ComponentState): Animation[] => {
   let availableAnimation = []
 
   for (const animation of store.getState().animation) {

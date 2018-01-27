@@ -9,7 +9,9 @@ const Box = ({ classNames = [], children = [] }: Props) => {
   let childComponents = []
   for (const key in children) {
     const child = children[key]
-    childComponents.push(generateComponent(child.name, child.args, key))
+    if (child) {
+      childComponents.push(generateComponent(child))
+    }
   }
 
   return (

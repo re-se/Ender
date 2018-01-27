@@ -7,7 +7,18 @@ const Game = ({ components = {} }) => {
   let childComponents = []
   for (const key in components) {
     const children = components[key]
-    childComponents.push(generateComponent('Box', children, key))
+    if (children) {
+      childComponents.push(
+        generateComponent({
+          type: 'func',
+          name: 'Box',
+          props: {
+            children,
+          },
+          key,
+        })
+      )
+    }
   }
   return (
     <div id="inner" className="inner-view" key="inner-view">

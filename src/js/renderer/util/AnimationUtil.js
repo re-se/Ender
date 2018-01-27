@@ -2,8 +2,24 @@
 import type { FuncInst } from '../main/instMap'
 import Animation from './animation/Animation'
 import ComponentUtil from './ComponentUtil'
+import { startAnimation, updateComponentStyle } from '../actions/actions'
+import store from '../main/store'
 
 export default class AnimationUtil {
+  /**
+   * アニメーションをゲームにセットする
+   * @param  {Animation} animation
+   * @return {void}
+   */
+  static setAnimation(animation: Animation): void {
+    store.dispatch(startAnimation(animation))
+    if (animation.startStyle) {
+      store.dispatch(
+        updateComponentStyle(animation.selector, animation.startStyle)
+      )
+    }
+  }
+
   /**
    * アニメーションを開始するコールバック関数を生成
    * @param  {Animation[]} animations
@@ -26,12 +42,12 @@ export default class AnimationUtil {
 
   /**
    * アニメーションの対象になるか判定
-   * @param  {FuncInst}  component
+   * @param  {ComponentState}  component
    * @param  {Animation}  animation
    * @return {boolean}
    */
-  static isAvailableAnimation(animation: Animation, component: FuncInst) {
-    if (!animation.isFinished) {
+  static isAvailableAnimation(animation: Animation, component: ComponentState) {
+    if (!animation.isStarted) {
       return false
     }
     return ComponentUtil.matchSelector(component, animation.selectorClassNames)

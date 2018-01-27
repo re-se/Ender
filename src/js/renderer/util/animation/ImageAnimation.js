@@ -2,6 +2,7 @@
 import anime from 'animejs'
 import Animation from './Animation'
 import store from '../../main/store'
+import { updateComponentStyle } from '../../actions/actions'
 
 export type AnimationStyle = {
   startStyle?: Object,
@@ -45,6 +46,7 @@ export default class ImageAnimation extends Animation {
     this.animationController.pause()
     anime.remove(this.selector)
     this.isFinished = true
+    store.dispatch(updateComponentStyle(this.selector, this.endStyle))
   }
 
   onExec() {

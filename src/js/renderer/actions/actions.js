@@ -12,6 +12,13 @@ export const addComponents = (components, key = 'default') => {
   }
 }
 
+export const updateComponentStyle = (selector, style) => {
+  return {
+    type: 'UPDATE_COMPONENT_STYLE',
+    style,
+  }
+}
+
 // MessageBox
 export const clearMessage = () => {
   return {
@@ -58,10 +65,13 @@ export const finishAnimation = () => {
 // Image
 export const addImage = image => {
   return addComponents(
-    {
-      name: 'Image',
-      args: image,
-    },
+    [
+      {
+        type: 'func',
+        name: 'Image',
+        args: image,
+      },
+    ],
     'image'
   )
 }

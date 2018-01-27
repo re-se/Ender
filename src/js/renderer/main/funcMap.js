@@ -2,6 +2,7 @@
 import type { FuncInst } from './instMap'
 import { addComponents, addImage } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
+import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath } from '../util/util'
@@ -36,6 +37,19 @@ export default {
     store.dispatch(addImage(args))
   },
 
+  /**
+   * アニメーションする
+   * args {
+   *  1: selector
+   *  2: effectName
+   * }
+   * @param  {string[]} args
+   * @return {void}
+   */
+  animation: (args: string[]) => {
+    AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1]))
+  },
+
   layout: (args: FuncInst[]) => {
     store.dispatch(addComponents(args))
   },
@@ -52,10 +66,13 @@ export default {
     const css = require(path)
     store.dispatch(
       addComponents(
-        {
-          name: 'Style',
-          args: [css],
-        },
+        [
+          {
+            type: 'func',
+            name: 'Style',
+            args: [css],
+          },
+        ],
         'style'
       )
     )

@@ -4,10 +4,6 @@ declare type ReduxInitAction = { type: '@@INIT' }
 
 declare type Action = ReduxInitAction
 
-declare type State = {
-  animation: Animation[],
-}
-
 declare type Dispatch = ReduxDispatch<Action>
 
 declare type ImageState = {
@@ -24,4 +20,17 @@ declare type Message = {
 
 declare module './ender.js' {
   declare module.exports: any
+}
+
+declare type ComponentState = {
+  type: 'func',
+  name: string,
+  key: string,
+  props: ComponentProps,
+}
+
+declare type ComponentProps = {
+  classNames?: string[],
+  children?: ComponentState[],
+  //and more...
 }

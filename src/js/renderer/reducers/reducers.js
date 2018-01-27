@@ -3,6 +3,7 @@ import reduceReducers from 'reduce-reducers'
 import engine from '../main/engine'
 import store from '../main/store'
 import { get } from 'lodash'
+import ComponentUtil from '../util/ComponentUtil'
 
 /**
  * 描画予定のコンポーネントを保持する State
@@ -12,12 +13,24 @@ const components = (state = {}, action) => {
     case 'ADD_COMPONENTS':
       let nextState = { ...state }
       nextState[action.key] = (state[action.key] || []).concat(
-        action.components
+        action.components.map(componentInst => {
+          return ComponentUtil.generateComponentState(componentInst, action.key)
+        })
       )
       return nextState
+    case 'UPDATE_COMPONENT_STYLE':
+      return updateComponentStyle(state, action.style)
     default:
       return state
   }
+}
+
+const updateComponentStyle = (state, style) => {
+  let nextState = { ...state }
+
+  for (const key in state) {
+  }
+  return nextState
 }
 
 const LF = '\n'
