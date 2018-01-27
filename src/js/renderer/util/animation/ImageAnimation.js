@@ -2,7 +2,6 @@
 import anime from 'animejs'
 import Animation from './Animation'
 import store from '../../main/store'
-import { updateAnimationStyle } from '../../actions/actions'
 
 export type AnimationStyle = {
   startStyle?: Object,

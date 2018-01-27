@@ -107,7 +107,6 @@ const reducer = combineReducers({
   components,
   MessageBox,
   animation,
-  animationStyle,
 })
 
 const root = (state, action) => {

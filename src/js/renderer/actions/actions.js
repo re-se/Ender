@@ -65,11 +65,3 @@ export const addImage = image => {
     'image'
   )
 }
-
-// AnimationStyle
-export const updateAnimationStyle = animation => {
-  return {
-    type: 'UPDATE_ANIMATION_STYLE',
-    animation,
-  }
-}
