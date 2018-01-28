@@ -29,7 +29,7 @@ export default class ComponentUtil {
     return {
       type: inst.type,
       name: inst.name,
-      key,
+      key: ComponentUtil.generateId(key),
       props: ComponentUtil.getPropsFromInst(inst, key),
     }
   }
