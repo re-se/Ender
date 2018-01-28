@@ -1,3 +1,5 @@
+import ComponentUtil from '../util/ComponentUtil'
+
 // root
 export const resetState = components => {
   return { type: 'RESET_STATE' }
@@ -65,6 +67,7 @@ export const finishAnimation = () => {
 
 // Image
 export const addImage = image => {
+  image[3] = ComponentUtil.generateId('image')
   return addComponents(
     [
       {

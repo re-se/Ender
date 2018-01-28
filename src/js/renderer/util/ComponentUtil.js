@@ -1,6 +1,7 @@
 //@flow
 import type { FuncInst } from '../main/instMap'
 import componentList from '../config/componentList'
+import { generateUniqueString } from './util'
 
 export default class ComponentUtil {
   /**
@@ -31,6 +32,15 @@ export default class ComponentUtil {
       key,
       props: ComponentUtil.getPropsFromInst(inst, key),
     }
+  }
+
+  /**
+   * コンポーネントのユニークIDを生成する
+   * @param  {string} prefix
+   * @return {string}
+   */
+  static generateId(prefix: string = 'default'): string {
+    return prefix + generateUniqueString()
   }
 
   /**

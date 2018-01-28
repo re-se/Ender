@@ -25,11 +25,11 @@ export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
 export default {
   /**
    * 画像を描画する
-   * args {
+   * args [
    *  1: src        画像のファイルパス
-   *  2: classList  クラス名
+   *  2: classNames  クラス名
    *  3: effect     描画時のエフェクト(FadeInなど)
-   * }
+   * ]
    * @param  {any[]} args
    * @return {void}
    */
@@ -39,10 +39,10 @@ export default {
 
   /**
    * アニメーションする
-   * args {
+   * args [
    *  1: selector
    *  2: effectName
-   * }
+   * ]
    * @param  {string[]} args
    * @return {void}
    */
