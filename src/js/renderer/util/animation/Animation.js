@@ -6,9 +6,9 @@ export default class Animation {
   isStarted = false
   selector: string
   selectorTree: Selector[]
-  constructor(selector: string = '') {
-    this.selector = selector
-    this.selectorTree = StyleUtil.parse(selector)
+  constructor(selector: string | string[] = '') {
+    this.selector = selector instanceof Array ? selector.join(',') : selector
+    this.selectorTree = StyleUtil.parse(this.selector)
   }
 
   start() {}

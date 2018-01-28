@@ -44,7 +44,7 @@ export default class ImageAnimation extends Animation {
    */
   animationController: any
 
-  constructor(selector: string, effectName: string) {
+  constructor(selector: string | string[], effectName: string) {
     super(selector)
     this.effectName = effectName
     this.animation = require(`./image/${effectName}`).default
