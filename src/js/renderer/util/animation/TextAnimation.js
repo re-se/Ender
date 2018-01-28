@@ -65,6 +65,7 @@ export default class TextAnimation extends Animation {
   }
 
   start() {
+    this.isStarted = true
     if (this.textSpeed > 0) {
       this._exec()
       const intervalID = setInterval(this._exec.bind(this), this.textSpeed)

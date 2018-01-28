@@ -16,13 +16,14 @@ class Ender {
   pc: number
   scriptPath: string
   nameMap: {}
+  mainLoop: GeneratorFunction
 
   /**
    * 初期化
    * @param  {Config} config
    * @return {void}
    */
-  init(config) {
+  init(config: Config) {
     let textPath = get(config, 'text.path', '')
     this.scriptPath = path.join(config.basePath, textPath, config.main)
 
@@ -45,7 +46,7 @@ class Ender {
   /**
    * 命令列の先読み
    */
-  lookahead(n = 1) {
+  lookahead(n: number = 1) {
     return this.insts[this.pc + n]
   }
 
@@ -68,7 +69,7 @@ class Ender {
     }
   }
 
-  *_mainLoop() {
+  *_mainLoop(): GeneratorFunction {
     while (this.pc < this.insts.length) {
       const inst = this.insts[this.pc]
       // 命令実行
@@ -90,7 +91,7 @@ class Ender {
     }
   }
 
-  eval(expr) {
+  eval(expr: Object | string) {
     if (expr instanceof Object) {
       switch (expr.type) {
         case 'var':
@@ -132,7 +133,7 @@ class Ender {
    * @param  {string} path 変数のパス
    * @return {any}
    */
-  getClassNames(path) {
+  getClassNames(path: string) {
     if (!has(this.nameMap, path)) {
       console.warn(`undefined variable: ${path}`)
     }
@@ -144,7 +145,7 @@ class Ender {
    * @param {string} path 変数のパス
    * @param {any} value
    */
-  setClassNames(path, value) {
+  setClassNames(path: string, value: any) {
     set(this.nameMap, path, this.eval(value))
   }
 }

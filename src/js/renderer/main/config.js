@@ -3,7 +3,7 @@ import Config from '../util/Config'
 import store from './store'
 import { toAbsolutePath } from '../util/util'
 
-export function generateConfig(configPath) {
+export function generateConfig(configPath: string): Config {
   let config = Config.generateConfig(configPath)
   config.auto = false
   config.extendGetter('basePath', function(key, getter) {
