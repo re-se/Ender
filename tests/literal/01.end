@@ -1,0 +1,12 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+config.text.speed = 100
+
+a = 1
+b = {a: a}
+c = [a, b.a]
+
+a: ${a}
+b: {a: ${b.a}}
+c: [${c[0]}, ${c[1]}]

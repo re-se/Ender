@@ -188,11 +188,13 @@ VarDecl = t:Assignable _ "=" _ right:Expr EOL {
 }
 
 
-Assignable = recv:Identifier accessor:(Accessor)* {
-  return [].concat(recv, accessor).join('.');
+Assignable = a:$(Identifier (Accessor)*) {
+  return a;
 }
 
-Accessor = "." name:(Identifier) {return name;}
+Accessor
+  = "." (Identifier)
+  / "[" (Expr) "]"
 
 Identifier = Name
 
@@ -212,7 +214,7 @@ Args = "(" __ arg1:Expr arg2:(__ "," __ Expr)*  __ ")" {
   return arg;
 }
 
-Expr = Call / Object / String / Number / Bool / Var / Null
+Expr = Call / Object / Array / String / Number / Bool / Var / Null
 
 Var = name:Assignable { return genVar(name) }
 
@@ -246,6 +248,12 @@ SimpleObject = p:Property  {
 
 Property = k:(Name / String / Number) _ ":" _ v:Expr {
   return [k, v]
+}
+
+Array = "[" e1:(_ Expr _ ",")* e2:(_ Expr)? _ "]" {
+  return [].concat(e1.map((e) => {
+    return e[1]
+  })).concat(e2[1] || [])
 }
 
 String = SingleQuoted / DoubleQuoted

@@ -96,7 +96,7 @@ class Ender {
     if (expr instanceof Object) {
       switch (expr.type) {
         case 'var':
-          return this.getVar(expr.name)
+          return this.eval(this.getVar(expr.name))
         case 'func':
           return instMap[expr.type](expr)
         default:
