@@ -1,8 +1,8 @@
 //@flow
-import generateComponent from '../util/generateComponent'
 import type { FuncInst } from './instMap'
 import { addComponents, addImage } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
+import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath } from '../util/util'
@@ -25,16 +25,29 @@ export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
 export default {
   /**
    * 画像を描画する
-   * args {
+   * args [
    *  1: src        画像のファイルパス
-   *  2: classList  クラス名
+   *  2: classNames  クラス名
    *  3: effect     描画時のエフェクト(FadeInなど)
-   * }
+   * ]
    * @param  {any[]} args
    * @return {void}
    */
   img: (args: string[]) => {
     store.dispatch(addImage(args))
+  },
+
+  /**
+   * アニメーションする
+   * args [
+   *  1: selector
+   *  2: effectName
+   * ]
+   * @param  {string[]} args
+   * @return {void}
+   */
+  animation: (args: string[]) => {
+    AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1]))
   },
 
   layout: (args: FuncInst[]) => {
@@ -53,10 +66,13 @@ export default {
     const css = require(path)
     store.dispatch(
       addComponents(
-        {
-          name: 'Style',
-          args: [css],
-        },
+        [
+          {
+            type: 'func',
+            name: 'Style',
+            args: [css],
+          },
+        ],
         'style'
       )
     )

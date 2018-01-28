@@ -1,45 +1,47 @@
-//@flow
 import React from 'react'
-import store from '../main/store'
-import { startAnimation } from '../actions/actions'
-import { get } from 'lodash'
 import path from 'path'
 import engine from '../main/engine'
-
 import ImageAnimation from '../util/animation/ImageAnimation'
-
-type Props = {
-  src: string,
-  classNames: string[],
-  effect: string,
-}
+import { startAnimation } from '../actions/actions'
+import store from '../main/store'
 
 const getImageId = (src, classNames) => {
   return src.replace(/[\/\.\\]/, '') + classNames.join('-')
 }
 
-const Image = ({ src, classNames, effect }: Props) => {
-  const onLoad = () => {
-    const imageAnimation = new ImageAnimation(
-      `#${getImageId(src, classNames)}`,
-      effect
-    )
-    store.dispatch(startAnimation(imageAnimation))
-    imageAnimation.start()
+export default class Image extends React.Component {
+  componentWillMount() {
+    if (this.props.effect) {
+      let appearAnimation = new ImageAnimation(
+        `#${this.props.id}`,
+        this.props.effect
+      )
+      this.setState({ appearAnimation })
+      store.dispatch(startAnimation(appearAnimation))
+    }
   }
-  const srcPath = path.join(
-    engine.getVar('config.basePath'),
-    engine.getVar('config.image.path', ''),
-    src
-  )
-  return (
-    <img
-      className={`ender-image ${classNames.join(' ')}`}
-      src={srcPath}
-      onLoad={onLoad}
-      id={getImageId(src, classNames)}
-    />
-  )
-}
 
-export default Image
+  componentDidMount() {
+    if (this.state.appearAnimation) {
+      this.state.appearAnimation.start()
+      this.setState({})
+    }
+  }
+
+  render() {
+    const srcPath = path.join(
+      engine.getVar('config.basePath'),
+      engine.getVar('config.image.path', ''),
+      this.props.src
+    )
+
+    return (
+      <img
+        className={`ender-image ${this.props.classNames.join(' ')}`}
+        src={srcPath}
+        id={this.props.id}
+        style={this.props.style}
+      />
+    )
+  }
+}

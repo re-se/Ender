@@ -15,6 +15,7 @@ export default {
         src: getFuncArgs(args, 0),
         classNames: [].concat(getFuncArgs(args, 1, DEFAULT_IMAGE_CLASSNAME)),
         effect: getFuncArgs(args, 2),
+        id: args[3],
       }
     },
   },

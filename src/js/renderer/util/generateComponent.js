@@ -3,77 +3,42 @@ import React from 'react'
 import componentList from '../config/componentList'
 import store from '../main/store'
 import Animation from './animation/Animation'
+import ComponentUtil from './ComponentUtil'
+import AnimationUtil from './AnimationUtil'
+import type { FuncInst } from '../main/instMap'
 
 /**
  * React コンポーネントのインスタンスを生成する
+ * @param {ComponentState} component
  * @return {React.Component}
  */
-const generateComponent = (name: string, args: any[], key: string) => {
-  const Module = require(componentList[name].path)
-  const Component = Module[name] || Module.default
-  let props = {}
-  if (args) {
-    props = componentList[name].getProps(args)
-  }
-  let animationStart = generateAnimationStartFunc(
-    getAnimations(props.classNames)
+const generateComponent = (component: ComponentState) => {
+  const Module = require(componentList[component.name].path)
+  const Component = Module[component.name] || Module.default
+
+  let animationStart = AnimationUtil.generateAnimationStartFunc(
+    getAnimations(component)
   )
-  return <Component {...props} key={key} refs={animationStart} />
+  return (
+    <Component {...component.props} key={component.key} ref={animationStart} />
+  )
 }
 
 export default generateComponent
 
 /**
- * アニメーションを開始するコールバック関数を生成
- * @param  {Animation[]} animations
- * @return {()=>void)}
- */
-const generateAnimationStartFunc = (animations: Animation[]) => {
-  return () => {
-    for (let animation of animations) {
-      // アニメーションに初期値があったらエレメントスタイルに初期値をさす
-      if (animation.startStyle) {
-        //TODO:指定コンポーネントのStateにスタイル差す方法
-      }
-      // 多重起動防止
-      if (!animation.isStarted) {
-        animation.start()
-      }
-    }
-  }
-}
-
-/**
  * 該当するアニメーションを取得
- * @param  {string[]} classNames
+ * @param  {ComponentState} classNames
  * @return {Animation[]}
  */
-const getAnimations = (classNames: string[]) => {
+const getAnimations = (component: ComponentState): Animation[] => {
   let availableAnimation = []
 
   for (const animation of store.getState().animation) {
-    if (isAvailableAnimation(classNames, animation)) {
+    if (AnimationUtil.isAvailableAnimation(animation, component)) {
       availableAnimation.push(animation)
     }
   }
 
   return availableAnimation
-}
-
-/**
- * アニメーションの対象になるか判定
- * @param  {string[]}  classNames
- * @param  {Animation}  animation
- * @return {Boolean}
- */
-const isAvailableAnimation = (classNames: string[], animation: Animation) => {
-  if (!animation.isFinished) {
-    return false
-  }
-  for (const selectorClassName of animation.selectorClassNames) {
-    if (!classNames.includes(selectorClassName)) {
-      return false
-    }
-  }
-  return true
 }

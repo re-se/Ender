@@ -1,3 +1,5 @@
+import ComponentUtil from '../util/ComponentUtil'
+
 // root
 export const resetState = components => {
   return { type: 'RESET_STATE' }
@@ -9,6 +11,14 @@ export const addComponents = (components, key = 'default') => {
     type: 'ADD_COMPONENTS',
     components,
     key,
+  }
+}
+
+export const updateComponentStyle = (selector, style) => {
+  return {
+    type: 'UPDATE_COMPONENT_STYLE',
+    selector,
+    style,
   }
 }
 
@@ -57,11 +67,15 @@ export const finishAnimation = () => {
 
 // Image
 export const addImage = image => {
+  image[3] = ComponentUtil.generateId('image')
   return addComponents(
-    {
-      name: 'Image',
-      args: image,
-    },
+    [
+      {
+        type: 'func',
+        name: 'Image',
+        args: image,
+      },
+    ],
     'image'
   )
 }

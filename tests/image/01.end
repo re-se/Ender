@@ -1,5 +1,1 @@
-\layout(\Box(\MessageBox()))
-
 \img("test.png", "image-center", "fadeIn")
-
-aaa
