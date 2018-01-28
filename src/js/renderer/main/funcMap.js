@@ -5,7 +5,7 @@ import ImageAnimation from '../util/animation/ImageAnimation'
 import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
-import { toAbsolutePath } from '../util/util'
+import { toAbsolutePath, GeneratorFunction } from '../util/util'
 
 /**
  * 関数命令の引数を取得する
@@ -27,7 +27,7 @@ export default {
    * 画像を描画する
    * args [
    *  1: src        画像のファイルパス
-   *  2: classNames  クラス名
+   *  2: classNames クラス名
    *  3: effect     描画時のエフェクト(FadeInなど)
    * ]
    * @param  {any[]} args
@@ -38,7 +38,21 @@ export default {
   },
 
   /**
-   * アニメーションする
+   * アニメーションする(同期)
+   * args [
+   *  1: selector
+   *  2: effectName
+   * ]
+   * @param  {[string[] | string, string]} args
+   * @return {void}
+   */
+  animate: function*(args: [string[] | string, string]): GeneratorFunction {
+    AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1], true))
+    yield
+  },
+
+  /**
+   * アニメーションする(非同期)
    * args [
    *  1: selector
    *  2: effectName
@@ -46,7 +60,7 @@ export default {
    * @param  {string[]} args
    * @return {void}
    */
-  animate: (args: string[]) => {
+  aanimate: (args: string[]) => {
     AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1]))
   },
 
@@ -54,7 +68,7 @@ export default {
     store.dispatch(addComponents(args))
   },
 
-  set: (args: any[]) => {
+  set: (args: [string, any]) => {
     engine.setVar(args[0], args[1])
   },
 

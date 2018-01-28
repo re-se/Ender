@@ -2,6 +2,7 @@
 import anime from 'animejs'
 import { AnimationLibrary } from './AnimationLibrary'
 import ImageAnimation from '../ImageAnimation'
+import StyleUtil from '../../StyleUtil'
 
 /**
  * animejs のラッパー
@@ -14,7 +15,7 @@ export default class Animejs implements AnimationLibrary {
 
   finish(animation: ImageAnimation) {
     animation.animationController.pause()
-    anime.remove(animation.selector)
+    anime.remove(StyleUtil.toString(animation.selectorTree))
   }
 
   pause(animation: ImageAnimation) {

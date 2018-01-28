@@ -58,7 +58,7 @@ class Ender {
     const animation = store.getState().animation
     let isInterrupted = false
     for (const key in animation) {
-      if (!animation[key].isFinished) {
+      if (animation[key].isStarted && !animation[key].isFinished) {
         animation[key].onExec()
         isInterrupted = true
       }
@@ -71,6 +71,7 @@ class Ender {
 
   *_mainLoop(): GeneratorFunction {
     while (this.pc < this.insts.length) {
+      console.log(this.insts[this.pc], this.pc)
       const inst = this.insts[this.pc]
       // 命令実行
       if (instMap[inst.type] instanceof GeneratorFunction) {

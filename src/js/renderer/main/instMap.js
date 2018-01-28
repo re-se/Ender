@@ -9,6 +9,7 @@ import {
 } from '../actions/actions'
 import store from './store'
 import TextAnimation from '../util/animation/TextAnimation'
+import { GeneratorFunction } from '../util/util'
 
 export type WaitInst = {
   type: string,
@@ -35,7 +36,7 @@ export type ClearInst = {
 }
 
 const instMap = {
-  wait: function*(waitInst: WaitInst) {
+  wait: function*(waitInst: WaitInst): GeneratorFunction {
     yield
   },
 
@@ -61,8 +62,12 @@ const instMap = {
     }
   },
 
-  func: (funcInst: FuncInst) => {
-    funcMap[funcInst.name](funcInst.args)
+  func: function*(funcInst: FuncInst): GeneratorFunction {
+    if (funcMap[funcInst.name] instanceof GeneratorFunction) {
+      yield* funcMap[funcInst.name](funcInst.args)
+    } else {
+      funcMap[funcInst.name](funcInst.args)
+    }
   },
 
   funcdecl: () => {},

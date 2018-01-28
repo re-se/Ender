@@ -5,6 +5,7 @@ import { updateComponentStyle } from '../../actions/actions'
 import { AnimationLibrary } from './library/AnimationLibrary'
 import Animejs from './library/Animejs'
 import StyleUtil from '../StyleUtil'
+import engine from '../../main/engine'
 
 /**
  * アニメーションファイル(./image 配下)が返却する情報の型
@@ -43,14 +44,25 @@ export default class ImageAnimation extends Animation {
    * @type {any}
    */
   animationController: any
+  /**
+   * 非同期アニメーションか
+   * @type {boolean}
+   */
+  isSync: boolean
 
-  constructor(selector: string | string[], effectName: string) {
+  constructor(
+    selector: string | string[],
+    effectName: string,
+    isSync: boolean = false
+  ) {
     super(selector)
     this.effectName = effectName
     this.animation = require(`./image/${effectName}`).default
+    this.isSync = isSync
   }
 
   start() {
+    console.log('started', this)
     // アニメーションを作成
     const animationStyle = this.animation(
       StyleUtil.toString(this.selectorTree),
@@ -71,6 +83,7 @@ export default class ImageAnimation extends Animation {
   }
 
   finish() {
+    console.log('finished', this)
     // アニメーションを止める
     animeLibrary.finish(this)
 
@@ -79,6 +92,11 @@ export default class ImageAnimation extends Animation {
 
     // アニメーション対象のコンポーネントに終了状態のスタイルをさす
     store.dispatch(updateComponentStyle(this.selectorTree, this.endStyle))
+
+    if (this.isSync) {
+      console.log('exec!!')
+      engine.exec()
+    }
   }
 
   onExec() {
