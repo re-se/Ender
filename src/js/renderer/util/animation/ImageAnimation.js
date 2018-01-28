@@ -4,6 +4,7 @@ import store from '../../main/store'
 import { updateComponentStyle } from '../../actions/actions'
 import { AnimationLibrary } from './library/AnimationLibrary'
 import Animejs from './library/Animejs'
+import StyleUtil from '../StyleUtil'
 
 /**
  * アニメーションファイル(./image 配下)が返却する情報の型
@@ -51,9 +52,12 @@ export default class ImageAnimation extends Animation {
 
   start() {
     // アニメーションを作成
-    const animationStyle = this.animation(this.selector, () => {
-      this.finish()
-    })
+    const animationStyle = this.animation(
+      StyleUtil.toString(this.selectorTree),
+      () => {
+        this.finish()
+      }
+    )
 
     // アニメオブジェクトに終了状態とコントローラーを保持
     this.endStyle = animationStyle.endStyle

@@ -46,7 +46,7 @@ export default {
    * @param  {string[]} args
    * @return {void}
    */
-  animation: (args: string[]) => {
+  animate: (args: string[]) => {
     AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1]))
   },
 
