@@ -13,7 +13,7 @@ export default class ComponentUtil {
     let props = inst.args ? componentList[inst.name].getProps(inst.args) : {}
     if (props.children) {
       props.children = props.children.map(child => {
-        ComponentUtil.generateComponentState(child, key)
+        return ComponentUtil.generateComponentState(child, key)
       })
     }
     return props
