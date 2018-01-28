@@ -4,6 +4,7 @@ import engine from '../main/engine'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import { startAnimation } from '../actions/actions'
 import store from '../main/store'
+import { get } from 'lodash'
 
 const getImageId = (src, classNames) => {
   return src.replace(/[\/\.\\]/, '') + classNames.join('-')
@@ -22,7 +23,7 @@ export default class Image extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.appearAnimation) {
+    if (get(this, 'state.appearAnimation')) {
       this.state.appearAnimation.start()
       this.setState({})
     }
