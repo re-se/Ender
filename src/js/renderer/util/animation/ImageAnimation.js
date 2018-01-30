@@ -62,7 +62,6 @@ export default class ImageAnimation extends Animation {
   }
 
   start() {
-    console.log('started', this)
     // アニメーションを作成
     const animationStyle = this.animation(
       StyleUtil.toString(this.selectorTree),
@@ -83,7 +82,6 @@ export default class ImageAnimation extends Animation {
   }
 
   finish() {
-    console.log('finished', this)
     // アニメーションを止める
     animeLibrary.finish(this)
 
@@ -94,7 +92,6 @@ export default class ImageAnimation extends Animation {
     store.dispatch(updateComponentStyle(this.selectorTree, this.endStyle))
 
     if (this.isSync) {
-      console.log('exec!!')
       engine.exec()
     }
   }

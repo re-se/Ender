@@ -16,12 +16,7 @@ const generateComponent = (component: ComponentState) => {
   const Module = require(componentList[component.name].path)
   const Component = Module[component.name] || Module.default
 
-  let animationStart = AnimationUtil.generateAnimationStartFunc(
-    getAnimations(component)
-  )
-  return (
-    <Component {...component.props} key={component.key} ref={animationStart} />
-  )
+  return <Component {...component.props} key={component.key} />
 }
 
 export default generateComponent

@@ -15,7 +15,8 @@ export default class Image extends React.Component {
     if (this.props.effect) {
       let appearAnimation = new ImageAnimation(
         `#${this.props.id}`,
-        this.props.effect
+        this.props.effect,
+        true
       )
       this.setState({ appearAnimation })
       store.dispatch(startAnimation(appearAnimation))
@@ -23,9 +24,14 @@ export default class Image extends React.Component {
   }
 
   componentDidMount() {
+    // 出現時アニメーション再生
     if (get(this, 'state.appearAnimation')) {
       this.state.appearAnimation.start()
       this.setState({})
+      // 出現アニメーションがある場合は animation.finish で engine.exec() される
+    } else {
+      // img 命令完了
+      engine.exec()
     }
   }
 

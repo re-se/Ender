@@ -33,8 +33,9 @@ export default {
    * @param  {any[]} args
    * @return {void}
    */
-  img: (args: string[]) => {
+  img: function*(args: string[]): GeneratorFunction {
     store.dispatch(addImage(args))
+    yield
   },
 
   /**
@@ -47,7 +48,9 @@ export default {
    * @return {void}
    */
   animate: function*(args: [string[] | string, string]): GeneratorFunction {
-    AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1], true))
+    let animation = new ImageAnimation(args[0], args[1], true)
+    AnimationUtil.setAnimation(animation)
+    animation.start()
     yield
   },
 
@@ -61,7 +64,9 @@ export default {
    * @return {void}
    */
   aanimate: (args: string[]) => {
-    AnimationUtil.setAnimation(new ImageAnimation(args[0], args[1]))
+    let animation = new ImageAnimation(args[0], args[1])
+    AnimationUtil.setAnimation(animation)
+    animation.start()
   },
 
   layout: (args: FuncInst[]) => {
