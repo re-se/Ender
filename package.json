@@ -4,7 +4,7 @@
   "description": "",
   "main": "init.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "gulp",
     "flow": "flow",
     "parsergen": "pegjs -o src/js/renderer/main/parser.js ender.pegjs",
@@ -34,9 +34,9 @@
     "babel-runtime": "^6.26.0",
     "css-modules-require-hook": "^4.2.2",
     "lodash": "^4.17.4",
-    "react": "^15.3.0",
+    "react": "^16.2.0",
     "react-addons-update": "^15.3.0",
-    "react-dom": "^15.3.0",
+    "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "reduce-reducers": "^0.1.2",
     "redux": "^3.5.2"
@@ -45,6 +45,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.1.2",
+    "babel-jest": "^22.1.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.1.8",
     "babel-preset-react": "^6.23.0",
@@ -74,10 +75,12 @@
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.7",
+    "jest": "^22.1.4",
     "minimist": "^1.2.0",
     "npm-run-all": "^4.1.2",
     "pegjs": "^0.10.0",
     "prettier": "^1.10.2",
+    "react-test-renderer": "^16.2.0",
     "rimraf": "^2.6.2",
     "run-sequence": "^1.2.2",
     "webpack": "^3.10.0"
@@ -86,5 +89,10 @@
     "productName": "sample",
     "asar": false,
     "files": ["package.json", "init.js", "build/", "node_modules/"]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.css$": "<rootDir>/tests/__mocks__/styleMock.js"
+    }
   }
 }
