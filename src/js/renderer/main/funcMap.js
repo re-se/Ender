@@ -96,4 +96,8 @@ export default {
       )
     )
   },
+
+  wait: function*(args?: any[]): GeneratorFunction {
+    yield args ? args[0] : undefined
+  },
 }
