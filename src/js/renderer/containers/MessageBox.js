@@ -37,8 +37,9 @@ class MessageBox extends React.Component {
     let messageDoms = []
     let style = {}
     let index = this.props.index || message.length
+    let lastMessageType = get(message, '[index - 1].type')
     let periodWait =
-      message[index - 1].type === 'period' &&
+      lastMessageType === 'period' &&
       engine.getVar('config.text.periodWait', false)
     for (let i = 0; i < index; i++) {
       let word = message[i]
@@ -96,7 +97,7 @@ class MessageBox extends React.Component {
           console.error(word)
       }
     }
-    if (message[index - 1].type === 'br') {
+    if (lastMessageType === 'br') {
       messageDoms.pop()
     }
     // マーカ
