@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import generateComponent from '../util/generateComponent'
-import AnimationStyle from './AnimationStyle'
 
 const Game = ({ components = {} }) => {
   let childComponents = []
