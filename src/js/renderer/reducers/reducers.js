@@ -81,10 +81,10 @@ const _evalMessage = messageObject => {
     }
   }
 
-  // 改ページの場合、命令列の最後 or wait -> clear になっている
+  // 改ページの場合、命令列の最後 or wait -> text 以外(clear, func等) になっている
   const nextInst2 = engine.lookahead(2)
   let next
-  if (!nextInst2 || nextInst2.type === 'clear') {
+  if (!nextInst2 || nextInst2.type !== 'text') {
     next = 'clear'
   } else {
     next = 'wait'
