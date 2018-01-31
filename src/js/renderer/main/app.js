@@ -8,7 +8,6 @@ import Game from '../components/Game'
 import engine from './engine'
 import { toAbsolutePath } from '../util/util'
 import store from './store'
-import { setEngine } from '../actions/actions'
 import { generateConfig } from './config'
 
 ipcRenderer.send('request-config-path')
@@ -22,7 +21,6 @@ ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
   const config = generateConfig(configPath)
 
   engine.init(config)
-  engine.exec()
 
   render(
     <Provider store={store}>
@@ -30,4 +28,6 @@ ipcRenderer.on('set-config-path', (e, requestConfigPath) => {
     </Provider>,
     document.getElementById('contents')
   )
+
+  engine.exec()
 })
