@@ -5,8 +5,7 @@ import path from 'path'
 import { set, get, has } from 'lodash'
 import parser from './parser.js'
 import instMap from './instMap.js'
-import { GeneratorFunction } from '../util/util'
-import { remote } from 'electron'
+import { GeneratorFunction, isDevelop } from '../util/util'
 import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
@@ -16,7 +15,9 @@ class Ender {
   pc: number
   scriptPath: string
   nameMap: {}
-  mainLoop: GeneratorFunction
+  mainLoop: Iterator<any>
+  isFinished = false
+  _yieldValue: any
 
   /**
    * 初期化
@@ -31,6 +32,7 @@ class Ender {
     this.pc = 0
     this.mainLoop = this._mainLoop()
     this.nameMap = {}
+    this.isFinished = false
     this.setVar('config', config)
     init()
   }
@@ -46,7 +48,7 @@ class Ender {
   /**
    * 命令列の先読み
    */
-  lookahead(n: number = 1) {
+  lookahead(n: number = 1): Inst {
     return this.insts[this.pc + n]
   }
 
@@ -65,7 +67,9 @@ class Ender {
     }
     store.dispatch(finishAnimation())
     if (!isInterrupted) {
-      this.mainLoop.next()
+      let { value, done } = this.mainLoop.next()
+      this._yieldValue = value
+      this.isFinished = done
     }
   }
 
@@ -82,7 +86,7 @@ class Ender {
 
       this.pc += 1
 
-      if (remote.process.env['NODE_ENV'] === 'development') {
+      if (isDevelop()) {
         if (this.pc >= this.insts.length) {
           yield
           store.dispatch(resetState())

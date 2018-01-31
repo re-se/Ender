@@ -41,3 +41,7 @@ export const toCss = (json: Object) => {
   }
   return css
 }
+
+export const isDevelop = () => {
+  remote.process.env['NODE_ENV'] === 'development'
+}

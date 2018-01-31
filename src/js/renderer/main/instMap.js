@@ -63,6 +63,10 @@ const instMap = {
   },
 
   func: function*(funcInst: FuncInst): GeneratorFunction {
+    if (!funcMap[funcInst.name]) {
+      console.warn(`undefined func ${funcInst.name}`)
+      return
+    }
     if (funcMap[funcInst.name] instanceof GeneratorFunction) {
       yield* funcMap[funcInst.name](funcInst.args)
     } else {
