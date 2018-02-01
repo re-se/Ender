@@ -23,7 +23,7 @@ export default class Image extends React.Component {
     }
   }
 
-  componentDidMount() {
+  onLoad() {
     // 出現時アニメーション再生
     if (get(this, 'state.appearAnimation')) {
       this.state.appearAnimation.start()
@@ -48,6 +48,7 @@ export default class Image extends React.Component {
         src={srcPath}
         id={this.props.id}
         style={this.props.style}
+        onLoad={this.onLoad}
       />
     )
   }
