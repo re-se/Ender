@@ -60,9 +60,8 @@
     return o;
   }
 
-  function genFuncDecl(name, args, body) {
-    var o = genObj("funcdecl");
-    o.name = name;
+  function genLambda(args, body) {
+    var o = genObj("lambda");
     o.args = args;
     o.body = body;
     return o;
@@ -93,8 +92,8 @@ __ = (S / NL)*
 Line
   = Comment
   / Say
-  / FuncDecl
-  / VarDecl
+  / Function
+  / v:VarDecl EOL {return v}
   / Call
   / Text
   / Br
@@ -109,19 +108,25 @@ Say = name:(Escape / !(NL / "「") .)* !KP "「" lines:(Call / Text / Br)* "」"
 
 KP = "「" (KP / !"」" .)* "」" !EOL
 
-FuncDecl = "func" _ name:Name _ args:FuncArgs _ "{" lines:(__ !"}" Line)* __ "}" NL? {
+Function = ("\\" / "func" S _) name:(Name _)? args:FuncArgs _ "{" lines:(__ Expr)* __ "}" NL? {
   var body = [];
   for(var i = 0; i < lines.length; i++) {
-    body = body.concat(lines[i][2]);
+    body = body.concat(lines[i][1]);
   }
-  return genFuncDecl(name, args, body);
+  var ret = genLambda(args, body);
+  if (name) {
+    ret = genFunc("set", [name[0], ret]);
+  }
+  return ret;
 }
 
-FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
+FuncArgs = "(" args:(_ _FuncArgs)?  _ ")" {
+  return args ? args[1] : []
+}
+
+_FuncArgs = arg1:(Name) arg2:(_ "," _ Name)* {
   var arg;
-  if (arg1 || arg2.length > 0) {
-    arg = [arg1];
-  }
+  arg = [arg1];
   if(arg2.length > 0) {
     var ar = arg2.map(function(a) {
       return a[3];
@@ -183,10 +188,9 @@ Call
   return genFunc(name, args);
 }
 
-VarDecl = t:Assignable _ "=" _ right:Expr EOL {
+VarDecl = t:Assignable _ "=" _ right:Expr {
   return genFunc("set", [t, right]);
 }
-
 
 Assignable = a:$(Identifier (Accessor)*) {
   return a;
@@ -200,11 +204,13 @@ Identifier = Name
 
 Name = name:([a-zA-Z_] [a-zA-Z0-9_]*) { return name[0] + name[1].join(""); }
 
-Args = "(" __ arg1:Expr arg2:(__ "," __ Expr)*  __ ")" {
+Args = "(" args:(__  _Args)? __ ")" {
+  return args ? args[1] : []
+}
+
+_Args = arg1:Expr arg2:(__ "," __ Expr)* {
   var arg;
-  if (arg1 || arg2.length > 0) {
-    arg = [arg1];
-  }
+  arg = [arg1];
   if(arg2.length > 0) {
     var ar = arg2.map(function(a) {
       return a[3];
@@ -214,7 +220,7 @@ Args = "(" __ arg1:Expr arg2:(__ "," __ Expr)*  __ ")" {
   return arg;
 }
 
-Expr = Call / Object / Array / String / Number / Bool / Var / Null
+Expr = Function / Call / VarDecl / Object / Array / String / Number / Bool / Var
 
 Var = name:Assignable { return genVar(name) }
 
