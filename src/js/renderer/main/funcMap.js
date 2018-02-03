@@ -22,7 +22,7 @@ export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
   }
 }
 
-export default {
+export const funcMap = {
   /**
    * 画像を描画する
    * args [
@@ -74,7 +74,7 @@ export default {
   },
 
   set: (args: [string, any]) => {
-    engine.setVar(args[0], args[1])
+    return engine.setVar(args[0], args[1])
   },
 
   import: (args: string[]) => {
@@ -100,4 +100,24 @@ export default {
   wait: function*(args?: any[]): GeneratorFunction {
     yield args ? args[0] : undefined
   },
+}
+
+export function* generator(inst: FuncInst): Iterator<any> {
+  if (!funcMap[inst.name]) {
+    console.warn(`undefined func ${inst.name}`)
+    return
+  }
+  if (funcMap[inst.name] instanceof GeneratorFunction) {
+    yield* funcMap[inst.name](inst.args)
+  } else {
+    return funcMap[inst.name](inst.args)
+  }
+}
+
+export function exec(inst: FuncInst): any {
+  if (!funcMap[inst.name]) {
+    console.warn(`undefined func ${inst.name}`)
+    return
+  }
+  return funcMap[inst.name](inst.args)
 }

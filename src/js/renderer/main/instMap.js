@@ -1,6 +1,6 @@
 //@flow
 import engine from './engine.js'
-import funcMap from './funcMap'
+import { generator, exec } from './funcMap'
 import {
   addMessage,
   clearMessage,
@@ -56,22 +56,14 @@ const instMap = {
 
   nameClear: () => {},
 
-  clear: clearInst => {
+  clear: (clearInst: ClearInst) => {
     if (clearInst.message) {
       store.dispatch(clearMessage())
     }
   },
 
   func: function*(funcInst: FuncInst): GeneratorFunction {
-    if (!funcMap[funcInst.name]) {
-      console.warn(`undefined func ${funcInst.name}`)
-      return
-    }
-    if (funcMap[funcInst.name] instanceof GeneratorFunction) {
-      yield* funcMap[funcInst.name](funcInst.args)
-    } else {
-      funcMap[funcInst.name](funcInst.args)
-    }
+    yield* generator(funcInst)
   },
 
   funcdecl: () => {},
