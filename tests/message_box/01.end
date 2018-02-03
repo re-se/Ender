@@ -22,3 +22,6 @@ iii
 
 名前「かきくけこ」
 \wait('snapshot')
+
+\layout(\History)
+\wait('snapshot')

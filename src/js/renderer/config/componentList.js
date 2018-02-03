@@ -26,6 +26,13 @@ export default {
       return { classNames }
     },
   },
+  History: {
+    path: '../components/History',
+    getProps: args => {
+      let classNames = [].concat(args[0])
+      return { classNames }
+    },
+  },
   // Box(classNames? : string|Array, children...: object[])
   Box: {
     path: '../components/Box',
