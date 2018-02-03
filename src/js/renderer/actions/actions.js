@@ -51,6 +51,13 @@ export const setMessageClassNames = classNames => {
   }
 }
 
+export const setName = (name = null) => {
+  return {
+    type: 'SET_NAME',
+    name,
+  }
+}
+
 // animation
 export const startAnimation = animation => {
   return {

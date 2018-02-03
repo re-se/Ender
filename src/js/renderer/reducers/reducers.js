@@ -95,6 +95,7 @@ const _evalMessage = messageObject => {
 const MessageBox = (
   state = {
     message: [],
+    name: null,
     classNames: [],
     history: '',
     next: null,
@@ -126,6 +127,8 @@ const MessageBox = (
       }
     case 'SET_MESSAGE_CLASSNAMES':
       return { ...state, classNames: action.classNames }
+    case 'SET_NAME':
+      return { ...state, name: action.name }
     default:
       return state
   }

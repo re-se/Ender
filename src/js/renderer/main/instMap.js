@@ -5,6 +5,7 @@ import {
   addMessage,
   clearMessage,
   setMessagePosition,
+  setName,
   startAnimation,
 } from '../actions/actions'
 import store from './store'
@@ -22,6 +23,11 @@ export type TextInst = {
     body?: string,
     expr?: string,
   }[],
+}
+
+export type NameInst = {
+  type: string,
+  name: string | Object, // TODO: Object の型も絞れる
 }
 
 export type FuncInst = {
@@ -52,9 +58,13 @@ const instMap = {
     store.dispatch(startAnimation(animation))
   },
 
-  name: () => {},
+  name: ({ name }: NameInst) => {
+    store.dispatch(setName(engine.eval(name)))
+  },
 
-  nameClear: () => {},
+  nameClear: () => {
+    store.dispatch(setName())
+  },
 
   clear: (clearInst: ClearInst) => {
     if (clearInst.message) {

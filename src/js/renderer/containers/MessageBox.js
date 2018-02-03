@@ -15,9 +15,14 @@ const DEFAULT_MARKER = { wait: '▽', clear: '▼' }
 
 class MessageBox extends React.Component {
   render() {
+    let nameBox
+    if (this.props.name) {
+      nameBox = <div className="ender-nameBox">{this.props.name}</div>
+    }
     if (this.props.message) {
       return (
         <div className={`ender-messageBox ${this.props.classNames.join(' ')}`}>
+          {nameBox}
           <div className="ender-messageBox-inner">
             {this._generateMessageDoms(this.props.message, this.props.next)}
           </div>
@@ -132,6 +137,7 @@ class MessageBox extends React.Component {
 const mapStateToProps = state => {
   return {
     message: state.MessageBox.message,
+    name: state.MessageBox.name,
     next: state.MessageBox.next,
     classNames: state.MessageBox.classNames,
     index: state.MessageBox.index,
