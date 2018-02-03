@@ -185,7 +185,7 @@ Br = NL+ { return genClear("message"); }
 
 Call
   = "\\" name:Name args:Args? {
-  return genFunc(name, args);
+  return genFunc(name, args ? args : []);
 }
 
 VarDecl = t:Assignable _ "=" _ right:Expr {

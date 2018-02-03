@@ -251,7 +251,7 @@ function peg$parse(input, options) {
       },
       peg$c55 = function() { return genClear("message"); },
       peg$c56 = function(name, args) {
-        return genFunc(name, args);
+        return genFunc(name, args ? args : []);
       },
       peg$c57 = "=",
       peg$c58 = peg$literalExpectation("=", false),
