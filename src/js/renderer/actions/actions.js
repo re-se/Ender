@@ -79,3 +79,50 @@ export const addImage = image => {
     'image'
   )
 }
+
+// Audio
+export const loadAudio = audio => {
+  return {
+    type: 'LOAD_AUDIO',
+    audio,
+  }
+}
+
+export const playAudio = (audio, effect) => {
+  return {
+    type: 'PLAY_AUDIO',
+    audio,
+    effect,
+  }
+}
+
+export const stopAudio = (audio, effect) => {
+  return {
+    type: 'STOP_AUDIO',
+    audio,
+    effect,
+  }
+}
+
+export const pauseAudio = (audio, effect) => {
+  return {
+    type: 'PAUSE_AUDIO',
+    audio,
+    effect,
+  }
+}
+
+export const effectAudio = (audio, effect) => {
+  return {
+    type: 'EFFECT_AUDIO',
+    audio,
+    effect,
+  }
+}
+
+export const clearAudioEvent = audio => {
+  return {
+    type: 'CLEAR_AUDIO_EVENT',
+    audio,
+  }
+}

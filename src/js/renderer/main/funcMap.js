@@ -1,6 +1,6 @@
 //@flow
 import type { FuncInst } from './instMap'
-import { addComponents, addImage } from '../actions/actions'
+import { addComponents, addImage, playAudio as playAudioAction } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
@@ -48,7 +48,11 @@ export default {
    * @return {void}
    */
   animate: function*(args: [string[] | string, string]): GeneratorFunction {
-    let animation = new ImageAnimation(args[0], args[1], true)
+    let animation = new ImageAnimation(
+      engine.eval(args[0]),
+      engine.eval(args[1]),
+      true
+    )
     AnimationUtil.setAnimation(animation)
     animation.start()
     yield
@@ -64,10 +68,27 @@ export default {
    * @return {void}
    */
   aanimate: (args: string[]) => {
-    let animation = new ImageAnimation(args[0], args[1])
+    let animation = new ImageAnimation(
+      engine.eval(args[0]),
+      engine.eval(args[1])
+    )
     AnimationUtil.setAnimation(animation)
     animation.start()
   },
+
+  playAudio: (args: [string, string]) => {
+    store.dispatch(playAudioAction(
+      {
+        src: engine.eval(args[0]),
+        type: engine.eval(args[1])
+      },
+      engine.eval(args[2])
+    ))
+  },
+
+  stopAudio: (args: [string, string]) => {},
+
+  pauseAudio: (args: [string, string]) => {},
 
   layout: (args: FuncInst[]) => {
     store.dispatch(addComponents(args))

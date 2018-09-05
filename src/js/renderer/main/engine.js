@@ -9,6 +9,7 @@ import { GeneratorFunction, isDevelop } from '../util/util'
 import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
+const AudioContext = window.AudioContext || window.webkitAudioContext
 
 class Ender {
   insts: Inst[]
@@ -34,6 +35,9 @@ class Ender {
     this.nameMap = {}
     this.isFinished = false
     this.setVar('config', config)
+
+    // Ender で使用する AudioContext をグローバルに作成
+    window.audioContext = new AudioContext()
     init()
   }
 

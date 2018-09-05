@@ -4,6 +4,7 @@ import engine from '../main/engine'
 import store from '../main/store'
 import { get } from 'lodash'
 import ComponentUtil from '../util/ComponentUtil'
+import AudioUtil from '../util/AudioUtil'
 
 /**
  * 描画予定のコンポーネントを保持する State
@@ -144,10 +145,48 @@ const animation = (state = [], action) => {
   }
 }
 
+const audio = (state = [], action) => {
+  switch (action.type) {
+    case 'LOAD_AUDIO':
+      return state.concat(action.audio)
+    case 'PLAY_AUDIO':
+      // ロードされていなければ、ロードする
+      if(AudioUtil::getIndex(audio) === -1) {
+        state = state.concat(action.audio)
+      }
+      return _putAudioEvent(state, action.audio, ['PLAY', effect])
+    case 'STOP_AUDIO':
+      return _putAudioEvent(state, action.audio, [effect, 'STOP'])
+    case 'PAUSE_AUDIO':
+      return _putAudioEvent(state, action.audio, [effect, 'PAUSE'])
+    case 'EFFECT_AUDIO':
+      return _putAudioEvent(state, action.audio, action.effect)
+    case 'CLEAR_AUDIO_EVENT':
+      return _clearAudioEvent(state, action.audio)
+  }
+}
+
+const _putAudioEvent = (state, audio, event) => {
+  let newAudios = [...state]
+  let index = AudioUtil::getIndex(audio)
+  newAudios[index] = Object.assign({}, newAudios[index])
+  newAudios[index].events = newAudios[index].events.concat(event)
+  return newAudios
+}
+
+const _clearAudioEvent = (state, audio) => {
+  let newAudios = [...state]
+  let index = AudioUtil::getIndex(audio)
+  newAudios[index] = Object.assign({}, newAudios[index])
+  newAudios[index].events = []
+  return newAudios
+}
+
 const reducer = combineReducers({
   components,
   MessageBox,
   animation,
+  audio,
 })
 
 const root = (state, action) => {
