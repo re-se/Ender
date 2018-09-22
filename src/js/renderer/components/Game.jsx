@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import generateComponent from '../util/generateComponent'
-import Audio from '../components/Audio'
+import AudioEngine from '../containers/AudioEngine'
 
-const Game = ({ components = {}, audios = {} }) => {
+const Game = ({ components = {}, audio = {} }) => {
   return (
     <div id="inner" className="inner-view" key="inner-view">
       {generateChildComponents(components)}
-      {generateAudioComponents(audios)}
+      <AudioEngine />
     </div>
   )
 }
@@ -15,7 +15,7 @@ const Game = ({ components = {}, audios = {} }) => {
 const mapStateToProps = state => {
   return {
     components: state.components,
-    audios: state.audios,
+    audio: state.audio,
   }
 }
 
@@ -44,20 +44,4 @@ const generateChildComponents = components => {
     }
   }
   return childComponents
-}
-
-/**
- * Enderオーディオオブジェクトの配列からReactコンポーネントの配列を作成
- * @params audios
- * @retrun React.Component[]
- */
-const generateAudioComponents = audios => {
-  let audioComponents = []
-  for (const key in audios) {
-    const audio = audios[key]
-    audioComponents.push(
-      <Audio src={audio.src} type={audio.type} events={audio.events}/>
-    )
-  }
-  return audioComponents;
 }

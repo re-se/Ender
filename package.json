@@ -39,7 +39,8 @@
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "reduce-reducers": "^0.1.2",
-    "redux": "^3.5.2"
+    "redux": "^3.5.2",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
