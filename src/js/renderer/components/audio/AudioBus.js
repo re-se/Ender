@@ -1,6 +1,6 @@
 import React from 'react'
-import { AudioGain } from './AudioGain'
-import { AudioMediaElementAudioSource } from './AudioMediaElementAudioSource'
+import AudioGain from './AudioGain'
+import AudioMediaElementAudioSource from './AudioMediaElementAudioSource'
 
 export type Props = {
   audioBusState: AudioBusState,
@@ -8,17 +8,35 @@ export type Props = {
   nextAudioNode: AudioNode,
 }
 
-const AudioBus = ({ audioBusState, audioNodeMap, nextAudioNode }: Props) => {
-  connectAudioNodes(audioBusState.nodeOrder, audioNodeMap, nextAudioNode)
+const AudioBus = ({
+  audioCxt,
+  audioBusState,
+  audioNodeMap,
+  nextAudioNode,
+}: Props) => {
+  connectAudioNodes(
+    [
+      audioBusState.firstNode,
+      ...audioBusState.nodeOrder,
+      audioBusState.lastNode,
+    ],
+    audioNodeMap,
+    nextAudioNode
+  )
 
   let audioNodeComponents = []
   audioNodeMap.forEach((audioNode, key) => {
     audioNodeComponents.push(
-      generateAudioNodeComponent(audioBusState.nodes[key], audioNode)
+      generateAudioNodeComponent(
+        key,
+        audioCxt,
+        audioBusState.nodes[key],
+        audioNode
+      )
     )
   })
 
-  return <>{audioNodeComponents}</>
+  return <div className="ender-audio-bus">{audioNodeComponents}</div>
 }
 
 /**
@@ -31,7 +49,7 @@ function connectAudioNodes(
   lastAudioNode: AudioNode
 ) {
   do {
-    let audioNode = audioNodeMap[nodeOrder.shift()]
+    let audioNode = audioNodeMap.get(nodeOrder.shift())
     let nextAudioNode = audioNodeMap[nodeOrder[0]] || lastAudioNode
     audioNode.disconnect()
     audioNode.connect(nextAudioNode)
@@ -41,6 +59,8 @@ function connectAudioNodes(
 /**
  */
 function generateAudioNodeComponent(
+  key: string,
+  audioCxt: AudioContext,
   audioNodeState: AudioNodeState,
   audioNode: AudioNode
 ) {
@@ -48,12 +68,14 @@ function generateAudioNodeComponent(
     case 'source':
       return (
         <AudioMediaElementAudioSource
+          key={key}
           {...audioNodeState}
+          audioCxt={audioCxt}
           audioNode={audioNode}
         />
       )
     case 'gain':
-      return <AudioGain {...audioNodeState} audioNode={audioNode} />
+      return <AudioGain key={key} {...audioNodeState} gainNode={audioNode} />
     default:
       console.warn('undefined audio node type!!', audioNodeState)
       return null

@@ -88,26 +88,27 @@ export const loadAudio = audio => {
   }
 }
 
-export const playAudio = (audio, effect) => {
+export const playAudio = (src, out, effect) => {
   return {
     type: 'PLAY_AUDIO',
-    audio,
+    src,
+    out,
     effect,
   }
 }
 
-export const stopAudio = (audio, effect) => {
+export const stopAudio = (bus, effect) => {
   return {
     type: 'STOP_AUDIO',
-    audio,
+    bus,
     effect,
   }
 }
 
-export const pauseAudio = (audio, effect) => {
+export const pauseAudio = (bus, effect) => {
   return {
     type: 'PAUSE_AUDIO',
-    audio,
+    bus,
     effect,
   }
 }

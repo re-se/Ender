@@ -4,34 +4,10 @@ import store from '../main/store'
 import audioEffectList from '../config/audioEffectList'
 import { connect } from 'react-redux'
 import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
-import { AudioBus } from '../components/audio/AudioBus'
+import AudioBus from '../components/audio/AudioBus'
 const AudioContext = window.AudioContext || window.webkitAudioContext
 const AudioNode = window.AudioNode || window.webkitAudioNode
 const Audio = window.Audio
-
-type AudioEffectState = {
-  key: string,
-  async: boolean,
-  effect: string,
-}
-
-type AudioBusState = {
-  out: string,
-  nodeOrder: string[],
-  firstNode: string,
-  lastNode: string,
-  nodes: { [string]: AudioNodeState },
-}
-
-type AudioState = {
-  audioEffects: AudioEffectState[],
-  audioBuses: { [string]: AudioBusState },
-}
-
-interface AudioNodeState {
-  type: string;
-  src?: string;
-}
 
 type Props = {
   audioState: AudioState,
@@ -58,18 +34,21 @@ class AudioEngine extends React.Component<Props, State> {
     Object.keys(this.props.audioState.audioBuses).forEach(key => {
       audioBusComponents.push(
         <AudioBus
+          key={key}
+          audioCxt={this.audioCxt}
           audioBusState={this.props.audioState.audioBuses[key]}
           audioNodeMap={this.audioBuses.get(key)}
           nextAudioNode={getNextAudioNode(
             key,
             this.props.audioState.audioBuses,
-            this.audioBuses
+            this.audioBuses,
+            this.audioCxt.destination
           )}
         />
       )
     })
 
-    return <div>{audioBusComponents}</div>
+    return <div className="ender-audio-engine">{audioBusComponents}</div>
   }
 
   updateAudioBuses() {
@@ -99,9 +78,15 @@ class AudioEngine extends React.Component<Props, State> {
 function getNextAudioNode(
   key: string,
   audioBusStates: { [string]: AudioBusState },
-  audioBuses: Map<string, Map<string, AudioNode>>
-) {
+  audioBuses: Map<string, Map<string, AudioNode>>,
+  defaultNextAudioNode: AudioNode
+): AudioNode {
   const audioBusState = audioBusStates[key]
+
+  if (!audioBusState.out) {
+    return defaultNextAudioNode
+  }
+
   const nextAudioBusState = audioBusStates[audioBusState.out]
   const nextAudioNodeMap = audioBuses.get(audioBusState.out)
   if (!nextAudioNodeMap) {
@@ -162,7 +147,7 @@ function createAudioNode(
 ): AudioNode {
   switch (audioNodeState.type) {
     case 'source':
-      return audioCxt.createMediaElementSource()
+      return audioCxt.createGain()
     case 'gain':
       return audioCxt.createGain()
     default:

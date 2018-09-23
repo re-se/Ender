@@ -1,6 +1,12 @@
 //@flow
 import type { FuncInst } from './instMap'
-import { addComponents, addImage, playAudio as playAudioAction } from '../actions/actions'
+import {
+  addComponents,
+  addImage,
+  playAudio as playAudioAction,
+  stopAudio as stopAudioAction,
+  pauseAudio as pauseAudioAction,
+} from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
@@ -76,19 +82,30 @@ export default {
     animation.start()
   },
 
-  playAudio: (args: [string, string]) => {
-    store.dispatch(playAudioAction(
-      {
-        src: engine.eval(args[0]),
-        type: engine.eval(args[1])
-      },
-      engine.eval(args[2])
-    ))
+  /**
+   * args [
+   *  0: out
+   *  1: src
+   *  2: effect
+   * ]
+   */
+  playAudio: (args: [string, string, string]) => {
+    store.dispatch(
+      playAudioAction(
+        engine.eval(args[1]),
+        engine.eval(args[0]),
+        engine.eval(args[2])
+      )
+    )
   },
 
-  stopAudio: (args: [string, string]) => {},
+  stopAudio: (args: [string, string]) => {
+    store.dispatch(stopAudioAction(engine.eval(args[0]), engine.eval(args[1])))
+  },
 
-  pauseAudio: (args: [string, string]) => {},
+  pauseAudio: (args: [string, string]) => {
+    store.dispatch(pauseAudioAction(engine.eval(args[0]), engine.eval(args[1])))
+  },
 
   layout: (args: FuncInst[]) => {
     store.dispatch(addComponents(args))

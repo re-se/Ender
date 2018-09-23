@@ -1,0 +1,11 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+config.text.periodWait = true
+config.text.speed = 100
+
+\playAudio('', 'test.wav')
+
+aaa
+
+\stopAudio('test.wav')

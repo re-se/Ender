@@ -36,6 +36,30 @@ declare type ComponentProps = {
   //and more...
 }
 
+declare type AudioEffectState = {
+  key: string,
+  async: boolean,
+  effect: string,
+}
+
+declare type AudioBusState = {
+  out: string,
+  nodeOrder: string[],
+  firstNode: string,
+  lastNode: string,
+  nodes: { [string]: AudioNodeState },
+}
+
+declare type AudioState = {
+  audioEffects: AudioEffectState[],
+  audioBuses: { [string]: AudioBusState },
+}
+
+declare interface AudioNodeState {
+  type: string;
+  src?: string;
+}
+
 declare type Selector = {
   type: 'idSelector' | 'classSelector',
   value: string,

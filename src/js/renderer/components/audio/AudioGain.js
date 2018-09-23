@@ -6,9 +6,9 @@ export type Props = {
 }
 
 const AudioGain = ({ gainNode = null, gain = 1.0 }: Props) => {
-  gainNode.gain = gain
+  gainNode.gain.value = gain
 
-  return <div gain={gain} />
+  return null
 }
 
 export default AudioGain

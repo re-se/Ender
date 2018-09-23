@@ -5,6 +5,9 @@ import store from '../main/store'
 import { get } from 'lodash'
 import ComponentUtil from '../util/ComponentUtil'
 import AudioUtil from '../util/AudioUtil'
+import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
+import { generateAudioSrcBusState } from '../util/audio/generateAudioSrcBusState'
+import { AUDIO_NODE_TYPE_LIST } from '../config/audioNodeTypeList'
 
 /**
  * 描画予定のコンポーネントを保持する State
@@ -145,41 +148,80 @@ const animation = (state = [], action) => {
   }
 }
 
-const audio = (state = [], action) => {
+const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
   switch (action.type) {
     case 'LOAD_AUDIO':
-      return state.concat(action.audio)
+      return _loadAudio(state, action.src, action.out)
+
     case 'PLAY_AUDIO':
       // ロードされていなければ、ロードする
-      if(AudioUtil::getIndex(audio) === -1) {
-        state = state.concat(action.audio)
+      if (!state.audioBuses[action.src]) {
+        state = _loadAudio(state, action.src, action.out)
       }
-      return _putAudioEvent(state, action.audio, ['PLAY', effect])
+
+      return _updateAudioNode(
+        state,
+        action.src,
+        state.audioBuses[action.src].firstNode,
+        { isPlay: true }
+      )
+
     case 'STOP_AUDIO':
-      return _putAudioEvent(state, action.audio, [effect, 'STOP'])
+      return _updateAudioNode(
+        state,
+        action.bus,
+        state.audioBuses[action.bus].firstNode,
+        { isPlay: false }
+      )
+
     case 'PAUSE_AUDIO':
-      return _putAudioEvent(state, action.audio, [effect, 'PAUSE'])
+      return _updateAudioNode(
+        state,
+        action.src,
+        state.audioBuses[action.src].firstNode,
+        { isPlay: false }
+      )
+
     case 'EFFECT_AUDIO':
       return _putAudioEvent(state, action.audio, action.effect)
-    case 'CLEAR_AUDIO_EVENT':
-      return _clearAudioEvent(state, action.audio)
+
+    default:
+      return state
   }
 }
 
-const _putAudioEvent = (state, audio, event) => {
-  let newAudios = [...state]
-  let index = AudioUtil::getIndex(audio)
-  newAudios[index] = Object.assign({}, newAudios[index])
-  newAudios[index].events = newAudios[index].events.concat(event)
-  return newAudios
+function _updateAudioNode(
+  state: AudioState,
+  audioBusKey: string,
+  audioNodeKey: string,
+  updateParams: Object
+): AudioState {
+  return {
+    ...state,
+    audioBuses: {
+      ...state.audioBuses,
+      [audioBusKey]: {
+        ...state.audioBuses[audioBusKey],
+        nodes: {
+          ...state.audioBuses[audioBusKey].nodes,
+          [audioNodeKey]: {
+            ...state.audioBuses[audioBusKey].nodes[audioNodeKey],
+            ...updateParams,
+          },
+        },
+      },
+    },
+  }
 }
 
-const _clearAudioEvent = (state, audio) => {
-  let newAudios = [...state]
-  let index = AudioUtil::getIndex(audio)
-  newAudios[index] = Object.assign({}, newAudios[index])
-  newAudios[index].events = []
-  return newAudios
+function _loadAudio(state: AudioState, src, out) {
+  return {
+    ...state,
+    audioBuses: {
+      ...state.audioBuses,
+      [src]: generateAudioSrcBusState(out, src),
+    },
+  }
 }
 
 const reducer = combineReducers({

@@ -1,29 +1,40 @@
 //@flow
 import React from 'react'
-
+import path from 'path'
+import engine from '../../main/engine'
+const MediaElementAudioSource = window.MediaElementAudioSource
 const Audio = window.Audio
 
 type Props = {
   src: string,
   audioNode: MediaElementAudioSourceNode,
-  isPlaying: boolean,
+  isPlay: boolean,
   currentTime: number,
+  audioCxt: AudioContext,
 }
 
 type State = {}
 
 class AudioMediaElementAudioSource extends React.Component<Props, State> {
   audio: Audio
+  audioNode: MediaElementAudioSource
 
   constructor(props: Props) {
     super(props)
-    this.audio = new Audio(this.props.src)
+    const srcPath = path.join(
+      engine.getVar('config.basePath'),
+      engine.getVar('config.audio.path', ''),
+      this.props.src
+    )
+    this.audio = new Audio(srcPath)
+    this.audioNode = this.props.audioCxt.createMediaElementSource(this.audio)
+    this.audioNode.connect(this.props.audioNode)
   }
 
   render() {
-    if (this.props.isPlaying && this.audio.paused) {
+    if (this.props.isPlay && this.audio.paused) {
       this.audio.play()
-    } else if (!this.props.isPlaying && !this.audio.paused) {
+    } else if (!this.props.isPlay && !this.audio.paused) {
       this.audio.pause()
     }
 
@@ -31,12 +42,7 @@ class AudioMediaElementAudioSource extends React.Component<Props, State> {
       this.audio.currentTime = this.props.currentTime
     }
 
-    return (
-      <div
-        isPlaying={this.props.isPlaying}
-        currentTime={this.props.currentTime}
-      />
-    )
+    return null
   }
 }
 
