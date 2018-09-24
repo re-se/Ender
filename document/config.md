@@ -32,3 +32,37 @@ config.text.waitPeriod = true
 あいう。えおか # 「う。」で停止
 あいう。\えおか # 「か」まで自動で進む
 ```
+
+## audio
+
+### path: string
+
+音声ディレクトリのパス。basePath からの相対パス指定。スクリプトから音声ファイルが呼び出されるとき、このパスからの相対パスで指定される。
+
+### bus: BusConfig[]
+
+音声のルーティング設定。
+
+#### BusConfig
+
+```js
+{
+  "name": "bgm",
+  "loop": {
+    "offsetTime": "1"
+  },
+  "out": "master"
+}
+```
+
+##### name: string
+
+音声バスの識別子
+
+#### out: string
+
+音声バスの出力先設定。空文字または未定義の場合は標準出力。
+
+#### gain: number
+
+音声バスの出力音量。0.0 <= gain <= 1.0

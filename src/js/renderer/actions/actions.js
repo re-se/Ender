@@ -88,11 +88,13 @@ export const loadAudio = audio => {
   }
 }
 
-export const playAudio = (src, out, effect) => {
+export const playAudio = (src, out, isLoop, loopOffsetTime, effect) => {
   return {
     type: 'PLAY_AUDIO',
     src,
     out,
+    isLoop,
+    loopOffsetTime,
     effect,
   }
 }
@@ -110,6 +112,15 @@ export const pauseAudio = (bus, effect) => {
     type: 'PAUSE_AUDIO',
     bus,
     effect,
+  }
+}
+
+export const loadAudioBus = (name, out, gain) => {
+  return {
+    type: 'LOAD_AUDIO_BUS',
+    name,
+    out,
+    gain,
   }
 }
 

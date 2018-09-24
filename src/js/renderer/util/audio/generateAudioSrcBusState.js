@@ -1,7 +1,7 @@
 import { generateAudioNodeKey } from './generateAudioNodeKey'
 import { AUDIO_NODE_TYPE_LIST } from '../../config/audioNodeTypeList'
 
-export function generateAudioSrcBusState(out, src) {
+export function generateAudioSrcBusState(out, src, isLoop, loopOffsetTime) {
   const srcNodeKey = generateAudioNodeKey(AUDIO_NODE_TYPE_LIST.SOURCE)
   const gainNodeKey = generateAudioNodeKey(AUDIO_NODE_TYPE_LIST.GAIN)
   let nodes = {}
@@ -10,6 +10,8 @@ export function generateAudioSrcBusState(out, src) {
     src,
     currentTime: 0,
     isPlay: false,
+    isLoop,
+    loopOffsetTime,
   }
   nodes[gainNodeKey] = {
     type: AUDIO_NODE_TYPE_LIST.GAIN,

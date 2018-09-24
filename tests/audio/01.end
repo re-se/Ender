@@ -4,7 +4,7 @@
 config.text.periodWait = true
 config.text.speed = 100
 
-\playAudio('', 'test.wav')
+\playAudio('bgm', 'test.wav', true, 0)
 
 aaa
 

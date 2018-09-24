@@ -1,6 +1,22 @@
 {
   "main": "01.end",
   "audio": {
-    "path": ""
+    "path": "",
+    "bus": [
+      {
+        "name": "master",
+        "gain": 1
+      },
+      {
+        "name": "bgm",
+        "gain": 1,
+        "out": "master"
+      },
+      {
+        "name": "se",
+        "gain": 1,
+        "out": "master"
+      }
+    ]
   }
 }

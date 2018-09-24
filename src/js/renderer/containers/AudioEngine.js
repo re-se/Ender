@@ -1,9 +1,11 @@
 //@flow
 import React from 'react'
 import store from '../main/store'
+import engine from '../main/engine'
 import audioEffectList from '../config/audioEffectList'
 import { connect } from 'react-redux'
 import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
+import { loadAudioBus } from '../actions/actions'
 import AudioBus from '../components/audio/AudioBus'
 const AudioContext = window.AudioContext || window.webkitAudioContext
 const AudioNode = window.AudioNode || window.webkitAudioNode
@@ -25,6 +27,16 @@ class AudioEngine extends React.Component<Props, State> {
 
     this.audioCxt = new AudioContext()
     this.audioBuses = new Map()
+
+    // Config で定義されている AudioBus を読み込み
+    const config = engine.getVar('config')
+    if (config.audio && config.audio.bus) {
+      config.audio.bus.forEach(bus => {
+        if (!this.props.audioState.audioBuses[bus.name]) {
+          store.dispatch(loadAudioBus(bus.name, bus.out, bus.gain))
+        }
+      })
+    }
   }
 
   render() {
@@ -32,11 +44,12 @@ class AudioEngine extends React.Component<Props, State> {
 
     let audioBusComponents = []
     Object.keys(this.props.audioState.audioBuses).forEach(key => {
+      const audioBusState = this.props.audioState.audioBuses[key]
       audioBusComponents.push(
         <AudioBus
           key={key}
           audioCxt={this.audioCxt}
-          audioBusState={this.props.audioState.audioBuses[key]}
+          audioBusState={audioBusState}
           audioNodeMap={this.audioBuses.get(key)}
           nextAudioNode={getNextAudioNode(
             key,
@@ -44,6 +57,7 @@ class AudioEngine extends React.Component<Props, State> {
             this.audioBuses,
             this.audioCxt.destination
           )}
+          nextAudioBusName={audioBusState.out}
         />
       )
     })

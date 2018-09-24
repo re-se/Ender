@@ -1,7 +1,7 @@
 import { generateAudioNodeKey } from './generateAudioNodeKey'
 import { AUDIO_NODE_TYPE_LIST } from '../../config/audioNodeTypeList'
 
-export function generateAudioBusState(out, src) {
+export function generateAudioBusState(out, gain) {
   const inGainNodeKey = generateAudioNodeKey(AUDIO_NODE_TYPE_LIST.GAIN)
   const outGainNodeKey = generateAudioNodeKey(AUDIO_NODE_TYPE_LIST.GAIN)
   let nodes = {}
@@ -11,7 +11,7 @@ export function generateAudioBusState(out, src) {
   }
   nodes[outGainNodeKey] = {
     type: AUDIO_NODE_TYPE_LIST.GAIN,
-    gain: 1.0,
+    gain,
   }
   return {
     out,

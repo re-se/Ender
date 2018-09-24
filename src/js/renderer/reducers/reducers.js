@@ -6,6 +6,7 @@ import { get } from 'lodash'
 import ComponentUtil from '../util/ComponentUtil'
 import AudioUtil from '../util/AudioUtil'
 import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
+import { generateAudioBusState } from '../util/audio/generateAudioBusState'
 import { generateAudioSrcBusState } from '../util/audio/generateAudioSrcBusState'
 import { AUDIO_NODE_TYPE_LIST } from '../config/audioNodeTypeList'
 
@@ -156,7 +157,13 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
     case 'PLAY_AUDIO':
       // ロードされていなければ、ロードする
       if (!state.audioBuses[action.src]) {
-        state = _loadAudio(state, action.src, action.out)
+        state = _loadAudio(
+          state,
+          action.src,
+          action.out,
+          action.isLoop,
+          action.loopOffsetTime
+        )
       }
 
       return _updateAudioNode(
@@ -184,6 +191,9 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
 
     case 'EFFECT_AUDIO':
       return _putAudioEvent(state, action.audio, action.effect)
+
+    case 'LOAD_AUDIO_BUS':
+      return _loadAudioBus(state, action.name, action.out, action.gain)
 
     default:
       return state
@@ -214,12 +224,22 @@ function _updateAudioNode(
   }
 }
 
-function _loadAudio(state: AudioState, src, out) {
+function _loadAudio(state: AudioState, src, out, isLoop, loopOffsetTime) {
   return {
     ...state,
     audioBuses: {
       ...state.audioBuses,
-      [src]: generateAudioSrcBusState(out, src),
+      [src]: generateAudioSrcBusState(out, src, isLoop, loopOffsetTime),
+    },
+  }
+}
+
+function _loadAudioBus(state: AudioState, name, out, gain) {
+  return {
+    ...state,
+    audioBuses: {
+      ...state.audioBuses,
+      [name]: generateAudioBusState(out, gain),
     },
   }
 }

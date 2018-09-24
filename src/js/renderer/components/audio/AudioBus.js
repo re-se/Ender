@@ -3,9 +3,11 @@ import AudioGain from './AudioGain'
 import AudioMediaElementAudioSource from './AudioMediaElementAudioSource'
 
 export type Props = {
+  audioCxt: AudioContext,
   audioBusState: AudioBusState,
   audioNodeMap: Map<string, AudioNode>,
   nextAudioNode: AudioNode,
+  nextAudioBusName: string,
 }
 
 const AudioBus = ({
@@ -13,6 +15,7 @@ const AudioBus = ({
   audioBusState,
   audioNodeMap,
   nextAudioNode,
+  nextAudioBusName,
 }: Props) => {
   connectAudioNodes(
     [
@@ -31,7 +34,8 @@ const AudioBus = ({
         key,
         audioCxt,
         audioBusState.nodes[key],
-        audioNode
+        audioNode,
+        nextAudioBusName
       )
     )
   })
@@ -50,7 +54,7 @@ function connectAudioNodes(
 ) {
   do {
     let audioNode = audioNodeMap.get(nodeOrder.shift())
-    let nextAudioNode = audioNodeMap[nodeOrder[0]] || lastAudioNode
+    let nextAudioNode = audioNodeMap.get(nodeOrder[0]) || lastAudioNode
     audioNode.disconnect()
     audioNode.connect(nextAudioNode)
   } while (nodeOrder.length > 0)
@@ -62,7 +66,8 @@ function generateAudioNodeComponent(
   key: string,
   audioCxt: AudioContext,
   audioNodeState: AudioNodeState,
-  audioNode: AudioNode
+  audioNode: AudioNode,
+  nextAudioBusName: string
 ) {
   switch (audioNodeState.type) {
     case 'source':
@@ -72,10 +77,18 @@ function generateAudioNodeComponent(
           {...audioNodeState}
           audioCxt={audioCxt}
           audioNode={audioNode}
+          nextAudioBusName={nextAudioBusName}
         />
       )
     case 'gain':
-      return <AudioGain key={key} {...audioNodeState} gainNode={audioNode} />
+      return (
+        <AudioGain
+          key={key}
+          {...audioNodeState}
+          gainNode={audioNode}
+          nextAudioBusName={nextAudioBusName}
+        />
+      )
     default:
       console.warn('undefined audio node type!!', audioNodeState)
       return null
