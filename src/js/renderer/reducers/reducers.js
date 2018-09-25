@@ -6,6 +6,8 @@ import { get } from 'lodash'
 import ComponentUtil from '../util/ComponentUtil'
 import AudioUtil from '../util/AudioUtil'
 import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
+import { generateAudioNodeState } from '../util/audio/generateAudioNodeState'
+import { generateAudioEffectState } from '../util/audio/generateAudioEffectState'
 import { generateAudioBusState } from '../util/audio/generateAudioBusState'
 import { generateAudioSrcBusState } from '../util/audio/generateAudioSrcBusState'
 import { AUDIO_NODE_TYPE_LIST } from '../config/audioNodeTypeList'
@@ -190,10 +192,20 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
       )
 
     case 'EFFECT_AUDIO':
-      return _putAudioEvent(state, action.audio, action.effect)
+    // const key = generateAudioEffectKey()
+    // return generateAudioEffectState(key, action.effect, action.bus)
 
     case 'LOAD_AUDIO_BUS':
       return _loadAudioBus(state, action.name, action.out, action.gain)
+
+    case 'ADD_EFFECT_AUDIO_NODE':
+      return _addAudioEffectNode(
+        state,
+        audioBusKey,
+        audioEffectKey,
+        type,
+        params
+      )
 
     default:
       return state
@@ -240,6 +252,33 @@ function _loadAudioBus(state: AudioState, name, out, gain) {
     audioBuses: {
       ...state.audioBuses,
       [name]: generateAudioBusState(out, gain),
+    },
+  }
+}
+
+function _addAudioEffectNode(
+  state: AudioState,
+  audioBusKey: string,
+  audioEffectKey: string,
+  type: string,
+  params: Object
+) {
+  const audioEffectNodeKey = generateAudioNodeKey(AUDIO_NODE_TYPE_LIST[type])
+  return {
+    ...state,
+    audioBuses: {
+      ...state.audioBuses,
+      [audioBusKey]: {
+        ...state.audioBuses[audioBusKey],
+        nodes: {
+          ...state.audioBuses[audioBusKey],
+          [audioEffectNodeKey]: generateAudioBusState(
+            type,
+            params,
+            audioEffectKey
+          ),
+        },
+      },
     },
   }
 }

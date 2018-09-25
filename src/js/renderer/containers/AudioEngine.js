@@ -170,30 +170,6 @@ function createAudioNode(
   }
 }
 
-/** memo
-declare interface AudioNodeState {
-  type: string,
-}
-
-declare type AudioElementNodeState implements AudioNode = {
-  src: string,
-}
-
-declare type GainNodeState implements AudioNode = {
-  type: string,
-  gain: number,
-}
-
-declare type BiquidFilterNodeState implements AudioNode = {
-  type: string,
-  frequency: number,
-  detune: number,
-  q: number,
-  gain: number,
-  filterType: string,
-}
- */
-
 const mapStateToProps = state => {
   return {
     audioState: state.audio,

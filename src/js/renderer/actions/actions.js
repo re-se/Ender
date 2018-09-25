@@ -132,6 +132,21 @@ export const effectAudio = (audio, effect) => {
   }
 }
 
+export const addEffectAudioNode = (
+  audioBusKey,
+  audioEffectKey,
+  type,
+  params
+) => {
+  return {
+    type: 'ADD_EFFECT_AUDIO_NODE',
+    audioEffectKey,
+    audioBusKey,
+    type,
+    params,
+  }
+}
+
 export const clearAudioEvent = audio => {
   return {
     type: 'CLEAR_AUDIO_EVENT',
