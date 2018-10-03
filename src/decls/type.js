@@ -1,4 +1,5 @@
 import type { Store as ReduxStore, Dispatch as ReduxDispatch } from 'redux'
+import type { AudioEffect } from '../js/renderer/util/audio/AudioEffect'
 
 declare type ReduxInitAction = { type: '@@INIT' }
 
@@ -36,12 +37,6 @@ declare type ComponentProps = {
   //and more...
 }
 
-declare type AudioEffectState = {
-  key: string,
-  async: boolean,
-  effect: string,
-}
-
 declare type AudioBusState = {
   out: string,
   nodeOrder: string[],
@@ -51,13 +46,14 @@ declare type AudioBusState = {
 }
 
 declare type AudioState = {
-  audioEffects: AudioEffectState[],
+  audioEffects: AudioEffect[],
   audioBuses: { [string]: AudioBusState },
 }
 
 declare interface AudioNodeState {
   type: string;
-  src?: string;
+  audioEffectKey?: string;
+  name?: string;
 }
 
 declare type Selector = {

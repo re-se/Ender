@@ -6,11 +6,13 @@ import { get } from 'lodash'
 import ComponentUtil from '../util/ComponentUtil'
 import AudioUtil from '../util/AudioUtil'
 import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
+import { generateAudioEffectKey } from '../util/audio/generateAudioEffectKey'
 import { generateAudioNodeState } from '../util/audio/generateAudioNodeState'
-import { generateAudioEffectState } from '../util/audio/generateAudioEffectState'
+import { generateAudioEffectNodeState } from '../util/audio/generateAudioEffectNodeState'
 import { generateAudioBusState } from '../util/audio/generateAudioBusState'
 import { generateAudioSrcBusState } from '../util/audio/generateAudioSrcBusState'
 import { AUDIO_NODE_TYPE_LIST } from '../config/audioNodeTypeList'
+import AudioEffect from '../util/audio/AudioEffect'
 
 /**
  * 描画予定のコンポーネントを保持する State
@@ -191,21 +193,49 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
         { isPlay: false }
       )
 
-    case 'EFFECT_AUDIO':
-    // const key = generateAudioEffectKey()
-    // return generateAudioEffectState(key, action.effect, action.bus)
-
     case 'LOAD_AUDIO_BUS':
       return _loadAudioBus(state, action.name, action.out, action.gain)
 
-    case 'ADD_EFFECT_AUDIO_NODE':
+    case 'ADD_AUDIO_EFFECT_NODE':
+      console.log(state)
+      // AudioEffect に使用する AudioNode を state に追加
+      Object.keys(audioEffect.effector.nodes).forEach(nodeKey => {
+        const node = audioEffect.effector.nodes[nodeKey]
+        store.dispatch(
+          addAudioEffectNode(
+            targetBus,
+            audioEffect.key,
+            nodeKey,
+            node.type,
+            node.params
+          )
+        )
+      })
       return _addAudioEffectNode(
         state,
-        audioBusKey,
-        audioEffectKey,
-        type,
-        params
+        action.audioBusKey,
+        action.audioEffectKey,
+        action.name,
+        action.type,
+        action.params
       )
+
+    case 'LOAD_AUDIO_EFFECT':
+      const audioEffect = action.audioEffect
+      let newState = _addAudioEffect(state, audioEffect)
+      // AudioEffect に使用する AudioNode を state に追加
+      Object.keys(audioEffect.effector.nodes).forEach(nodeKey => {
+        const node = audioEffect.effector.nodes[nodeKey]
+        newState = _addAudioEffectNode(
+          newState,
+          audioEffect.targetBus,
+          audioEffect.key,
+          nodeKey,
+          node.type,
+          node.params
+        )
+      })
+      return newState
 
     default:
       return state
@@ -260,26 +290,42 @@ function _addAudioEffectNode(
   state: AudioState,
   audioBusKey: string,
   audioEffectKey: string,
+  name: string,
   type: string,
   params: Object
 ) {
-  const audioEffectNodeKey = generateAudioNodeKey(AUDIO_NODE_TYPE_LIST[type])
+  const audioEffectNodeKey = generateAudioNodeKey(type)
   return {
     ...state,
     audioBuses: {
       ...state.audioBuses,
       [audioBusKey]: {
         ...state.audioBuses[audioBusKey],
+        nodeOrder: [
+          ...state.audioBuses[audioBusKey].nodeOrder,
+          audioEffectNodeKey,
+        ],
         nodes: {
-          ...state.audioBuses[audioBusKey],
-          [audioEffectNodeKey]: generateAudioBusState(
+          ...state.audioBuses[audioBusKey].nodes,
+          [audioEffectNodeKey]: generateAudioEffectNodeState(
             type,
             params,
-            audioEffectKey
+            audioEffectKey,
+            name
           ),
         },
       },
     },
+  }
+}
+
+function _addAudioEffect(
+  state: AudioState,
+  audioEffect: AudioEffect
+): AudioState {
+  return {
+    ...state,
+    audioEffects: [...state.audioEffects, audioEffect],
   }
 }
 

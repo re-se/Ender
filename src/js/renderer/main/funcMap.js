@@ -7,6 +7,7 @@ import {
   stopAudio as stopAudioAction,
   pauseAudio as pauseAudioAction,
   loadAudioBus as loadAudioBusAction,
+  loadAudioEffect as loadAudioEffectAction,
 } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import AnimationUtil from '../util/AnimationUtil'
@@ -98,10 +99,12 @@ export default {
         engine.eval(args[1]),
         engine.eval(args[0]),
         engine.eval(args[2]),
-        engine.eval(args[3]),
-        engine.eval(args[4])
+        engine.eval(args[3])
       )
     )
+    if (args[4]) {
+      store.dispatch(loadAudioEffectAction(args[1], args[4]))
+    }
   },
 
   stopAudio: (args: [string, string]) => {
@@ -127,6 +130,26 @@ export default {
         engine.eval(args[2])
       )
     )
+  },
+
+  /**
+   * args [
+   *  0: targetBus
+   *  1: effect
+   * ]
+   */
+  effectAudio: (args: string[]) => {
+    store.dispatch(loadAudioEffectAction(args[0], args[1], true))
+  },
+
+  /**
+   * args [
+   *  0: targetBus
+   *  1: effect
+   * ]
+   */
+  aeffectAudio: (args: string[]) => {
+    store.dispatch(loadAudioEffectAction(args[0], args[1], false))
   },
 
   layout: (args: FuncInst[]) => {

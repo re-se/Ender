@@ -22,7 +22,7 @@ declare type BiquidFilterNodeState implements AudioNode = {
 }
  */
 
-export function generateAudioNodeState(type, params, audioEffectKey) {
+export function generateAudioNodeState(type, params) {
   switch (type) {
     case 'source':
       return {

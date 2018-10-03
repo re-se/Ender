@@ -40,12 +40,29 @@ class AudioEngine extends React.Component<Props, State> {
   }
 
   render() {
-    this.updateAudioBuses()
+    this.audioBuses = updateAudioBuses(
+      this.audioCxt,
+      this.props.audioState,
+      this.audioBuses
+    )
 
-    let audioBusComponents = []
-    Object.keys(this.props.audioState.audioBuses).forEach(key => {
+    this.props.audioState.audioEffects.forEach(audioEffect => {
+      if (audioEffect.isStarted) return
+      const audioEffectNodes = getAudioEffectNodes(
+        this.props.audioState.audioBuses,
+        this.audioBuses,
+        audioEffect.targetBus,
+        audioEffect.key
+      )
+      if (Object.keys(audioEffectNodes).length < 1) return
+      audioEffect.start(audioEffectNodes, audioEffect.complete)
+    })
+
+    const audioBusComponents = Object.keys(
+      this.props.audioState.audioBuses
+    ).map(key => {
       const audioBusState = this.props.audioState.audioBuses[key]
-      audioBusComponents.push(
+      return (
         <AudioBus
           key={key}
           audioCxt={this.audioCxt}
@@ -64,67 +81,69 @@ class AudioEngine extends React.Component<Props, State> {
 
     return <div className="ender-audio-engine">{audioBusComponents}</div>
   }
-
-  updateAudioBuses() {
-    const audioBusKeys = this.audioBuses.keys()
-    const audioBusStateKeys = Object.keys(this.props.audioState.audioBuses)
-
-    audioBusStateKeys.forEach(key => {
-      const audioBusState = this.props.audioState.audioBuses[key]
-      if (!this.audioBuses.has(key)) {
-        this.audioBuses.set(
-          key,
-          createAudioNodeMap(this.audioCxt, audioBusState)
-        )
-      } else {
-        updateAudioNodeMap(
-          this.audioBuses.get(key),
-          this.audioCxt,
-          audioBusState
-        )
-      }
-    })
-  }
 }
 
-/**
- */
-function getNextAudioNode(
-  key: string,
+function getAudioEffectNodes(
   audioBusStates: { [string]: AudioBusState },
   audioBuses: Map<string, Map<string, AudioNode>>,
-  defaultNextAudioNode: AudioNode
-): AudioNode {
-  const audioBusState = audioBusStates[key]
+  busKey: string,
+  effectKey: string
+): { [string]: AudioNode } {
+  const targetBusState = audioBusStates[busKey]
 
-  if (!audioBusState.out) {
-    return defaultNextAudioNode
+  const audioEffectNodeKeys = Object.keys(targetBusState.nodes).filter(
+    nodeKey => {
+      return targetBusState.nodes[nodeKey].audioEffectKey === effectKey
+    }
+  )
+
+  const targetBus = audioBuses.get(busKey)
+
+  if (!targetBus) {
+    console.warn(`not loaded audio bus!! audioBusKey: ${busKey}`)
+    return {}
   }
 
-  const nextAudioBusState = audioBusStates[audioBusState.out]
-  const nextAudioNodeMap = audioBuses.get(audioBusState.out)
-  if (!nextAudioNodeMap) {
-    console.warn(`invalid audio bus name!! name = ${audioBusState.out}`)
-    return null
-  }
-  return nextAudioNodeMap.get(nextAudioBusState.firstNode)
-}
-
-/**
- * AudioBus が持つ AudioNode を全てインスタンス化する
- */
-function createAudioNodeMap(
-  audioCxt: AudioContext,
-  audioBusState: AudioBusState
-): Map<string, AudioNode> {
-  let audioNodeMap: Map<string, AudioNode> = new Map()
-
-  Object.keys(audioBusState.nodes).forEach(key => {
-    const audioNodeState = audioBusState.nodes[key]
-    audioNodeMap.set(key, createAudioNode(audioCxt, audioNodeState))
+  // {nodeState.name: AudioNode} となるオブジェクトに整形
+  let audioEffectNodes = {}
+  audioEffectNodeKeys.forEach(audioEffectNodeKey => {
+    if (!targetBus.has(audioEffectNodeKey)) {
+      console.warn(
+        `not loaded audio node!! audioNodeKey: ${audioEffectNodeKey}`
+      )
+      return {}
+    }
+    const name = targetBusState.nodes[audioEffectNodeKey].name
+    if (!name) {
+      console.warn(
+        `not defined audio node name!! audioNodeKey: ${audioEffectNodeKey}`
+      )
+      return {}
+    }
+    audioEffectNodes[name] = targetBus.get(audioEffectNodeKey)
   })
 
-  return audioNodeMap
+  return audioEffectNodes
+}
+
+function updateAudioBuses(
+  audioCxt: AudioContext,
+  audioState: AudioState,
+  audioBuses: Map<string, Map<string, AudioNode>>
+): Map<string, Map<string, AudioNode>> {
+  const audioBusKeys = audioBuses.keys()
+  const audioBusStateKeys = Object.keys(audioState.audioBuses)
+
+  audioBusStateKeys.forEach(key => {
+    const audioBusState = audioState.audioBuses[key]
+    if (!audioBuses.has(key)) {
+      audioBuses.set(key, createAudioNodeMap(audioCxt, audioBusState))
+    } else {
+      updateAudioNodeMap(audioBuses.get(key), audioCxt, audioBusState)
+    }
+  })
+
+  return audioBuses
 }
 
 /**
@@ -154,6 +173,23 @@ function updateAudioNodeMap(
 }
 
 /**
+ * AudioBus が持つ AudioNode を全てインスタンス化する
+ */
+function createAudioNodeMap(
+  audioCxt: AudioContext,
+  audioBusState: AudioBusState
+): Map<string, AudioNode> {
+  let audioNodeMap: Map<string, AudioNode> = new Map()
+
+  Object.keys(audioBusState.nodes).forEach(key => {
+    const audioNodeState = audioBusState.nodes[key]
+    audioNodeMap.set(key, createAudioNode(audioCxt, audioNodeState))
+  })
+
+  return audioNodeMap
+}
+
+/**
  */
 function createAudioNode(
   audioCxt: AudioContext,
@@ -168,6 +204,29 @@ function createAudioNode(
       console.warn('undefined audio node type!!', audioNodeState)
       return null
   }
+}
+
+/**
+ */
+function getNextAudioNode(
+  key: string,
+  audioBusStates: { [string]: AudioBusState },
+  audioBuses: Map<string, Map<string, AudioNode>>,
+  defaultNextAudioNode: AudioNode
+): AudioNode {
+  const audioBusState = audioBusStates[key]
+
+  if (!audioBusState.out) {
+    return defaultNextAudioNode
+  }
+
+  const nextAudioBusState = audioBusStates[audioBusState.out]
+  const nextAudioNodeMap = audioBuses.get(audioBusState.out)
+  if (!nextAudioNodeMap) {
+    console.warn(`invalid audio bus name!! name = ${audioBusState.out}`)
+    return null
+  }
+  return nextAudioNodeMap.get(nextAudioBusState.firstNode)
 }
 
 const mapStateToProps = state => {

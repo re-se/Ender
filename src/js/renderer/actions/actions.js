@@ -1,4 +1,6 @@
 import ComponentUtil from '../util/ComponentUtil'
+import AudioEffect from '../util/audio/AudioEffect'
+import store from '../main/store'
 
 // root
 export const resetState = components => {
@@ -88,14 +90,13 @@ export const loadAudio = audio => {
   }
 }
 
-export const playAudio = (src, out, isLoop, loopOffsetTime, effect) => {
+export const playAudio = (src, out, isLoop, loopOffsetTime) => {
   return {
     type: 'PLAY_AUDIO',
     src,
     out,
     isLoop,
     loopOffsetTime,
-    effect,
   }
 }
 
@@ -124,24 +125,27 @@ export const loadAudioBus = (name, out, gain) => {
   }
 }
 
-export const effectAudio = (audio, effect) => {
+export const loadAudioEffect = (targetBus, effect, isSync = true) => {
+  const audioEffect = new AudioEffect(targetBus, effect, isSync)
   return {
-    type: 'EFFECT_AUDIO',
-    audio,
-    effect,
+    type: 'LOAD_AUDIO_EFFECT',
+    audioEffect,
   }
 }
 
-export const addEffectAudioNode = (
+export const addAudioEffectNode = (
   audioBusKey,
   audioEffectKey,
+  name,
   type,
   params
 ) => {
+  console.log(audioEffectKey)
   return {
-    type: 'ADD_EFFECT_AUDIO_NODE',
+    type: 'ADD_AUDIO_EFFECT_NODE',
     audioEffectKey,
     audioBusKey,
+    name,
     type,
     params,
   }
