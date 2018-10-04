@@ -94,21 +94,32 @@ export default {
    * ]
    */
   playAudio: (args: string[]) => {
+    const src = engine.eval(args[1])
     store.dispatch(
       playAudioAction(
-        engine.eval(args[1]),
+        src,
         engine.eval(args[0]),
         engine.eval(args[2]),
         engine.eval(args[3])
       )
     )
     if (args[4]) {
-      store.dispatch(loadAudioEffectAction(args[1], args[4]))
+      store.dispatch(loadAudioEffectAction(src, engine.eval(args[4])))
     }
   },
 
   stopAudio: (args: [string, string]) => {
-    store.dispatch(stopAudioAction(engine.eval(args[0]), engine.eval(args[1])))
+    const bus = engine.eval(args[0])
+    if (args[1]) {
+      store.dispatch(
+        loadAudioEffectAction(bus, engine.eval(args[1]), false, () => {
+          console.log(bus)
+          store.dispatch(stopAudioAction(bus))
+        })
+      )
+    } else {
+      store.dispatch(stopAudioAction(bus))
+    }
   },
 
   pauseAudio: (args: [string, string]) => {

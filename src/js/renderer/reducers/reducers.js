@@ -182,45 +182,21 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
         state,
         action.bus,
         state.audioBuses[action.bus].firstNode,
-        { isPlay: false }
+        { isPlay: false, currentTime: 0 }
       )
 
     case 'PAUSE_AUDIO':
       return _updateAudioNode(
         state,
-        action.src,
-        state.audioBuses[action.src].firstNode,
+        action.bus,
+        state.audioBuses[action.bus].firstNode,
         { isPlay: false }
       )
 
     case 'LOAD_AUDIO_BUS':
       return _loadAudioBus(state, action.name, action.out, action.gain)
 
-    case 'ADD_AUDIO_EFFECT_NODE':
-      console.log(state)
-      // AudioEffect に使用する AudioNode を state に追加
-      Object.keys(audioEffect.effector.nodes).forEach(nodeKey => {
-        const node = audioEffect.effector.nodes[nodeKey]
-        store.dispatch(
-          addAudioEffectNode(
-            targetBus,
-            audioEffect.key,
-            nodeKey,
-            node.type,
-            node.params
-          )
-        )
-      })
-      return _addAudioEffectNode(
-        state,
-        action.audioBusKey,
-        action.audioEffectKey,
-        action.name,
-        action.type,
-        action.params
-      )
-
-    case 'LOAD_AUDIO_EFFECT':
+    case 'LOAD_AUDIO_EFFECT': {
       const audioEffect = action.audioEffect
       let newState = _addAudioEffect(state, audioEffect)
       // AudioEffect に使用する AudioNode を state に追加
@@ -236,6 +212,40 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
         )
       })
       return newState
+    }
+
+    case 'DELETE_AUDIO_EFFECT': {
+      const audioEffect = action.audioEffect
+      const newNodes = { ...state.audioBuses[audioEffect.targetBus].nodes }
+      Object.keys(state.audioBuses[audioEffect.targetBus].nodes).forEach(
+        nodeKey => {
+          const nodeState =
+            state.audioBuses[audioEffect.targetBus].nodes[nodeKey]
+          if (nodeState.audioEffectKey === audioEffect.key) {
+            delete newNodes[nodeKey]
+          }
+        }
+      )
+
+      const newNodeKeys = Object.keys(newNodes)
+      const newNodeOrder = state.audioBuses[
+        audioEffect.targetBus
+      ].nodeOrder.filter(nodeKey => newNodeKeys.includes(nodeKey))
+
+      return {
+        audioEffects: state.audioEffects.filter(
+          audioEffectState => audioEffectState.key !== audioEffect.key
+        ),
+        audioBuses: {
+          ...state.audioBuses,
+          [audioEffect.targetBus]: {
+            ...state.audioBuses[audioEffect.targetBus],
+            nodeOrder: newNodeOrder,
+            nodes: newNodes,
+          },
+        },
+      }
+    }
 
     default:
       return state

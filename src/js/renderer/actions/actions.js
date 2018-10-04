@@ -100,11 +100,10 @@ export const playAudio = (src, out, isLoop, loopOffsetTime) => {
   }
 }
 
-export const stopAudio = (bus, effect) => {
+export const stopAudio = bus => {
   return {
     type: 'STOP_AUDIO',
     bus,
-    effect,
   }
 }
 
@@ -125,31 +124,27 @@ export const loadAudioBus = (name, out, gain) => {
   }
 }
 
-export const loadAudioEffect = (targetBus, effect, isSync = true) => {
-  const audioEffect = new AudioEffect(targetBus, effect, isSync)
+export const loadAudioEffect = (
+  targetBus,
+  effect,
+  isSync = false,
+  onComplete = () => {}
+) => {
+  const audioEffect = new AudioEffect(targetBus, effect, isSync, onComplete)
   return {
     type: 'LOAD_AUDIO_EFFECT',
     audioEffect,
   }
 }
 
-export const addAudioEffectNode = (
-  audioBusKey,
-  audioEffectKey,
-  name,
-  type,
-  params
-) => {
-  console.log(audioEffectKey)
+export const deleteAudioEffect = audioEffect => {
   return {
-    type: 'ADD_AUDIO_EFFECT_NODE',
-    audioEffectKey,
-    audioBusKey,
-    name,
-    type,
-    params,
+    type: 'DELETE_AUDIO_EFFECT',
+    audioEffect,
   }
 }
+
+// TODO: stopAudioEffect
 
 export const clearAudioEvent = audio => {
   return {

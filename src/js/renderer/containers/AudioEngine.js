@@ -46,6 +46,7 @@ class AudioEngine extends React.Component<Props, State> {
       this.audioBuses
     )
 
+    // エフェクト開始
     this.props.audioState.audioEffects.forEach(audioEffect => {
       if (audioEffect.isStarted) return
       const audioEffectNodes = getAudioEffectNodes(
@@ -55,7 +56,7 @@ class AudioEngine extends React.Component<Props, State> {
         audioEffect.key
       )
       if (Object.keys(audioEffectNodes).length < 1) return
-      audioEffect.start(audioEffectNodes, audioEffect.complete)
+      audioEffect.start(this.audioCxt, audioEffectNodes, audioEffect.complete)
     })
 
     const audioBusComponents = Object.keys(

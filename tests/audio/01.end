@@ -8,4 +8,8 @@ config.text.speed = 100
 
 aaa
 
-\stopAudio('test.wav')
+\aeffectAudio('test.wav', 'fadeIn')
+
+bbb
+
+\stopAudio('test.wav', 'fadeIn')
