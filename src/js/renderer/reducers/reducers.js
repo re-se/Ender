@@ -42,17 +42,17 @@ const _updateComponentStyle = (
 ): ComponentState[] => {
   let nextState = [...components]
   for (const index in components) {
-    let component = components[index]
+    const component = components[index]
 
     if (ComponentUtil.matchSelector(component, selector)) {
-      nextState[index].props.style = components[index].props.style
-        ? { ...components[index].props.style, ...style }
+      nextState[index].props.style = component.props.style
+        ? { ...component.props.style, ...style }
         : { ...style }
     }
 
     if (component.props.children) {
-      nextState[index].props.children = updateComponentStyle(
-        components[index].props.children,
+      nextState[index].props.children = _updateComponentStyle(
+        component.props.children,
         selector,
         style
       )
