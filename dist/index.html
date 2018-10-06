@@ -1,1 +1,7 @@
-<!DOCTYPE html><html lang="ja"><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=720, initial-scale=1"><link rel="stylesheet" href="./vendor/font-awesome/css/font-awesome.min.css"><link rel="stylesheet" href="./css/index.css"><script>if(require('electron-connect')) require('electron-connect').client.create()</script></head><body><div class="js-loader"><script type="text/javascript" src="./js/renderer/app.js"></script></div><div id="contents"></div></body></html>
+<!DOCTYPE html><html lang="ja"><head><title></title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=720, initial-scale=1"><link rel="stylesheet" href="./vendor/font-awesome/css/font-awesome.min.css"><link rel="stylesheet" href="./css/index.css"><link rel="stylesheet" href="./css/setting.css"><link rel="stylesheet" href="./css/save.css"><link rel="stylesheet" href="./css/title.css"></head><body><div class="js-loader"><script type="text/javascript">require('./js/renderer/core/app.js')</script></div><script>if (process.env.BROWSER_SYNC_CLIENT_URL) {
+  const current = document.currentScript;
+  const script = document.createElement('script');
+  script.src = process.env.BROWSER_SYNC_CLIENT_URL;
+  script.async = true;
+  current.parentNode.insertBefore(script, current);
+}</script><div id="contents"></div></body></html>

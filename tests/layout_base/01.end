@@ -1,0 +1,5 @@
+\layout(
+  \Box("sample")
+)
+
+\wait('snapshot')

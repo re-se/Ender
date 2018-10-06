@@ -1,0 +1,15 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+config.text.periodWait = true
+config.text.speed = 100
+
+\playAudio('bgm', 'test.wav', true, 0, 'fadeIn')
+
+aaa
+
+\aeffectAudio('test.wav', 'fadeIn')
+
+bbb
+
+\stopAudio('test.wav', 'fadeIn')

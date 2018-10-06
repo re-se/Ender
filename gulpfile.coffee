@@ -1,6 +1,6 @@
 gulp = require 'gulp'
 $ = do require 'gulp-load-plugins'
-electron = require('electron-connect').server.create()
+# electron = require('electron-connect').server.create()
 config = require './package.json'
 del = require 'del'
 path = require 'path'
@@ -8,8 +8,9 @@ extend = require 'extend'
 runSequence = require 'run-sequence'
 packager = require 'electron-packager'
 __srcdir = path.join __dirname, 'src'
-__distdir = path.join __dirname, 'dist'
+__distdir = path.join __dirname, 'build'
 args = [process.cwd()].concat(process.argv)
+
 gulp.task 'jade', () ->
   gulp.src path.join(__srcdir, 'index.jade'), locals: config
     .pipe $.plumber(
@@ -17,26 +18,19 @@ gulp.task 'jade', () ->
     ).pipe $.jade()
     .pipe gulp.dest(__distdir)
 
-gulp.task 'cjsx', () ->
-  gulp.src path.join(__srcdir, 'coffee/**/*.cjsx')
+gulp.task 'babel', ->
+  gulp.src path.join(__srcdir, 'js/**/*')
     .pipe $.plumber(
       errorHandler: $.notify.onError('Error: <%= error.message %>')
-    ).pipe $.cjsx(bare: true).on('error', $.util.log)
+    ).pipe $.babel()
     .pipe gulp.dest(path.join(__distdir, 'js'))
 
-gulp.task 'coffee', () ->
-  gulp.src path.join(__srcdir, 'coffee/**/*.coffee')
+gulp.task 'top', ->
+  gulp.src path.join(__srcdir, '*.js')
     .pipe $.plumber(
       errorHandler: $.notify.onError('Error: <%= error.message %>')
-    ).pipe $.coffee(bare: true)
-    .pipe gulp.dest(path.join(__distdir, 'js'))
-
-gulp.task 'top', () ->
-  gulp.src(path.join(__srcdir, '*.coffee'))
-  .pipe $.plumber(
-    errorHandler: $.notify.onError('Error: <%= error.message %>')
-  ).pipe $.coffee(bare: true)
-  .pipe gulp.dest(__distdir)
+    ).pipe $.babel()
+    .pipe gulp.dest(__distdir)
 
 gulp.task 'less', () ->
   gulp.src path.join(__srcdir, 'css/*.less')
@@ -45,17 +39,16 @@ gulp.task 'less', () ->
     ).pipe $.less()
     .pipe gulp.dest(path.join(__distdir, 'css'))
 
-gulp.task 'compile', ['jade', 'cjsx', 'coffee', 'less', 'top']
+gulp.task 'build', (cb) ->
+  runSequence 'compile', 'babel', cb
 
-gulp.task 'watch', ['compile'], () ->
-  electron.start(args)
+gulp.task 'compile', ['jade', 'less', 'top']
+
+gulp.task 'watch', ['build'], () ->
   gulp.watch path.join(__srcdir, '**/*.jade'), ['jade']
   gulp.watch path.join(__srcdir, 'css/*.less'), ['less']
-  gulp.watch path.join(__srcdir, 'coffee/**/*.cjsx'), ['cjsx']
-  gulp.watch path.join(__srcdir, 'coffee/**/*.coffee'), ['coffee']
-  gulp.watch path.join(__srcdir, '*.coffee'), ['top']
-  gulp.watch [path.join(__distdir, '*.js'), path.join(__distdir, 'js/browser/*.js')], -> electron.restart(args)
-  gulp.watch [path.join(__distdir, 'index.html'), path.join(__distdir, '**/*') + '{html,js,css}'], electron.reload
+  gulp.watch path.join(__srcdir, 'js/**/*'), ['babel']
+  gulp.watch path.join(__srcdir, '*.js'), ['top']
 
 packageOpts =
   asar: true

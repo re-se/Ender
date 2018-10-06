@@ -1,0 +1,7 @@
+\layout(\MessageBox)
+\layout(\ExecButton("full"))
+
+a = "test"
+${a}
+${'string'}
+\wait('snapshot')

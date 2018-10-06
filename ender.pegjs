@@ -1,80 +1,86 @@
- {
-   function genObj(type) {
-      return {type: type};
-   }
+{
+  function genObj(type) {
+    return {type: type};
+  }
 
-   function genClear(type) {
-     var o = genObj("clear");
-     o[type] = true;
-     return o;
-   }
+  function genComment(body) {
+    var o = genObj("comment");
+    o.body = body;
+    return o;
+  }
 
-   function genText(body) {
-     var o = genObj("text");
-     o.body = body;
-     return o;
-   }
+  function genClear(type) {
+    var o = genObj("clear");
+    o[type] = true;
+    return o;
+  }
 
-   function genEnphasize(text) {
-     var o = genObj("strong");
-     o.body = text;
-     return o;
-   }
+  function genText(body) {
+    var o = genObj("text");
+    o.body = body;
+    return o;
+  }
 
-   function genRuby(kanji, kana) {
-     var o = genObj("ruby");
-     o.body = kanji;
-     o.kanji = kanji;
-     o.kana = kana;
-     return o;
-   }
+  function genEnphasize(text) {
+    var o = genObj("strong");
+    o.body = text;
+    return o;
+  }
 
-   function genName(name) {
-     var o = genObj("name");
-     o.name = name;
-     return o;
-   }
+  function genRuby(kanji, kana) {
+    var o = genObj("ruby");
+    o.body = kanji;
+    o.kanji = kanji;
+    o.kana = kana;
+    return o;
+  }
 
-   function genVar(name) {
-     var o = genObj("var");
-     o.name = name;
-     return o;
-   }
+  function genName(name) {
+    var o = genObj("name");
+    o.name = name;
+    return o;
+  }
 
-   function genInterpolation(expr) {
-     var o = genObj("interpolation");
-     o.expr = expr;
-     return o;
-   }
+  function genVar(name) {
+    var o = genObj("var");
+    o.name = name;
+    return o;
+  }
 
-   function genFunc(name, args) {
-     var o = genObj("func");
-     o.name = name;
-     o.args = args;
-     return o;
-   }
+  function genInterpolation(expr) {
+    var o = genObj("interpolation");
+    o.expr = expr;
+    return o;
+  }
 
-   function genFuncDecl(name, args, body) {
-     var o = genObj("funcdecl");
-     o.name = name;
-     o.args = args;
-     o.body = body;
-     return o;
-   }
+  function genFunc(name, args) {
+    var o = genObj("func");
+    o.name = name;
+    o.args = args;
+    return o;
+  }
 
-   function toStr(arr) {
-     return arr.map(function(l) {
-       return l[1];
-     }).join("");
-   }
- }
+  function genFuncDecl(name, args, body) {
+    var o = genObj("funcdecl");
+    o.name = name;
+    o.args = args;
+    o.body = body;
+    return o;
+  }
 
- FIle = lines:(_ Line)* __ {
-   var ret = [];
-   for(var i = 0; i < lines.length; i++) {
-     ret = ret.concat(lines[i][1]);
-   }
-   return ret;
+  function toStr(arr) {
+    return arr.map(function(l) {
+      return l[1];
+    }).join("");
+  }
+}
+
+FIle = lines:(_ Line)* __ {
+  var ret = [];
+  for(var i = 0; i < lines.length; i++) {
+    ret = ret.concat(lines[i][1]);
+  }
+  return ret;
 }
 
 S = [ \t]
@@ -93,7 +99,7 @@ Line
   / Text
   / Br
 
-Comment = "#" (!NL .)* NL { return null; }
+Comment = "#" c:((!NL .)*) NL { return genComment(toStr(c)); }
 
 Say = name:(Escape / !(NL / "「") .)* !KP "「" lines:(Call / Text / Br)* "」" {
   name = toStr(name);
@@ -105,10 +111,10 @@ KP = "「" (KP / !"」" .)* "」" !EOL
 
 FuncDecl = "func" _ name:Name _ args:FuncArgs _ "{" lines:(__ !"}" Line)* __ "}" NL? {
   var body = [];
-   for(var i = 0; i < lines.length; i++) {
-     body = body.concat(lines[i][2]);
-   }
-   return genFuncDecl(name, args, body);
+  for(var i = 0; i < lines.length; i++) {
+    body = body.concat(lines[i][2]);
+  }
+  return genFuncDecl(name, args, body);
 }
 
 FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
@@ -126,14 +132,22 @@ FuncArgs = "(" _ arg1:(Name / Null) arg2:(_ "," _ Name)*  _ ")" {
 }
 
 Text = value:(Element)+ nl:(NL / &"#")? at:("@")? {
+  // flatten
+  value = Array.prototype.concat.apply([], value)
   if(nl) {
     value = value.concat(genObj("br"));
   }
-  var ret = {type:"text", value: value};
+  var ret = [{type:"text", value: value}];
   if(nl || at) {
-    return [ret, genObj("wait")];
+    ret.push(genObj("wait"));
   }
   return ret;
+}
+
+PERIOD = $("。")+
+
+Period = p: $PERIOD {
+  return [genText(p), genObj("period")]
 }
 
 Element
@@ -141,24 +155,21 @@ Element
   / Ruby
   / "\\" NL { return genObj("br"); }
   / Enphasize
+  / Period
   / SimpleText
 
-Interpolation = "${" _ t:Assignable _ "}" {
-  var top = t[0];
-  var left = t[1];
-  var recv = t[2];
-  left[recv] = null;
-  return genInterpolation(top);
+Interpolation = "${" _ t:Expr _ "}" {
+  return genInterpolation(t);
 }
 
 Ruby = "{" kanji:(!(NL / "|" / "}") .)+ "|" kana:(!(NL / "}") .)+  "}" {
-	return genRuby(toStr(kanji), toStr(kana));
+  return genRuby(toStr(kanji), toStr(kana));
 }
 
-Escape = "\\" [「」{}@\\#*]
+Escape = "\\" w:[「」{}@\\#*] {return w } / p:PERIOD "\\" {return p }
 
-SimpleText = line:(Escape / !(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#"/ "*") .)+ {
-   return genText(toStr(line));
+SimpleText = line:(Escape / $(!(NL / "」" EOL / Ruby / "${" / "@" / "\\" / "#"/ "*" / PERIOD) .))+ {
+  return genText(line.join(''));
  }
 
 Enphasize = "*" text:(!("*") .)+ "*" {
@@ -172,31 +183,24 @@ Call
   return genFunc(name, args);
 }
 
-VarDecl = t:Assignable _ "=" _ right:Arg EOL {
-  var top = t[0];
-  var left = t[1];
-  var recv = t[2];
-  left[recv] = right;
-  return genFunc("set", [top]);
+VarDecl = t:Assignable _ "=" _ right:Expr EOL {
+  return genFunc("set", [t, right]);
 }
 
-Assignable = recv:Identifier accessor:(Accessor)* {
-  var left = {};
-  var top = left;
-  for (var i = 0; i < accessor.length; i++) {
-    left = left[recv] = {};
-    recv = accessor[i];
-  }
-  return [top, left, recv];
+
+Assignable = a:$(Identifier (Accessor)*) {
+  return a;
 }
 
-Accessor = "." name:(Identifier / Name) {return name;}
+Accessor
+  = "." (Identifier)
+  / "[" (Expr) "]"
 
 Identifier = Name
 
 Name = name:([a-zA-Z_] [a-zA-Z0-9_]*) { return name[0] + name[1].join(""); }
 
-Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
+Args = "(" __ arg1:Expr arg2:(__ "," __ Expr)*  __ ")" {
   var arg;
   if (arg1 || arg2.length > 0) {
     arg = [arg1];
@@ -210,9 +214,9 @@ Args = "(" _ arg1:Arg arg2:(_ "," _ Arg)*  _ ")" {
   return arg;
 }
 
-Arg = Object / String / Number / Bool / Var / Null
+Expr = Call / Object / Array / String / Number / Bool / Var / Null
 
-Var = name:Name { return genVar(name) }
+Var = name:Assignable { return genVar(name) }
 
 Bool = b:("true" / "false") {
   if(b === "true") {
@@ -242,11 +246,23 @@ SimpleObject = p:Property  {
   return obj;
 }
 
-Property = k:(Name / String / Number) _ ":" _ v:Arg {
+Property = k:(Name / String / Number) _ ":" _ v:Expr {
   return [k, v]
 }
 
-String = '"' str:(!'"' .)* '"' {
+Array = "[" e1:(_ Expr _ ",")* e2:(_ Expr)? _ "]" {
+  return [].concat(e1.map((e) => {
+    return e[1]
+  })).concat(e2[1] || [])
+}
+
+String = SingleQuoted / DoubleQuoted
+
+DoubleQuoted = '"' str:(!'"' .)* '"'  {
+  return toStr(str);
+}
+
+SingleQuoted = "'" str:(!"'" .)* "'"  {
   return toStr(str);
 }
 

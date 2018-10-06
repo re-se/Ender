@@ -1,0 +1,929 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`components test import 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <style>
+      display: block;
+    </style>
+  </div>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box test1"
+    />
+  </div>
+</div>
+`;
+
+exports[`components test layout_base 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box sample"
+    />
+  </div>
+</div>
+`;
+
+exports[`components test literal 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            a: 
+          </span>
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            b: {a: 
+          </span>
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <span
+            style={Object {}}
+          >
+            }
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            c: [
+          </span>
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <span
+            style={Object {}}
+          >
+            , 
+          </span>
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <span
+            style={Object {}}
+          >
+            ]
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test message_box 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            aaa
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            bbb
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="ender-ruby"
+          >
+            <span
+              className="ender-rt"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                ﹅
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                ﹅
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                ﹅
+              </span>
+            </span>
+            <span
+              className="ender-rb"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                c
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                c
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                c
+              </span>
+            </span>
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="ender-ruby"
+          >
+            <span
+              className="ender-rt"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                e
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                e
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                e
+              </span>
+            </span>
+            <span
+              className="ender-rb"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                d
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                d
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                d
+              </span>
+            </span>
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            fff
+          </span>
+          <span
+            style={Object {}}
+          >
+            ggg
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            hhh
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            iii
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test message_box 2`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            あああ
+          </span>
+          <span
+            style={Object {}}
+          >
+            。
+          </span>
+          <span
+            style={Object {}}
+          >
+            
+          </span>
+          <span
+            style={Object {}}
+          >
+            いいい
+          </span>
+          <span
+            style={Object {}}
+          >
+            ううう
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            えええ。おおお
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test message_box_ruby 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            前
+          </span>
+          <span
+            className="ender-ruby"
+          >
+            <span
+              className="ender-rt"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                ﹅
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                ﹅
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                ﹅
+              </span>
+            </span>
+            <span
+              className="ender-rb"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+            </span>
+          </span>
+          <span
+            style={Object {}}
+          >
+            後
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            前
+          </span>
+          <span
+            className="ender-ruby"
+          >
+            <span
+              className="ender-rt"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+            </span>
+            <span
+              className="ender-rb"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+            </span>
+          </span>
+          <span
+            style={Object {}}
+          >
+            後
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            前
+          </span>
+          <span
+            className="ender-ruby"
+          >
+            <span
+              className="ender-rt"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+            </span>
+            <span
+              className="ender-rb"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+            </span>
+          </span>
+          <span
+            style={Object {}}
+          >
+            後
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            前
+          </span>
+          <span
+            className="ender-ruby"
+          >
+            <span
+              className="ender-rt"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                い
+              </span>
+            </span>
+            <span
+              className="ender-rb"
+              style={Object {}}
+            >
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+              <span
+                style={
+                  Object {
+                    "opacity": 1,
+                  }
+                }
+              >
+                あ
+              </span>
+            </span>
+          </span>
+          <span
+            style={Object {}}
+          >
+            後
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test variable 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-messageBox "
+    >
+      <div
+        className="ender-messageBox-inner"
+      >
+        <span
+          style={Object {}}
+        >
+          test
+        </span>
+        <br
+          style={Object {}}
+        />
+        <span
+          style={Object {}}
+        >
+          string
+        </span>
+        <br
+          style={Object {}}
+        />
+        <span
+          className="marker"
+        >
+          ▼
+        </span>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
