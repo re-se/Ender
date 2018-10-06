@@ -46,18 +46,7 @@ class AudioEngine extends React.Component<Props, State> {
       this.audioBuses
     )
 
-    // エフェクト開始
-    this.props.audioState.audioEffects.forEach(audioEffect => {
-      if (audioEffect.isStarted) return
-      const audioEffectNodes = getAudioEffectNodes(
-        this.props.audioState.audioBuses,
-        this.audioBuses,
-        audioEffect.targetBus,
-        audioEffect.key
-      )
-      if (Object.keys(audioEffectNodes).length < 1) return
-      audioEffect.start(this.audioCxt, audioEffectNodes, audioEffect.complete)
-    })
+    startAudioEffect(this.audioCxt, this.props.audioState, this.audioBuses)
 
     const audioBusComponents = Object.keys(
       this.props.audioState.audioBuses
@@ -82,6 +71,27 @@ class AudioEngine extends React.Component<Props, State> {
 
     return <div className="ender-audio-engine">{audioBusComponents}</div>
   }
+}
+
+function startAudioEffect(
+  audioCxt: AudioContext,
+  audioState: AudioState,
+  audioBuses: Map<string, Map<string, AudioNode>>
+) {
+  audioState.audioEffects.forEach(audioEffect => {
+    if (audioEffect.isStarted) return
+
+    const audioEffectNodes = getAudioEffectNodes(
+      audioState.audioBuses,
+      audioBuses,
+      audioEffect.targetBus,
+      audioEffect.key
+    )
+
+    if (Object.keys(audioEffectNodes).length < 1) return
+
+    audioEffect.start(audioCxt, audioEffectNodes, audioEffect.complete)
+  })
 }
 
 function getAudioEffectNodes(

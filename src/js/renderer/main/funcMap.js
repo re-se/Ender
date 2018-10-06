@@ -113,7 +113,6 @@ export default {
     if (args[1]) {
       store.dispatch(
         loadAudioEffectAction(bus, engine.eval(args[1]), false, () => {
-          console.log(bus)
           store.dispatch(stopAudioAction(bus))
         })
       )

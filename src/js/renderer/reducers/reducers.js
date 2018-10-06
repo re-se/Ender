@@ -178,12 +178,13 @@ const audio = (state = { audioEffects: [], audioBuses: {} }, action) => {
       )
 
     case 'STOP_AUDIO':
-      return _updateAudioNode(
-        state,
-        action.bus,
-        state.audioBuses[action.bus].firstNode,
-        { isPlay: false, currentTime: 0 }
-      )
+      // return _updateAudioNode(
+      //   state,
+      //   action.bus,
+      //   state.audioBuses[action.bus].firstNode,
+      //   { isPlay: false, currentTime: 0 }
+      // )
+      return _deleteAudio(state, action.bus)
 
     case 'PAUSE_AUDIO':
       return _updateAudioNode(
@@ -274,6 +275,12 @@ function _updateAudioNode(
       },
     },
   }
+}
+
+function _deleteAudio(state: AudioState, audioBusKey: string): AudioState {
+  const newAudioState = { ...state }
+  delete newAudioState.audioBuses[audioBusKey]
+  return newAudioState
 }
 
 function _loadAudio(state: AudioState, src, out, isLoop, loopOffsetTime) {

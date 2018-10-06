@@ -55,11 +55,11 @@ export default class AudioEffect {
 
   complete() {
     this.isFinished = true
+    store.dispatch(deleteAudioEffect(this))
+
     if (this.onComplete) {
       this.onComplete(this)
     }
-    // effect の削除を行なうと再生が巻き戻るため、一旦削除しない。FIXME
-    // store.dispatch(deleteAudioEffect(this))
 
     if (this.isSync) {
       engine.exec()

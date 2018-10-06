@@ -2,6 +2,7 @@
 import React from 'react'
 import path from 'path'
 import engine from '../../main/engine'
+import { stopAudio } from '../../actions/actions'
 const MediaElementAudioSource = window.MediaElementAudioSource
 const Audio = window.Audio
 
@@ -33,16 +34,14 @@ class AudioMediaElementAudioSource extends React.Component<Props, State> {
     this.audioNode = this.props.audioCxt.createMediaElementSource(this.audio)
     this.audioNode.connect(this.props.audioNode)
 
-    this.setLoop()
+    if (this.props.isLoop) {
+      this.setLoop()
+    } else {
+      this.setOnComplete()
+    }
   }
 
   setLoop() {
-    // ループなし設定
-    if (!this.props.isLoop) {
-      return
-    }
-
-    // ループあり設定
     const offsetTime = this.props.loopOffsetTime || 0
 
     let audioDom = this.audio
@@ -52,17 +51,30 @@ class AudioMediaElementAudioSource extends React.Component<Props, State> {
     }
   }
 
-  render() {
+  setOnComplete() {
+    const self = this
+    this.audio.onended = () => {
+      stopAudio(self.props.src)
+    }
+  }
+
+  componentWillUnmount() {
+    this.audio.pause()
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.currentTime !== this.props.currentTime) {
+      this.audio.currentTime = this.props.currentTime
+    }
+
     if (this.props.isPlay && this.audio.paused) {
       this.audio.play()
     } else if (!this.props.isPlay && !this.audio.paused) {
       this.audio.pause()
     }
+  }
 
-    if (this.audio.currentTime !== this.props.currentTime) {
-      this.audio.currentTime = this.props.currentTime
-    }
-
+  render() {
     return null
   }
 }
