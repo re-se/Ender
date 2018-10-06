@@ -77,7 +77,7 @@ class Ender {
   *_mainLoop(): GeneratorFunction {
     while (this.pc < this.insts.length) {
       if (isDevelop()) {
-        console.log(this.insts[this.pc], this.pc)
+        console.log(this.pc, this.insts[this.pc])
       }
       const inst = this.insts[this.pc]
       // 命令実行
