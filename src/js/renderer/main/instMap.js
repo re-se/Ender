@@ -46,7 +46,7 @@ const instMap = {
     yield
   },
 
-  text: (textInst: TextInst) => {
+  text: function*(textInst: TextInst): GeneratorFunction {
     const beforeMessageLength = store.getState().MessageBox.message.length
     store.dispatch(addMessage(textInst.value))
     const animation = new TextAnimation(
@@ -56,6 +56,7 @@ const instMap = {
     store.dispatch(setMessagePosition(animation.getInitialState()))
     animation.start()
     store.dispatch(startAnimation(animation))
+    yield
   },
 
   name: ({ name }: NameInst) => {

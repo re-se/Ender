@@ -98,6 +98,7 @@ export default class TextAnimation extends Animation {
     this.stop()
     this.isFinished = true
     store.dispatch(setMessagePosition(INITIAL_STATE))
+    engine.exec()
   }
 
   onExec() {
