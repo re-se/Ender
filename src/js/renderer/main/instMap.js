@@ -11,6 +11,8 @@ import {
 import store from './store'
 import TextAnimation from '../util/animation/TextAnimation'
 import { GeneratorFunction } from '../util/util'
+import { isAutoPlay } from '../util/autoPlay/isAutoPlay'
+import { autoPlay } from '../util/autoPlay/autoPlay'
 
 export type WaitInst = {
   type: string,
@@ -43,6 +45,9 @@ export type ClearInst = {
 
 const instMap = {
   wait: function*(waitInst: WaitInst): GeneratorFunction {
+    if (isAutoPlay()) {
+      autoPlay()
+    }
     yield
   },
 
