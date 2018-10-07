@@ -6,6 +6,7 @@ import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
+import Lambda from '../util/Lambda'
 
 /**
  * 関数命令の引数を取得する
@@ -103,6 +104,11 @@ export const funcMap = {
 }
 
 export function* generator(inst: FuncInst): Iterator<any> {
+  const lambda = engine.getVar(inst.name, {})
+  if (lambda instanceof Lambda) {
+    return lambda.exec(inst.args)
+  }
+
   if (!funcMap[inst.name]) {
     console.warn(`undefined func ${inst.name}`)
     return
