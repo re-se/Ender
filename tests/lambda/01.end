@@ -1,0 +1,16 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+c = 1
+
+${c}
+
+func a(b) {
+  c = b
+}
+
+\a(2)
+
+${c}
+
+\wait('snapshot')
