@@ -93,3 +93,17 @@ export const addImage = image => {
     'image'
   )
 }
+
+// Movie
+export const addMovie = movie => {
+  return addComponents(
+    [
+      {
+        type: 'func',
+        name: 'Movie',
+        args: movie,
+      },
+    ],
+    'movie'
+  )
+}
