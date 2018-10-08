@@ -1,0 +1,11 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+aaa
+
+\movie('debug.mp4', 'full back')
+
+bbb
+
+\wait('snapshot')
+
