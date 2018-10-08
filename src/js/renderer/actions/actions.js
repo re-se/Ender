@@ -14,6 +14,13 @@ export const addComponents = (components, key = 'default') => {
   }
 }
 
+export const deleteComponent = selectorTree => {
+  return {
+    type: 'DELETE_COMPONENT',
+    selectorTree,
+  }
+}
+
 export const updateComponentStyle = (selector, style) => {
   return {
     type: 'UPDATE_COMPONENT_STYLE',
