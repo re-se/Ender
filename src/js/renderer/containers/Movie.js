@@ -10,29 +10,16 @@ export default class Movie extends React.Component {
       this.props.src
     )
 
-    if (this.props.isLoop) {
-      return (
-        <video
-          className={`ender-movie ${this.props.classNames.join(' ')}`}
-          src={srcPath}
-          id={this.props.id}
-          style={this.props.style}
-          autoPlay
-          loop
-          onEnded={this.props.onEnded.bind(this)}
-        />
-      )
-    } else {
-      return (
-        <video
-          className={`ender-movie ${this.props.classNames.join(' ')}`}
-          src={srcPath}
-          id={this.props.id}
-          style={this.props.style}
-          autoPlay
-          onEnded={this.props.onEnded.bind(this)}
-        />
-      )
-    }
+    return (
+      <video
+        className={`ender-movie ${this.props.classNames.join(' ')}`}
+        src={srcPath}
+        id={this.props.id}
+        style={this.props.style}
+        autoPlay
+        loop={this.props.isLoop}
+        onEnded={this.props.onEnded.bind(this)}
+      />
+    )
   }
 }
