@@ -4,8 +4,7 @@
 aaa
 
 \movie('debug.mp4', 'full back')
+\wait('snapshot')
 
 bbb
-
-\wait('snapshot')
 
