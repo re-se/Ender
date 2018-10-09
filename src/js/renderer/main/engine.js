@@ -10,7 +10,6 @@ import { GeneratorFunction, isDevelop } from '../util/util'
 import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
-import Lambda from '../util/Lambda'
 
 class Ender {
   instsStack: Inst[][]
@@ -137,7 +136,7 @@ class Ender {
         case 'func':
           return funcMap.exec(expr)
         case 'lambda':
-          return new Lambda(expr)
+          return expr
         default:
           return expr
       }
