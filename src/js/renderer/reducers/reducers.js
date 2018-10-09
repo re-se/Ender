@@ -19,7 +19,7 @@ const components = (state = {}, action) => {
       )
       return nextState
     }
-    case 'DELETE_COMPONENT': {
+    case 'DELETE_COMPONENTS': {
       let nextState = {}
       for (let key in state) {
         nextState[key] = state[key].filter(

@@ -14,9 +14,9 @@ export const addComponents = (components, key = 'default') => {
   }
 }
 
-export const deleteComponent = selectorTree => {
+export const deleteComponents = selectorTree => {
   return {
-    type: 'DELETE_COMPONENT',
+    type: 'DELETE_COMPONENTS',
     selectorTree,
   }
 }

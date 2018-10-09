@@ -1,7 +1,7 @@
 //@flow
 import Animation from './Animation'
 import store from '../../main/store'
-import { deleteComponent } from '../../actions/actions'
+import { deleteComponents } from '../../actions/actions'
 import engine from '../../main/engine'
 
 export default class MovieAnimation extends Animation {
@@ -21,7 +21,7 @@ export default class MovieAnimation extends Animation {
     // アニメオブジェクトを終了状態にする
     this.isFinished = true
 
-    store.dispatch(deleteComponent(this.selectorTree))
+    store.dispatch(deleteComponents(this.selectorTree))
 
     if (this.isSync) {
       engine.exec()
