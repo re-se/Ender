@@ -10,30 +10,36 @@ import { GeneratorFunction, isDevelop } from '../util/util'
 import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
-import Stack from '../util/Stack'
 import Lambda from '../util/Lambda'
 
 class Ender {
-  _insts: Stack<Inst[]>
-  _pc: Stack<number>
+  instsStack: Inst[][]
+  pcStack: number[]
   scriptPath: string
-  nameMap: Stack<{ [string]: any }>
+  nameMapStack: { [string]: any }[]
   mainLoop: Iterator<any>
   isFinished = false
   _yieldValue: any
 
   get pc(): number {
-    return this._pc.top()
+    return this.pcStack[this.pcStack.length - 1]
   }
   set pc(value: number): number {
-    return this._pc.set(value)
+    return (this.pcStack[this.pcStack.length - 1] = value)
   }
 
   get insts(): Inst[] {
-    return this._insts.top()
+    return this.instsStack[this.instsStack.length - 1]
   }
   set insts(value: Inst[]) {
-    return this._insts.set(value)
+    return (this.instsStack[this.instsStack.length - 1] = value)
+  }
+
+  get nameMap(): { [string]: any } {
+    return this.nameMapStack[this.nameMapStack.length - 1]
+  }
+  set nameMap(map: { [string]: any }) {
+    return (this.nameMapStack[this.nameMapStack.length - 1] = map)
   }
 
   /**
@@ -45,11 +51,11 @@ class Ender {
     let textPath = get(config, 'text.path', '')
     this.scriptPath = path.join(config.basePath, textPath, config.main)
 
-    this._insts = new Stack([])
+    this.instsStack = [[]]
     this._loadScript()
-    this._pc = new Stack(0)
+    this.pcStack = [0]
     this.mainLoop = this._mainLoop()
-    this.nameMap = new Stack({})
+    this.nameMapStack = [{}]
     this.isFinished = false
     this.setVar('config', config)
     init()
@@ -107,7 +113,7 @@ class Ender {
       this.pc += 1
 
       // 命令列の最後に到達 && 戻り先の命令列がある場合
-      if (this.pc >= this.insts.length && this._insts.size > 1) {
+      if (this.pc >= this.insts.length && this.instsStack.length > 1) {
         this.backInsts()
         // 命令列呼び出しから pc が増えていないので、ここで増やす
         this.pc += 1
@@ -148,11 +154,12 @@ class Ender {
    */
   getVar(path: string, defaultValue: any = null) {
     let variable = undefined
-    this.nameMap.forEach(nameMap => {
+    for (let depth = this.nameMapStack.length - 1; depth >= 0; depth--) {
+      const nameMap = this.nameMapStack[depth]
       if (has(nameMap, path) && variable === undefined) {
         variable = get(nameMap, path)
       }
-    })
+    }
 
     if (variable === undefined && defaultValue == null) {
       console.warn(`undefined variable: ${path}`)
@@ -171,12 +178,13 @@ class Ender {
     let isSet = false
 
     // スコープを遡って代入
-    this.nameMap.forEach(nameMap => {
+    for (let depth = this.nameMapStack.length - 1; depth >= 0; depth--) {
+      const nameMap = this.nameMapStack[depth]
       if (has(nameMap, path) && !isSet) {
         set(nameMap, path, v)
         isSet = true
       }
-    })
+    }
 
     // 変数が未定義なら現在のスコープの変数として代入
     if (!isSet) {
@@ -187,27 +195,27 @@ class Ender {
   }
 
   declVar(path: string, value: any) {
-    set(this.nameMap.top(), path, this.eval(value))
+    set(this.nameMap, path, this.eval(value))
   }
 
   nestScope() {
-    this.nameMap.push({})
+    this.nameMapStack.push({})
   }
 
   unnestScope() {
-    this.nameMap.pop()
+    this.nameMapStack.pop()
   }
 
   callInsts(insts: Inst[]) {
     // mainloop の pc++ 前に呼ばれるため、0 - 1 の -1 としている
-    this._pc.push(-1)
-    this._insts.push(insts)
+    this.pcStack.push(-1)
+    this.instsStack.push(insts)
     this.nestScope()
   }
 
   backInsts() {
-    this._pc.pop()
-    this._insts.pop()
+    this.pcStack.pop()
+    this.instsStack.pop()
     this.unnestScope()
   }
 }
