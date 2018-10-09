@@ -210,6 +210,25 @@ class Ender {
     this._insts.pop()
     this.unnestScoop()
   }
+
+  getContext() {
+    return {
+      scriptPath: this.scriptPath,
+      pc: this._pc,
+      insts: this._insts,
+      nameMap: this.nameMap,
+    }
+  }
+
+  loadSaveData(saveData) {
+    this.init(this.getVar('config'))
+    this.scriptPath = saveData.engine.scriptPath
+    this._pc = saveData.engine.pc
+    this._insts = saveData.engine.insts
+    this.nameMap = saveData.engine.nameMap
+
+    store
+  }
 }
 
 export default new Ender()

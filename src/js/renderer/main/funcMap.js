@@ -101,6 +101,17 @@ export const funcMap = {
   wait: function*(args?: any[]): GeneratorFunction {
     yield args ? args[0] : undefined
   },
+
+  /**
+   * args
+   *  0: name
+   */
+  save: (args: string[]) => {
+    const context = {
+      state: store.getState(),
+      engine: engine.getState(),
+    }
+  },
 }
 
 export function* generator(inst: FuncInst): Iterator<any> {
