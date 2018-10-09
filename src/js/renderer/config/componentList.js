@@ -55,6 +55,13 @@ export default {
       return { classNames }
     },
   },
+  StopAutoButton: {
+    path: '../components/button/Button',
+    getProps: args => {
+      let classNames = [].concat(args[0])
+      return { classNames }
+    },
+  },
   Style: {
     path: '../components/Style',
     getProps: args => {
