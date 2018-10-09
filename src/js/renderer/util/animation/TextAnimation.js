@@ -47,8 +47,11 @@ export default class TextAnimation extends Animation {
         }
         yield { index: index + 1, position }
       }
+
       if (currentMessage.body) {
-        while (position < currentMessage.body.length) {
+        // 式を評価した値の場合、string以外の型の可能性があるため
+        currentMessage.body = currentMessage.body.toString()
+        while (position < currentMessage.body.toString().length) {
           position += 1
           yield { index: index + 1, position }
         }
