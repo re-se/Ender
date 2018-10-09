@@ -190,11 +190,11 @@ class Ender {
     set(this.nameMap.top(), path, this.eval(value))
   }
 
-  nestScoop() {
+  nestScope() {
     this.nameMap.push({})
   }
 
-  unnestScoop() {
+  unnestScope() {
     this.nameMap.pop()
   }
 
@@ -202,13 +202,13 @@ class Ender {
     // mainloop の pc++ 前に呼ばれるため、0 - 1 の -1 としている
     this._pc.push(-1)
     this._insts.push(insts)
-    this.nestScoop()
+    this.nestScope()
   }
 
   backInsts() {
     this._pc.pop()
     this._insts.pop()
-    this.unnestScoop()
+    this.unnestScope()
   }
 }
 
