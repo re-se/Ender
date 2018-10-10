@@ -6,8 +6,7 @@ import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
-import { isLambda } from '../util/lambda/isLambda'
-import { execLambda } from '../util/lambda/execLambda'
+import { execLambda, isLambda } from '../util/lambda'
 
 /**
  * 関数命令の引数を取得する
