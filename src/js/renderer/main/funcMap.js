@@ -1,12 +1,14 @@
 //@flow
 import type { FuncInst } from './instMap'
-import { addComponents, addImage } from '../actions/actions'
+import { addComponents, addImage, addMovie } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
+import MovieAnimation from '../util/animation/MovieAnimation'
 import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
 import { execLambda, isLambda } from '../util/lambda'
+import ComponentUtil from '../util/ComponentUtil'
 
 /**
  * 関数命令の引数を取得する
@@ -68,6 +70,28 @@ export const funcMap = {
     let animation = new ImageAnimation(args[0], args[1])
     AnimationUtil.setAnimation(animation)
     animation.start()
+  },
+
+  /**
+   * args
+   *  0: src
+   *  1: classNames
+   *  2: isLoop
+   */
+  movie: function*(args: any[]): GeneratorFunction {
+    const id = ComponentUtil.generateId('movie')
+    const animation = new MovieAnimation(id, true)
+
+    args[3] = id
+    args[4] = () => {
+      animation.finish()
+    }
+
+    store.dispatch(addMovie(args))
+
+    AnimationUtil.setAnimation(animation)
+    animation.start()
+    yield
   },
 
   layout: (args: FuncInst[]) => {

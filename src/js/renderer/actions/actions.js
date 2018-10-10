@@ -14,6 +14,13 @@ export const addComponents = (components, key = 'default') => {
   }
 }
 
+export const deleteComponents = selectorTree => {
+  return {
+    type: 'DELETE_COMPONENTS',
+    selectorTree,
+  }
+}
+
 export const updateComponentStyle = (selector, style) => {
   return {
     type: 'UPDATE_COMPONENT_STYLE',
@@ -84,5 +91,19 @@ export const addImage = image => {
       },
     ],
     'image'
+  )
+}
+
+// Movie
+export const addMovie = movie => {
+  return addComponents(
+    [
+      {
+        type: 'func',
+        name: 'Movie',
+        args: movie,
+      },
+    ],
+    'movie'
   )
 }

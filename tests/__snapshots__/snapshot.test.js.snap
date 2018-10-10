@@ -1111,6 +1111,42 @@ exports[`components test message_box_ruby 1`] = `
 </div>
 `;
 
+exports[`components test movie 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <div
+    className="ender-box "
+  />
+</div>
+`;
+
 exports[`components test set_return_value 1`] = `
 <div
   className="inner-view"

@@ -19,6 +19,19 @@ export default {
       }
     },
   },
+  Movie: {
+    path: '../containers/Movie',
+    getProps: (args: mixed[]) => {
+      return {
+        key: 'movie',
+        src: getFuncArgs(args, 0),
+        classNames: [].concat(getFuncArgs(args, 1, DEFAULT_IMAGE_CLASSNAME)),
+        isLoop: getFuncArgs(args, 2),
+        id: args[3],
+        onEnded: args[4],
+      }
+    },
+  },
   MessageBox: {
     path: '../containers/MessageBox',
     getProps: args => {
