@@ -49,7 +49,7 @@ class MessageBox extends React.Component {
     for (let i = 0; i < index; i++) {
       let word = message[i]
       let key = `message-${i}`
-      let body = word.body || (word.expr ? engine.eval(word.expr) : '')
+      let body = word.body || ''
       let position
       if (this.props.position != null && i === index - 1) {
         position = this.props.position
