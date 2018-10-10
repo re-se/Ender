@@ -237,7 +237,7 @@ exports[`components test auto_play 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="image16659551f052d0"
+      id="image1665eab92b21a0"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/auto_play/test.png"
       style={
@@ -321,7 +321,7 @@ exports[`components test auto_play 2`] = `
   >
     <img
       className="ender-image image-center"
-      id="image16659551f052d0"
+      id="image1665eab92b21a0"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/auto_play/test.png"
       style={
