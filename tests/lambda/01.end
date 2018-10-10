@@ -15,3 +15,7 @@ func a(b) {
 ${c}
 \wait('snapshot')
 
+d = func () {}
+
+\d()
+\wait('snapshot')

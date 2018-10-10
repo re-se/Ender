@@ -104,6 +104,39 @@ exports[`components test lambda 2`] = `
 </div>
 `;
 
+exports[`components test lambda 3`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
 exports[`components test layout_base 1`] = `
 <div
   className="inner-view"
