@@ -1,13 +1,13 @@
 module.exports = {
-  require: jest.genMockFunction(),
-  match: jest.genMockFunction(),
+  require: jest.fn(),
+  match: jest.fn(),
   remote: {
     app: {
-      getAppPath: jest.genMockFunction().mockReturnValue(__dirname),
+      getAppPath: jest.fn().mockReturnValue(__dirname),
     },
     process: {
       env: 'test',
     },
   },
-  dialog: jest.genMockFunction(),
+  dialog: jest.fn(),
 }
