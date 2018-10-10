@@ -5,7 +5,7 @@ import ComponentUtil from '../util/ComponentUtil'
  */
 const components = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_COMPONENTS':
+    case 'ADD_COMPONENTS': {
       let nextState = { ...state }
       nextState[action.key] = (state[action.key] || []).concat(
         action.components.map(componentInst => {
@@ -13,6 +13,17 @@ const components = (state = {}, action) => {
         })
       )
       return nextState
+    }
+    case 'DELETE_COMPONENTS': {
+      let nextState = {}
+      for (let key in state) {
+        nextState[key] = state[key].filter(
+          component =>
+            !ComponentUtil.matchSelector(component, action.selectorTree)
+        )
+      }
+      return nextState
+    }
     case 'UPDATE_COMPONENT_STYLE':
       return updateComponentStyle(state, action.selector, action.style)
     default:
@@ -37,17 +48,17 @@ const _updateComponentStyle = (
 ): ComponentState[] => {
   let nextState = [...components]
   for (const index in components) {
-    let component = components[index]
+    const component = components[index]
 
     if (ComponentUtil.matchSelector(component, selector)) {
-      nextState[index].props.style = components[index].props.style
-        ? { ...components[index].props.style, ...style }
+      nextState[index].props.style = component.props.style
+        ? { ...component.props.style, ...style }
         : { ...style }
     }
 
     if (component.props.children) {
-      nextState[index].props.children = updateComponentStyle(
-        components[index].props.children,
+      nextState[index].props.children = _updateComponentStyle(
+        component.props.children,
         selector,
         style
       )

@@ -1,4 +1,4 @@
 \img("test.png", "image-center")
 \img("test.png", "image-right")
 
-\animation(".image-center", "fadeIn")
+\animate(".image-center", "fadeIn")

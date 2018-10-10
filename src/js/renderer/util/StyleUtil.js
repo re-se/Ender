@@ -8,6 +8,7 @@ export default class StyleUtil {
    * @type {Selector[]}
    */
   static parse(selector: string): Selector[] {
+    if (selector === '') return []
     let selectorTree = selectorParser.parse(selector)
     return selectorTree instanceof Array ? selectorTree : [selectorTree]
   }

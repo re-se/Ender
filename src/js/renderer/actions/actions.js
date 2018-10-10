@@ -16,6 +16,13 @@ export const addComponents = (components, key = 'default') => {
   }
 }
 
+export const deleteComponents = selectorTree => {
+  return {
+    type: 'DELETE_COMPONENTS',
+    selectorTree,
+  }
+}
+
 export const updateComponentStyle = (selector, style) => {
   return {
     type: 'UPDATE_COMPONENT_STYLE',
@@ -50,6 +57,13 @@ export const setMessageClassNames = classNames => {
   return {
     type: 'SET_MESSAGE_CLASSNAMES',
     classNames,
+  }
+}
+
+export const setName = (name = null) => {
+  return {
+    type: 'SET_NAME',
+    name,
   }
 }
 
@@ -151,4 +165,18 @@ export const clearAudioEvent = audio => {
     type: 'CLEAR_AUDIO_EVENT',
     audio,
   }
+}
+
+// Movie
+export const addMovie = movie => {
+  return addComponents(
+    [
+      {
+        type: 'func',
+        name: 'Movie',
+        args: movie,
+      },
+    ],
+    'movie'
+  )
 }

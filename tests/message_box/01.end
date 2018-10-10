@@ -13,7 +13,15 @@ hhh\
 iii
 \wait('snapshot')
 
-
 あああ。いいい@ううう
 えええ。\おおお
+\wait('snapshot')
+
+「あいうえお」
+\wait('snapshot')
+
+名前「かきくけこ」
+\wait('snapshot')
+
+\layout(\History)
 \wait('snapshot')

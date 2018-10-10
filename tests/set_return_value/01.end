@@ -1,0 +1,8 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+config.text.periodWait = true
+config.text.speed = 100
+
+${a = 1}
+\wait('snapshot')

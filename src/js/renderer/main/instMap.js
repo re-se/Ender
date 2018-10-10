@@ -1,10 +1,11 @@
 //@flow
 import engine from './engine.js'
-import funcMap from './funcMap'
+import { generator, exec } from './funcMap'
 import {
   addMessage,
   clearMessage,
   setMessagePosition,
+  setName,
   startAnimation,
 } from '../actions/actions'
 import store from './store'
@@ -22,6 +23,11 @@ export type TextInst = {
     body?: string,
     expr?: string,
   }[],
+}
+
+export type NameInst = {
+  type: string,
+  name: string | Object, // TODO: Object の型も絞れる
 }
 
 export type FuncInst = {
@@ -52,26 +58,22 @@ const instMap = {
     store.dispatch(startAnimation(animation))
   },
 
-  name: () => {},
+  name: ({ name }: NameInst) => {
+    store.dispatch(setName(engine.eval(name)))
+  },
 
-  nameClear: () => {},
+  nameClear: () => {
+    store.dispatch(setName())
+  },
 
-  clear: clearInst => {
+  clear: (clearInst: ClearInst) => {
     if (clearInst.message) {
       store.dispatch(clearMessage())
     }
   },
 
   func: function*(funcInst: FuncInst): GeneratorFunction {
-    if (!funcMap[funcInst.name]) {
-      console.warn(`undefined func ${funcInst.name}`)
-      return
-    }
-    if (funcMap[funcInst.name] instanceof GeneratorFunction) {
-      yield* funcMap[funcInst.name](funcInst.args)
-    } else {
-      funcMap[funcInst.name](funcInst.args)
-    }
+    yield* generator(funcInst)
   },
 
   funcdecl: () => {},

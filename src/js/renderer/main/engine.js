@@ -5,6 +5,7 @@ import path from 'path'
 import { set, get, has } from 'lodash'
 import parser from './parser.js'
 import instMap from './instMap.js'
+import * as funcMap from './funcMap.js'
 import { GeneratorFunction, isDevelop } from '../util/util'
 import { resetState, finishAnimation } from '../actions/actions'
 import store from './store'
@@ -76,7 +77,9 @@ class Ender {
 
   *_mainLoop(): GeneratorFunction {
     while (this.pc < this.insts.length) {
-      console.log(this.insts[this.pc], this.pc)
+      if (isDevelop()) {
+        console.log(this.pc, this.insts[this.pc])
+      }
       const inst = this.insts[this.pc]
       // 命令実行
       if (instMap[inst.type] instanceof GeneratorFunction) {
@@ -97,13 +100,13 @@ class Ender {
     }
   }
 
-  eval(expr: Object | string) {
+  eval(expr: Object | string | number) {
     if (expr instanceof Object) {
       switch (expr.type) {
         case 'var':
           return this.eval(this.getVar(expr.name))
         case 'func':
-          return instMap[expr.type](expr)
+          return funcMap.exec(expr)
         default:
           return expr
       }
@@ -131,28 +134,9 @@ class Ender {
    * @param {any} value
    */
   setVar(path: string, value: any) {
-    set(this.nameMap, path, this.eval(value))
-  }
-
-  /**
-   * 変数を取得
-   * @param  {string} path 変数のパス
-   * @return {any}
-   */
-  getClassNames(path: string) {
-    if (!has(this.nameMap, path)) {
-      console.warn(`undefined variable: ${path}`)
-    }
-    return get(this.nameMap, path)
-  }
-
-  /**
-   * スクリプトで使う変数を設定する
-   * @param {string} path 変数のパス
-   * @param {any} value
-   */
-  setClassNames(path: string, value: any) {
-    set(this.nameMap, path, this.eval(value))
+    const v = this.eval(value)
+    set(this.nameMap, path, v)
+    return v
   }
 }
 

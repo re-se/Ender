@@ -3,6 +3,7 @@ import type { FuncInst } from './instMap'
 import {
   addComponents,
   addImage,
+  addMovie,
   playAudio as playAudioAction,
   stopAudio as stopAudioAction,
   pauseAudio as pauseAudioAction,
@@ -10,10 +11,12 @@ import {
   loadAudioEffect as loadAudioEffectAction,
 } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
+import MovieAnimation from '../util/animation/MovieAnimation'
 import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
+import ComponentUtil from '../util/ComponentUtil'
 
 /**
  * 関数命令の引数を取得する
@@ -30,7 +33,7 @@ export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
   }
 }
 
-export default {
+export const funcMap = {
   /**
    * 画像を描画する
    * args [
@@ -162,12 +165,34 @@ export default {
     store.dispatch(loadAudioEffectAction(args[0], args[1], false))
   },
 
+  /**
+   * args
+   *  0: src
+   *  1: classNames
+   *  2: isLoop
+   */
+  movie: function*(args: any[]): GeneratorFunction {
+    const id = ComponentUtil.generateId('movie')
+    const animation = new MovieAnimation(id, true)
+
+    args[3] = id
+    args[4] = () => {
+      animation.finish()
+    }
+
+    store.dispatch(addMovie(args))
+
+    AnimationUtil.setAnimation(animation)
+    animation.start()
+    yield
+  },
+
   layout: (args: FuncInst[]) => {
     store.dispatch(addComponents(args))
   },
 
   set: (args: [string, any]) => {
-    engine.setVar(args[0], args[1])
+    return engine.setVar(args[0], args[1])
   },
 
   import: (args: string[]) => {
@@ -193,4 +218,24 @@ export default {
   wait: function*(args?: any[]): GeneratorFunction {
     yield args ? args[0] : undefined
   },
+}
+
+export function* generator(inst: FuncInst): Iterator<any> {
+  if (!funcMap[inst.name]) {
+    console.warn(`undefined func ${inst.name}`)
+    return
+  }
+  if (funcMap[inst.name] instanceof GeneratorFunction) {
+    yield* funcMap[inst.name](inst.args)
+  } else {
+    return funcMap[inst.name](inst.args)
+  }
+}
+
+export function exec(inst: FuncInst): any {
+  if (!funcMap[inst.name]) {
+    console.warn(`undefined func ${inst.name}`)
+    return
+  }
+  return funcMap[inst.name](inst.args)
 }
