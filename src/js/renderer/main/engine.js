@@ -2,7 +2,7 @@
 
 import fs from 'fs'
 import path from 'path'
-import { set, get, has } from 'lodash'
+import { set, get, has, last, findLastIndex } from 'lodash'
 import parser from './parser.js'
 import instMap from './instMap.js'
 import * as funcMap from './funcMap.js'
@@ -21,21 +21,21 @@ class Ender {
   _yieldValue: any
 
   get pc(): number {
-    return this.pcStack[this.pcStack.length - 1]
+    return last(this.pcStack)
   }
   set pc(value: number): number {
     return (this.pcStack[this.pcStack.length - 1] = value)
   }
 
   get insts(): Inst[] {
-    return this.instsStack[this.instsStack.length - 1]
+    return last(this.instsStack)
   }
   set insts(value: Inst[]) {
     return (this.instsStack[this.instsStack.length - 1] = value)
   }
 
   get nameMap(): { [string]: any } {
-    return this.nameMapStack[this.nameMapStack.length - 1]
+    return last(this.nameMapStack)
   }
   set nameMap(map: { [string]: any }) {
     return (this.nameMapStack[this.nameMapStack.length - 1] = map)
@@ -152,13 +152,12 @@ class Ender {
    * @return {any}
    */
   getVar(path: string, defaultValue: any = null) {
-    let variable = undefined
-    for (let depth = this.nameMapStack.length - 1; depth >= 0; depth--) {
-      const nameMap = this.nameMapStack[depth]
-      if (has(nameMap, path) && variable === undefined) {
-        variable = get(nameMap, path)
-      }
-    }
+    let variable = get(
+      this.nameMapStack[
+        findLastIndex(this.nameMapStack, nameMap => has(nameMap, path))
+      ],
+      path
+    )
 
     if (variable === undefined && defaultValue == null) {
       console.warn(`undefined variable: ${path}`)
@@ -174,19 +173,15 @@ class Ender {
    */
   setVar(path: string, value: any) {
     const v = this.eval(value)
-    let isSet = false
+    const nameMap = this.nameMapStack[
+      findLastIndex(this.nameMapStack, nameMap => has(nameMap, path))
+    ]
 
-    // スコープを遡って代入
-    for (let depth = this.nameMapStack.length - 1; depth >= 0; depth--) {
-      const nameMap = this.nameMapStack[depth]
-      if (has(nameMap, path) && !isSet) {
-        set(nameMap, path, v)
-        isSet = true
-      }
-    }
-
-    // 変数が未定義なら現在のスコープの変数として代入
-    if (!isSet) {
+    if (nameMap) {
+      // スコープを遡って代入
+      set(nameMap, path, v)
+    } else {
+      // 変数が未定義なら現在のスコープの変数として代入
       this.declVar(path, value)
     }
 
