@@ -22,3 +22,61 @@ css ファイルの場合は、記述されたスタイルを適用します。
 * value: any
 
 #### 返り値
+
+### `\playAudio(out, src, isLoop, loopOffset, effect)`
+音声を再生します。
+
+#### 引数
+* out: string
+  - 鳴らす音声が所属する音声バスを指定します。
+* src: string
+  - 音声ファイルのパス
+* isLoop: boolean
+  - ループするか
+* loopOffset: number
+  - ループする際の開始位置。ms指定。指定しない場合は 0。
+* effect: string
+  - 再生開始時の効果を指定することができます。
+  - 例) "fadeIn"
+
+### `\stopAudio(src, effect)`
+音声を停止します。
+
+#### 引数
+* src: string
+  - 音声ファイルのパス
+* effect: string
+  - 再生停止時の効果を指定することができます。
+  - 例) "fadeOut"
+
+### `\loadAudioBus(name, out, gain)`
+音声バスを定義します。
+
+#### 引数
+* name: string
+  - 音声バスの名前。再生時の音声バス指定で使用します。
+* out: string
+  - 音声バスの出力先。音声バスの名前を指定します。
+* gain: number
+  - 音声バスの音量。
+
+### `\effectAudio(targetBus, effect)`
+音声にエフェクトをかけます。エフェクトが終わるまでその他の処理が停止します。
+
+#### 引数
+* targetBus: string
+  - エフェクトをかける対象となる音声バスの名前か音声ファイルのパスを指定します。
+* effect: string
+  - 効果名。
+
+### `\effectAudio(targetBus, effect)`
+音声にエフェクトをかけます。エフェクトの開始と同時に次の処理に進みます。
+
+#### 引数
+* targetBus: string
+  - エフェクトをかける対象となる音声バスの名前か音声ファイルのパスを指定します。
+* effect: string
+  - 効果名。
+
+
+
