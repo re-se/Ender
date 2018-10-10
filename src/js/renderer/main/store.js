@@ -1,6 +1,6 @@
 import { createStore } from 'redux'
 import type { Store } from '../types/types'
-import reducers from '../reducers/reducers'
+import reducers from '../reducers'
 
 const store: Store = createStore(
   reducers,
