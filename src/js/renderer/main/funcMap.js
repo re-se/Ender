@@ -7,8 +7,7 @@ import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
-import { isAutoPlay } from '../util/autoPlay/isAutoPlay'
-import { autoPlay } from '../util/autoPlay/autoPlay'
+import { isAutoPlay, autoPlay } from '../util/autoPlay'
 import ComponentUtil from '../util/ComponentUtil'
 
 /**

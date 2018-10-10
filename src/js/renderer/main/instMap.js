@@ -11,8 +11,7 @@ import {
 import store from './store'
 import TextAnimation from '../util/animation/TextAnimation'
 import { GeneratorFunction } from '../util/util'
-import { isAutoPlay } from '../util/autoPlay/isAutoPlay'
-import { autoPlay } from '../util/autoPlay/autoPlay'
+import { isAutoPlay, autoPlay } from '../util/autoPlay'
 
 export type WaitInst = {
   type: string,
