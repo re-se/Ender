@@ -10,7 +10,7 @@ import ComponentUtil from '../util/ComponentUtil'
  */
 const components = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_COMPONENTS':
+    case 'ADD_COMPONENTS': {
       let nextState = { ...state }
       nextState[action.key] = (state[action.key] || []).concat(
         action.components.map(componentInst => {
@@ -18,6 +18,17 @@ const components = (state = {}, action) => {
         })
       )
       return nextState
+    }
+    case 'DELETE_COMPONENTS': {
+      let nextState = {}
+      for (let key in state) {
+        nextState[key] = state[key].filter(
+          component =>
+            !ComponentUtil.matchSelector(component, action.selectorTree)
+        )
+      }
+      return nextState
+    }
     case 'UPDATE_COMPONENT_STYLE':
       return updateComponentStyle(state, action.selector, action.style)
     default:
