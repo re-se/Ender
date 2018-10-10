@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import generateComponent from '../util/generateComponent'
 import AudioEngine from '../containers/AudioEngine'
 
-const Game = ({ components = {}, audio = {} }) => {
+const Game = ({ components = {} }) => {
   return (
     <div id="inner" className="inner-view" key="inner-view">
       {generateChildComponents(components)}

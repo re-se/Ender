@@ -2,7 +2,6 @@
 import React from 'react'
 import store from '../main/store'
 import engine from '../main/engine'
-import audioEffectList from '../config/audioEffectList'
 import { connect } from 'react-redux'
 import { generateAudioNodeKey } from '../util/audio/generateAudioNodeKey'
 import { loadAudioBus } from '../actions/actions'
