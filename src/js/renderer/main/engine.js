@@ -7,7 +7,7 @@ import parser from './parser.js'
 import instMap from './instMap.js'
 import * as funcMap from './funcMap.js'
 import { GeneratorFunction, isDevelop } from '../util/util'
-import { resetState, finishAnimation } from '../actions/actions'
+import { resetState, replaceState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
 
@@ -226,18 +226,24 @@ class Ender {
   getContext() {
     return {
       scriptPath: this.scriptPath,
-      pcStack: this.pcStack,
-      instsStack: this.instsStack,
-      nameMapStack: this.nameMapStack,
+      pcStack: [...this.pcStack],
+      instsStack: [...this.instsStack],
+      nameMapStack: [...this.nameMapStack],
     }
   }
 
   loadSaveData(saveData) {
+    const prevState = store.getState()
+    store.dispatch(resetState())
+
     this.init(this.getVar('config'))
     this.scriptPath = saveData.engine.scriptPath
-    this.pcStack = saveData.engine.pcStack
-    this.instsStack = saveData.engine.instsStack
-    this.nameMapStack = saveData.engine.nameMapStack
+    this.pcStack = [...saveData.engine.pcStack]
+    this.instsStack = [...saveData.engine.instsStack]
+    this.nameMapStack = [...saveData.engine.nameMapStack]
+
+    saveData.state.save = prevState.save
+    store.dispatch(replaceState(saveData.state))
   }
 
   loadScript(scriptName: string): void {

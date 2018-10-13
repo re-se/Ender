@@ -1,10 +1,14 @@
 //@flow
+import fs from 'fs'
+import { get } from 'lodash'
 import type { FuncInst } from './instMap'
 import {
   resetState,
   addComponents,
   addImage,
   addMovie,
+  updateSave,
+  deleteSave,
 } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import MovieAnimation from '../util/animation/MovieAnimation'
@@ -14,6 +18,8 @@ import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
 import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
+import { save } from '../util/save'
+import { screenshot } from '../util/screenshot'
 
 /**
  * 関数命令の引数を取得する
@@ -136,10 +142,32 @@ export const funcMap = {
    *  0: name
    */
   save: (args: string[]) => {
-    const context = {
-      state: store.getState(),
-      engine: engine.getContext(),
-    }
+    const saveData = save(
+      args[0],
+      engine.getVar('global.__system__.screenshot')
+    )
+    store.dispatch(updateSave(saveData))
+  },
+
+  /**
+   * args
+   *  0: name
+   */
+  deleteSave: (args: string[]) => {
+    store.dispatch(deleteSave(args[0]))
+  },
+
+  /**
+   * args
+   *  0: name
+   */
+  loadSaveData: (args: string[]) => {
+    engine.loadSaveData(get(store.getState(), `save.${args[0]}`))
+  },
+
+  screenshot: function*() {
+    screenshot()
+    yield
   },
 
   /**

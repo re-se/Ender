@@ -1,0 +1,15 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+aaa
+bbb
+
+\screenshot()
+\save('1')
+
+ccc
+\wait('snapshot')
+
+ddd
+eee
+\loadSaveData('1')
