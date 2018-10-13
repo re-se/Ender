@@ -206,17 +206,21 @@ class Ender {
     this.nameMapStack.pop()
   }
 
-  callInsts(insts: Inst[]) {
+  callInsts(insts: Inst[], isNested = true) {
     // mainloop の pc++ 前に呼ばれるため、0 - 1 の -1 としている
     this.pcStack.push(-1)
     this.instsStack.push(insts)
-    this.nestScope()
+    if (isNested) {
+      this.nestScope()
+    }
   }
 
   backInsts() {
     this.pcStack.pop()
     this.instsStack.pop()
-    this.unnestScope()
+    while (this.nameMapStack.length > this.pcStack.length + 1) {
+      this.unnestScope()
+    }
   }
 
   getContext() {
@@ -260,7 +264,7 @@ class Ender {
       scriptName
     )
     const insts = parser.parse(fs.readFileSync(scriptPath).toString())
-    this.callInsts(insts)
+    this.callInsts(insts, false)
   }
 }
 

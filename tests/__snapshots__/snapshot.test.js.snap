@@ -73,7 +73,7 @@ exports[`components test include 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e3171363a4"
+      id="image1666e76238a396"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
       style={undefined}
@@ -133,7 +133,7 @@ exports[`components test include 2`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e3171363a4"
+      id="image1666e76238a396"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
       style={undefined}
@@ -162,6 +162,14 @@ exports[`components test include 3`] = `
           <span
             style={Object {}}
           >
+            3
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
             終わり
           </span>
           <br
@@ -185,7 +193,7 @@ exports[`components test include 3`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e3171363a4"
+      id="image1666e76238a396"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
       style={undefined}
@@ -467,7 +475,7 @@ exports[`components test load 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e2cea6a133"
+      id="image1666e7624033b7"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/load/test.png"
       style={undefined}
