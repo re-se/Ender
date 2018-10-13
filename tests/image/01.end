@@ -1,4 +1,5 @@
 \img("test.png", "image-center")
 \img("test.png", "image-right")
+\wait('snapshot')
 
 \animate(".image-center", "fadeIn")

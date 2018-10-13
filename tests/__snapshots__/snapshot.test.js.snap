@@ -1,8 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`components test image 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="imageuuid_mock_13"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
+      style={undefined}
+    />
+    <img
+      className="ender-image image-right"
+      id="imageuuid_mock_15"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
+      style={undefined}
+    />
+  </div>
   <span>
     AudioEngine mock
   </span>
+</div>
+`;
+
 exports[`components test import 1`] = `
 <div
   className="inner-view"
