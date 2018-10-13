@@ -57,6 +57,8 @@ class Ender {
     this.nameMapStack = [{}]
     this.isFinished = false
     this.setVar('config', config)
+    this.setVar('global', {})
+    this.setVar('global.__system__', {})
     init()
   }
 
