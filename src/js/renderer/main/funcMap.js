@@ -1,6 +1,11 @@
 //@flow
 import type { FuncInst } from './instMap'
-import { addComponents, addImage, addMovie } from '../actions/actions'
+import {
+  resetState,
+  addComponents,
+  addImage,
+  addMovie,
+} from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import MovieAnimation from '../util/animation/MovieAnimation'
 import AnimationUtil from '../util/AnimationUtil'
@@ -135,6 +140,23 @@ export const funcMap = {
       state: store.getState(),
       engine: engine.getContext(),
     }
+  },
+
+  /**
+   * args
+   *  0: script
+   */
+  include: (args: string[]) => {
+    engine.includeScript(args[0])
+  },
+
+  /**
+   * args
+   *  0: script
+   */
+  load: (args: string[]) => {
+    store.dispatch(resetState())
+    engine.loadScript(args[0])
   },
 }
 

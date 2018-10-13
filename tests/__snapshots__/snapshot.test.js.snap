@@ -22,6 +22,178 @@ exports[`components test import 1`] = `
 </div>
 `;
 
+exports[`components test include 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            2
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="image1666e3171363a4"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
+      style={undefined}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test include 2`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            2
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="image1666e3171363a4"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
+      style={undefined}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test include 3`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            終わり
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="image1666e3171363a4"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
+      style={undefined}
+    />
+  </div>
+</div>
+`;
+
 exports[`components test lambda 1`] = `
 <div
   className="inner-view"
@@ -224,6 +396,107 @@ exports[`components test literal 1`] = `
             style={Object {}}
           >
             ]
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test load 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            style={Object {}}
+          >
+            2
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="image1666e2cea6a133"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/load/test.png"
+      style={undefined}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test load 2`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            1
           </span>
           <br
             style={Object {}}

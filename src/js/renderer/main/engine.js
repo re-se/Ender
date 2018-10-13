@@ -51,7 +51,6 @@ class Ender {
     this.scriptPath = path.join(config.basePath, textPath, config.main)
 
     this.instsStack = [[]]
-    this._loadScript()
     this.pcStack = [0]
     this.mainLoop = this._mainLoop()
     this.nameMapStack = [{}]
@@ -59,15 +58,18 @@ class Ender {
     this.setVar('config', config)
     this.setVar('global', {})
     this.setVar('global.__system__', {})
+    this._loadInitialScript()
+
     init()
   }
 
   /**
    * スクリプトファイルを読み込む
    */
-  _loadScript() {
+  _loadInitialScript() {
     const script = fs.readFileSync(this.scriptPath).toString()
     this.insts = (parser.parse(script): Inst[])
+    this.nestScope()
   }
 
   /**
@@ -149,20 +151,21 @@ class Ender {
 
   /**
    * 変数を取得
-   * @param  {string} path 変数のパス
+   * @param  {string} varPath 変数のパス
    * @param  {any} defaultValue デフォルト値
    * @return {any}
    */
-  getVar(path: string, defaultValue: any = null) {
+  getVar(varPath: string, defaultValue: any = null) {
+    const identifier = varPath.split(/ |\.|\[/)[0]
     let variable = get(
       this.nameMapStack[
-        findLastIndex(this.nameMapStack, nameMap => has(nameMap, path))
+        findLastIndex(this.nameMapStack, nameMap => has(nameMap, identifier))
       ],
-      path
+      varPath
     )
 
     if (variable === undefined && defaultValue == null) {
-      console.warn(`undefined variable: ${path}`)
+      console.warn(`undefined variable: ${varPath}`)
     }
 
     return variable || defaultValue
@@ -170,28 +173,29 @@ class Ender {
 
   /**
    * スクリプトで使う変数を設定する
-   * @param {string} path 変数のパス
+   * @param {string} varPath 変数のパス
    * @param {any} value
    */
-  setVar(path: string, value: any) {
+  setVar(varPath: string, value: any) {
     const v = this.eval(value)
+    const identifier = varPath.split(/ |\.|\[/)[0]
     const nameMap = this.nameMapStack[
-      findLastIndex(this.nameMapStack, nameMap => has(nameMap, path))
+      findLastIndex(this.nameMapStack, nameMap => has(nameMap, identifier))
     ]
 
     if (nameMap) {
       // スコープを遡って代入
-      set(nameMap, path, v)
+      set(nameMap, varPath, v)
     } else {
       // 変数が未定義なら現在のスコープの変数として代入
-      this.declVar(path, value)
+      this.declVar(varPath, value)
     }
 
     return v
   }
 
-  declVar(path: string, value: any) {
-    set(this.nameMap, path, this.eval(value))
+  declVar(varPath: string, value: any) {
+    set(this.nameMap, varPath, this.eval(value))
   }
 
   nestScope() {
@@ -230,8 +234,33 @@ class Ender {
     this.pcStack = saveData.engine.pcStack
     this.instsStack = saveData.engine.instsStack
     this.nameMapStack = saveData.engine.nameMapStack
+  }
 
-    store
+  loadScript(scriptName: string): void {
+    const config = this.getVar('config')
+
+    this.instsStack = []
+    this.nameMapStack = [this.nameMapStack[0]]
+    this.scriptPath = path.join(
+      config.basePath || '',
+      get(config, 'text.path', ''),
+      scriptName
+    )
+
+    const insts = parser.parse(fs.readFileSync(this.scriptPath).toString())
+    this.callInsts(insts)
+  }
+
+  includeScript(scriptName: string): void {
+    const config = this.getVar('config')
+
+    const scriptPath = path.join(
+      config.basePath || '',
+      get(config, 'text.path', ''),
+      scriptName
+    )
+    const insts = parser.parse(fs.readFileSync(scriptPath).toString())
+    this.callInsts(insts)
   }
 }
 
