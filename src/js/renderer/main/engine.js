@@ -218,18 +218,18 @@ class Ender {
   getContext() {
     return {
       scriptPath: this.scriptPath,
-      pc: this._pc,
-      insts: this._insts,
-      nameMap: this.nameMap,
+      pcStack: this.pcStack,
+      instsStack: this.instsStack,
+      nameMapStack: this.nameMapStack,
     }
   }
 
   loadSaveData(saveData) {
     this.init(this.getVar('config'))
     this.scriptPath = saveData.engine.scriptPath
-    this._pc = saveData.engine.pc
-    this._insts = saveData.engine.insts
-    this.nameMap = saveData.engine.nameMap
+    this.pcStack = saveData.engine.pcStack
+    this.instsStack = saveData.engine.instsStack
+    this.nameMapStack = saveData.engine.nameMapStack
 
     store
   }

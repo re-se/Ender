@@ -133,7 +133,7 @@ export const funcMap = {
   save: (args: string[]) => {
     const context = {
       state: store.getState(),
-      engine: engine.getState(),
+      engine: engine.getContext(),
     }
   },
 }
