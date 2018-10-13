@@ -9,8 +9,7 @@
     "flow": "flow",
     "parsergen": "pegjs -o src/js/renderer/main/parser.js ender.pegjs",
     "postinstall": "electron-builder install-app-deps",
-    "develop":
-      "npm run private:compile && run-p -r \"private:serve  -- --config {1}\" \"private:watch\" --",
+    "develop": "npm run private:compile && run-p -r \"private:serve  -- --config {1}\" \"private:watch\" --",
     "lint": "eslint --no-ignore scripts src test *.js",
     "format": "prettier --write \"src/**/*.js\" \"src/**/*.jsx\"",
     "pack": "run-s private:clean private:compile private:build:all",
@@ -90,11 +89,18 @@
   "build": {
     "productName": "sample",
     "asar": false,
-    "files": ["package.json", "init.js", "build/", "node_modules/"]
+    "files": [
+      "package.json",
+      "init.js",
+      "build/",
+      "node_modules/"
+    ]
   },
   "jest": {
+    "testURL": "http://localhost/",
     "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js"
+      "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js",
+      "AudioEngine$": "<rootDir>/tests/__mocks__/AudioEngine.js"
     }
   }
 }

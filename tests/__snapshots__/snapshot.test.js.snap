@@ -1,5 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+  <span>
+    AudioEngine mock
+  </span>
 exports[`components test import 1`] = `
 <div
   className="inner-view"
@@ -19,6 +22,9 @@ exports[`components test import 1`] = `
       className="ender-box test1"
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -34,6 +40,9 @@ exports[`components test layout_base 1`] = `
       className="ender-box sample"
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -126,6 +135,9 @@ exports[`components test literal 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -346,6 +358,9 @@ exports[`components test message_box 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -415,6 +430,9 @@ exports[`components test message_box 2`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -448,6 +466,9 @@ exports[`components test message_box 3`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -481,6 +502,9 @@ exports[`components test message_box 4`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -528,6 +552,9 @@ iii
 あいうえおかきくけこ
     </pre>
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -993,6 +1020,9 @@ exports[`components test message_box_ruby 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1029,6 +1059,9 @@ exports[`components test movie 1`] = `
   <div
     className="ender-box "
   />
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1070,6 +1103,9 @@ exports[`components test set_return_value 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1115,5 +1151,8 @@ exports[`components test variable 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
