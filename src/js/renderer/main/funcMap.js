@@ -7,6 +7,7 @@ import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
+import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
 
 /**
@@ -127,6 +128,11 @@ export const funcMap = {
 }
 
 export function* generator(inst: FuncInst): Iterator<any> {
+  const lambda = engine.getVar(inst.name, {})
+  if (isLambda(lambda)) {
+    return execLambda(lambda, inst.args)
+  }
+
   if (!funcMap[inst.name]) {
     console.warn(`undefined func ${inst.name}`)
     return
