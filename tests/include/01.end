@@ -12,5 +12,6 @@ ${a}
 
 \include("02.end")
 
+${b}
 終わり
 \wait('snapshot')
