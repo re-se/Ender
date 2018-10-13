@@ -15,7 +15,6 @@ const Game = ({ components = {} }) => {
 const mapStateToProps = state => {
   return {
     components: state.components,
-    audio: state.audio,
   }
 }
 
