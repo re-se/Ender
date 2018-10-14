@@ -48,7 +48,7 @@ class Ender {
    */
   init(config: Config) {
     let textPath = get(config, 'text.path', '')
-    this.scriptPath = path.join(config.basePath, textPath, config.main)
+    this.scriptPath = path.join(config.basePath || '', textPath, config.main)
 
     this.instsStack = [[]]
     this.pcStack = [0]
@@ -156,10 +156,11 @@ class Ender {
    * @return {any}
    */
   getVar(varPath: string, defaultValue: any = null) {
-    const identifier = varPath.split(/ |\.|\[/)[0]
     let variable = get(
       this.nameMapStack[
-        findLastIndex(this.nameMapStack, nameMap => has(nameMap, identifier))
+        findLastIndex(this.nameMapStack, nameMap =>
+          has(nameMap, getReceiverFromVarPath(varPath))
+        )
       ],
       varPath
     )
@@ -178,9 +179,10 @@ class Ender {
    */
   setVar(varPath: string, value: any) {
     const v = this.eval(value)
-    const identifier = varPath.split(/ |\.|\[/)[0]
     const nameMap = this.nameMapStack[
-      findLastIndex(this.nameMapStack, nameMap => has(nameMap, identifier))
+      findLastIndex(this.nameMapStack, nameMap =>
+        has(nameMap, getReceiverFromVarPath(varPath))
+      )
     ]
 
     if (nameMap) {
@@ -275,3 +277,10 @@ class Ender {
 }
 
 export default new Ender()
+
+/**
+ * x.y.z や x[10] となっている varPath から最初のレシーバーのみを取り出す
+ */
+function getReceiverFromVarPath(varPath: string): string {
+  return varPath.split(/ |\.|\[/)[0]
+}
