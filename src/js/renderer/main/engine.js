@@ -206,7 +206,7 @@ class Ender {
     this.nameMapStack.pop()
   }
 
-  callInsts(insts: Inst[], isNested = true) {
+  callInsts(insts: Inst[], isNested: boolean = true) {
     // mainloop の pc++ 前に呼ばれるため、0 - 1 の -1 としている
     this.pcStack.push(-1)
     this.instsStack.push(insts)
@@ -223,7 +223,7 @@ class Ender {
     }
   }
 
-  getContext() {
+  getContext(): EngineContext {
     return {
       scriptPath: this.scriptPath,
       pcStack: [...this.pcStack],
@@ -232,7 +232,7 @@ class Ender {
     }
   }
 
-  loadSaveData(saveData) {
+  loadSaveData(saveData: SaveData): void {
     const prevState = store.getState()
     store.dispatch(resetState())
 

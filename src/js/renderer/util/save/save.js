@@ -1,17 +1,23 @@
+//@flow
 import path from 'path'
 import fs from 'fs'
 import { has } from 'lodash'
-import engine from '../main/engine'
-import store from '../main/store'
+import engine from '../../main/engine'
+import store from '../../main/store'
+import { updateSave } from '../../actions/actions'
+import { isExistFile } from '../util'
 
 const AUTO_SAVE_FILE_NAME = 'autosave'
 
-export function save(name: string, screenshot) {
+/**
+ * ゲームのセーブデータを作成する
+ * 作成したセーブデータはファイル書き込みとStateへの反映が行われる
+ */
+export function save(name: string, screenshot: any): SaveData {
   const config = engine.getVar('config')
-  const now = new Date()
-  const context = {
+  const context: SaveData = {
     name,
-    date: now,
+    date: new Date(),
     state: getSaveState(),
     engine: engine.getContext(),
     thumbnail: screenshot ? screenshot.toDataURL() : null,
@@ -23,7 +29,7 @@ export function save(name: string, screenshot) {
     fs.mkdirSync(savePath)
   }
 
-  // 書き込み予定のセーブファイルがすでに合ったら削除
+  // 書き込み予定のセーブファイルがすでにあったら削除
   const saveFilePath = path.join(savePath, `${name}\.SAVE`)
   if (isExistFile(saveFilePath)) {
     fs.unlink(saveFilePath, err => {
@@ -40,19 +46,16 @@ export function save(name: string, screenshot) {
       console.log('done save')
     }
   })
+
+  store.dispatch(updateSave(context))
+
   return context
 }
 
-function isExistFile(filePath: string): boolean {
-  try {
-    fs.statSync(filePath)
-    return true
-  } catch (error) {
-    return false
-  }
-}
-
-function getSaveState(): State {
+/**
+ * セーブ用の State に書き換える(不要な情報を削除する)
+ */
+function getSaveState(): Object {
   const state = { ...store.getState() }
 
   // save は除外
@@ -81,6 +84,9 @@ function getSaveState(): State {
   return state
 }
 
+/**
+ * ループしない音声か判定
+ */
 function isOnceAudio(audioBus): boolean {
   for (let nodeKey in audioBus.nodes) {
     if (

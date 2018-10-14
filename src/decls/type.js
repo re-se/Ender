@@ -45,3 +45,18 @@ declare type Config = {
   basePath: ?string,
   auto: ?boolean,
 }
+
+declare type SaveData = {
+  name: string,
+  date: Date,
+  state: Object,
+  engine: EngineContext,
+  thumbnail: any,
+}
+
+declare type EngineContext = {
+  scriptPath: string,
+  pcStack: number[],
+  instsStack: Inst[][],
+  nameMapStack: { [string]: any }[],
+}

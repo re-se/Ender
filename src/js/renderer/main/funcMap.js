@@ -7,8 +7,6 @@ import {
   addComponents,
   addImage,
   addMovie,
-  updateSave,
-  deleteSave,
 } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import MovieAnimation from '../util/animation/MovieAnimation'
@@ -18,7 +16,7 @@ import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
 import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
-import { save } from '../util/save'
+import { save, deleteSave } from '../util/save'
 import { screenshot } from '../util/screenshot'
 
 /**
@@ -142,11 +140,7 @@ export const funcMap = {
    *  0: name
    */
   save: (args: string[]) => {
-    const saveData = save(
-      args[0],
-      engine.getVar('global.__system__.screenshot')
-    )
-    store.dispatch(updateSave(saveData))
+    save(args[0], engine.getVar('global.__system__.screenshot'))
   },
 
   /**
@@ -154,7 +148,7 @@ export const funcMap = {
    *  0: name
    */
   deleteSave: (args: string[]) => {
-    store.dispatch(deleteSave(args[0]))
+    deleteSave(args[0])
   },
 
   /**
@@ -165,7 +159,7 @@ export const funcMap = {
     engine.loadSaveData(get(store.getState(), `save.${args[0]}`))
   },
 
-  screenshot: function*() {
+  screenshot: function*(): GeneratorFunction {
     screenshot()
     yield
   },
