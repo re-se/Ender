@@ -49,7 +49,7 @@ export const isDevelop = () => {
 
 /**
  */
-function isExistFile(filePath: string): boolean {
+export function isExistFile(filePath: string): boolean {
   try {
     fs.statSync(filePath)
     return true

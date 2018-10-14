@@ -10,6 +10,7 @@ import { GeneratorFunction, isDevelop } from '../util/util'
 import { resetState, replaceState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
+import { storeAllSaveFiles } from '../util/save'
 
 class Ender {
   instsStack: Inst[][]
@@ -61,6 +62,7 @@ class Ender {
     this._loadInitialScript()
 
     init()
+    storeAllSaveFiles()
   }
 
   /**

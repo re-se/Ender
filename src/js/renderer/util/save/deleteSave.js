@@ -5,6 +5,7 @@ import engine from '../../main/engine'
 import store from '../../main/store'
 import { deleteSave as deleteSaveAction } from '../../actions/actions'
 import { isExistFile } from '../util'
+import { SAVE_EXT_NAME } from './config'
 
 export function deleteSave(name: string): void {
   const config = engine.getVar('config')
@@ -12,7 +13,7 @@ export function deleteSave(name: string): void {
   const saveFilePath = path.join(
     config.basePath || '',
     config.savePath || '',
-    `${name}\.SAVE`
+    name + SAVE_EXT_NAME
   )
 
   if (isExistFile(saveFilePath)) {

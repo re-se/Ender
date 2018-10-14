@@ -6,8 +6,7 @@ import engine from '../../main/engine'
 import store from '../../main/store'
 import { updateSave } from '../../actions/actions'
 import { isExistFile } from '../util'
-
-const AUTO_SAVE_FILE_NAME = 'autosave'
+import { AUTO_SAVE_FILE_NAME, SAVE_EXT_NAME } from './config'
 
 /**
  * ゲームのセーブデータを作成する
@@ -30,7 +29,7 @@ export function save(name: string, screenshot: any): SaveData {
   }
 
   // 書き込み予定のセーブファイルがすでにあったら削除
-  const saveFilePath = path.join(savePath, `${name}\.SAVE`)
+  const saveFilePath = path.join(savePath, name + SAVE_EXT_NAME)
   if (isExistFile(saveFilePath)) {
     fs.unlink(saveFilePath, err => {
       if (err) {
