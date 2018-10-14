@@ -1,7 +1,7 @@
 //@flow
 import path from 'path'
 import fs from 'fs'
-import { has } from 'lodash'
+import { get, has } from 'lodash'
 import engine from '../../main/engine'
 import store from '../../main/store'
 import { updateSave } from '../../actions/actions'
@@ -19,6 +19,7 @@ export function save(name: string, screenshot: any): SaveData {
     date: new Date(),
     state: getSaveState(),
     engine: engine.getContext(),
+    text: getLastMessage(),
     thumbnail: screenshot ? screenshot.toDataURL() : null,
   }
 
@@ -96,4 +97,16 @@ function isOnceAudio(audioBus): boolean {
     }
   }
   return false
+}
+
+/**
+ * 直前に表示されていたテキストを取得
+ */
+function getLastMessage(): string {
+  const lines = get(store.getState(), 'MessageBox.history', '').split('\n')
+  let lastMessage = ''
+  while (lastMessage.length === 0 && lines.length > 0) {
+    lastMessage = lines.pop()
+  }
+  return lastMessage
 }
