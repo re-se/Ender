@@ -156,10 +156,11 @@ class Ender {
    * @return {any}
    */
   getVar(varPath: string, defaultValue: any = null) {
-    const identifier = varPath.split(/ |\.|\[/)[0]
     let variable = get(
       this.nameMapStack[
-        findLastIndex(this.nameMapStack, nameMap => has(nameMap, identifier))
+        findLastIndex(this.nameMapStack, nameMap =>
+          has(nameMap, getReceiver(varPath))
+        )
       ],
       varPath
     )
@@ -178,9 +179,10 @@ class Ender {
    */
   setVar(varPath: string, value: any) {
     const v = this.eval(value)
-    const identifier = varPath.split(/ |\.|\[/)[0]
     const nameMap = this.nameMapStack[
-      findLastIndex(this.nameMapStack, nameMap => has(nameMap, identifier))
+      findLastIndex(this.nameMapStack, nameMap =>
+        has(nameMap, getReceiver(varPath))
+      )
     ]
 
     if (nameMap) {
@@ -252,3 +254,7 @@ class Ender {
 }
 
 export default new Ender()
+
+function getReceiver(varPath: string): string {
+  return varPath.split(/ |\.|\[/)[0]
+}
