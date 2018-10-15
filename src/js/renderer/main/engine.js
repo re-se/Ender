@@ -228,11 +228,21 @@ class Ender {
   }
 
   getContext(): EngineContext {
+    // nameMap から global.__system__ を除外
+    const globalNameMap = {
+      ...this.nameMapStack[0],
+      global: {
+        ...this.nameMapStack[0].global,
+        __system__: {},
+      },
+    }
+    const nameMapStack = [globalNameMap, ...this.nameMapStack.slice(1)]
+
     return {
       scriptPath: this.scriptPath,
       pcStack: [...this.pcStack],
       instsStack: [...this.instsStack],
-      nameMapStack: [...this.nameMapStack],
+      nameMapStack: nameMapStack,
     }
   }
 

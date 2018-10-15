@@ -16,8 +16,7 @@ import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
 import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
-import { save, deleteSave } from '../util/save'
-import { screenshot } from '../util/screenshot'
+import { save, deleteSave, snapshot } from '../util/save'
 
 /**
  * 関数命令の引数を取得する
@@ -140,7 +139,7 @@ export const funcMap = {
    *  0: name
    */
   save: (args: string[]) => {
-    save(args[0], engine.getVar('global.__system__.screenshot'))
+    save(args[0], engine.getVar('global.__system__.snapshot'))
   },
 
   /**
@@ -159,8 +158,8 @@ export const funcMap = {
     engine.loadSaveData(get(store.getState(), `save.${args[0]}`))
   },
 
-  screenshot: function*(): GeneratorFunction {
-    screenshot()
+  snapshot: function*(): GeneratorFunction {
+    snapshot()
     yield
   },
 
