@@ -48,7 +48,7 @@ class Ender {
    */
   init(config: Config) {
     let textPath = get(config, 'text.path', '')
-    this.scriptPath = path.join(config.basePath, textPath, config.main)
+    this.scriptPath = path.join(config.basePath || '', textPath, config.main)
 
     this.instsStack = [[]]
     this.pcStack = [0]
