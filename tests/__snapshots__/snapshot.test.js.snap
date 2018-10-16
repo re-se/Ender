@@ -1,5 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`components test image 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="imageuuid_mock_5"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
+    />
+    <img
+      className="ender-image image-right"
+      id="imageuuid_mock_7"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
+    />
+  </div>
+</div>
+`;
+
 exports[`components test import 1`] = `
 <div
   className="inner-view"
