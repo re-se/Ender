@@ -1,5 +1,3 @@
-import { isLambda } from './isLambda'
-import { execLambda } from './execLambda'
-import { generateArgDecl } from './generateArgDecl'
-
-export { isLambda, execLambda, generateArgDecl }
+export * from './isLambda'
+export * from './execLambda'
+export * from './generateArgDecl'
