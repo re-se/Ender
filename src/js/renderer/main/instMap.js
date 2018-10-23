@@ -47,6 +47,11 @@ export type LambdaInst = {
   body: any[],
 }
 
+export type VarInst = {
+  type: 'var',
+  name: string,
+}
+
 const instMap = {
   wait: function*(waitInst: WaitInst): GeneratorFunction {
     yield
