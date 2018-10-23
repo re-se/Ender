@@ -23,14 +23,9 @@ export default class Animejs implements AnimationLibrary {
 
   constructor(animation: ImageAnimation, setting: Setting) {
     this.selector = animation.selectorTree
-    this.style = setting.before || {}
     this.endStyle = setting.after || {}
     const style = setting.style
-    Object.keys(style).forEach(key => {
-      this.style[key] = style[key].hasOwnProperty('value')
-        ? style[key].value
-        : style[key]
-    })
+    this.style = { ...style, ...setting.before }
     let prop = {
       targets: this.style,
       ...setting,
@@ -58,14 +53,12 @@ export default class Animejs implements AnimationLibrary {
 
   finish() {
     this.animation.pause()
-    this.animation.update = () => {
-      store.dispatch(
-        updateComponentStyle(this.selector, {
-          ...this.style,
-          ...this.endStyle,
-        })
-      )
-    }
+    store.dispatch(
+      updateComponentStyle(this.selector, {
+        ...this.style,
+        ...this.endStyle,
+      })
+    )
   }
 
   pause() {
