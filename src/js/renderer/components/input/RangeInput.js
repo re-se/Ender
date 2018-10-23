@@ -4,6 +4,7 @@ import React from 'react'
 import type { LambdaInst, VarInst } from '../../main/instMap'
 import engine from '../../main/engine'
 import { execLambda } from '../../util/lambda'
+import { isVarInst } from '../../util/inst'
 
 type Props = {
   defaultValue: number | VarInst,
@@ -54,7 +55,7 @@ export default class RangeInput extends React.Component<Props, State> {
     const defaultValue = this.props.defaultValue
     const value = this.state.value
     // defaultValue が変数ならその変数に value を代入する
-    if (typeof defaultValue === 'object' && defaultValue.type === 'var') {
+    if (isVarInst(defaultValue)) {
       engine.setVar(defaultValue.name, value)
     }
 
