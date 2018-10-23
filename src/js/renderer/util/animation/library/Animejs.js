@@ -27,6 +27,7 @@ export default class Animejs implements AnimationLibrary {
     const style = setting.style
     this.style = { ...style, ...setting.before }
     let prop = {
+      autoplay: false,
       targets: this.style,
       ...setting,
       ...style,
