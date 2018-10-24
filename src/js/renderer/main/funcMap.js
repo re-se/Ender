@@ -106,8 +106,8 @@ export const funcMap = {
     )
   },
 
-  wait: function*(...args: any[]): Generator<any, void, void> {
-    yield args ? args[0] : undefined
+  wait: function*(value: ?any): Generator<any, void, void> {
+    yield value
   },
 }
 
