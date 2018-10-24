@@ -1,6 +1,5 @@
 //@flow
 import { getFuncArgs } from '../main/funcMap'
-import { isVarInst, isLambdaInst } from '../util/inst'
 import engine from '../main/engine'
 
 /** デフォルトの画像のクラス名 */
@@ -124,36 +123,13 @@ export default {
   RangeInput: {
     path: '../components/input/RangeInput',
     getProps: (args: any[]) => {
-      let argIndex = 0
-
-      let defaultValue = args[argIndex]
-      argIndex++
-
-      let min
-      if (!isLambdaInst(args[argIndex])) {
-        min = engine.eval(args[argIndex])
-        argIndex++
-      }
-
-      let max
-      if (!isLambdaInst(args[argIndex])) {
-        max = engine.eval(args[argIndex])
-        argIndex++
-      }
-
-      let step
-      if (!isLambdaInst(args[argIndex])) {
-        step = engine.eval(args[argIndex])
-        argIndex++
-      }
-
-      let onChange = args[argIndex]
-      argIndex++
-
-      let attributes = getFuncArgs(args, argIndex)
-      argIndex++
-
-      let classNames = [].concat(getFuncArgs(args, argIndex))
+      let defaultValue = args[0]
+      let min = getFuncArgs(args, 1)
+      let max = getFuncArgs(args, 2)
+      let step = getFuncArgs(args, 3)
+      let onChange = args[4]
+      let attributes = getFuncArgs(args, 5)
+      let classNames = [].concat(getFuncArgs(args, 6))
 
       return {
         defaultValue,

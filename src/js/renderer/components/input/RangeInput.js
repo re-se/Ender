@@ -1,16 +1,16 @@
 //@flow
 import React from 'react'
 
+import Input from './Input'
 import type { LambdaInst, VarInst } from '../../main/instMap'
 import engine from '../../main/engine'
 import { execLambda } from '../../util/lambda'
-import { isVarInst } from '../../util/inst'
 
 type Props = {
   defaultValue: number | VarInst,
-  min: ?number,
-  max: ?number,
-  step: ?number,
+  min: number,
+  max: number,
+  step: number,
   onChange: ?LambdaInst,
   attributes: ?Object,
   classNames: ?(string[]),
@@ -20,7 +20,7 @@ type State = {
   value: number,
 }
 
-export default class RangeInput extends React.Component<Props, State> {
+export default class RangeInput extends Input<Props, State> {
   getInitialState() {
     return {
       value:
@@ -49,18 +49,5 @@ export default class RangeInput extends React.Component<Props, State> {
         step={step}
       />
     )
-  }
-
-  onChange() {
-    const defaultValue = this.props.defaultValue
-    const value = this.state.value
-    // defaultValue が変数ならその変数に value を代入する
-    if (isVarInst(defaultValue)) {
-      engine.setVar(defaultValue.name, value)
-    }
-
-    if (this.props.onChange) {
-      execLambda(this.props.onChange, [value])
-    }
   }
 }

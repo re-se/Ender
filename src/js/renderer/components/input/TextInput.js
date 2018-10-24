@@ -1,10 +1,10 @@
 //@flow
 import React from 'react'
 
+import Input from './Input'
 import type { LambdaInst, VarInst } from '../../main/instMap'
 import engine from '../../main/engine'
 import { execLambda } from '../../util/lambda'
-import { isVarInst } from '../../util/inst'
 
 type Props = {
   defaultValue: string | VarInst,
@@ -17,7 +17,7 @@ type State = {
   value: string,
 }
 
-export default class TextInput extends React.Component<Props, State> {
+export default class TextInput extends Input<Props, State> {
   getInitialState() {
     return {
       value:
@@ -40,18 +40,5 @@ export default class TextInput extends React.Component<Props, State> {
         value={this.state.value}
       />
     )
-  }
-
-  onChange() {
-    const defaultValue = this.props.defaultValue
-    const value = this.state.value
-    // defaultValue が変数ならその変数に value を代入する
-    if (isVarInst(defaultValue)) {
-      engine.setVar(defaultValue.name, value)
-    }
-
-    if (this.props.onChange) {
-      execLambda(this.props.onChange, [value])
-    }
   }
 }
