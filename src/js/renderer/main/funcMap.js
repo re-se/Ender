@@ -34,7 +34,7 @@ export const funcMap = {
     classNames: string | string[],
     effect: string
   ): Generator<void, void, void> {
-    store.dispatch(addImage([src, classNames, effect]))
+    store.dispatch(addImage(src, classNames, effect))
     yield
   },
 
@@ -71,7 +71,7 @@ export const funcMap = {
       animation.finish()
     }
 
-    store.dispatch(addMovie([src, classNames, isLoop, id, onComplete]))
+    store.dispatch(addMovie(src, classNames, isLoop, id, onComplete))
 
     AnimationUtil.setAnimation(animation)
     animation.start()

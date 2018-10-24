@@ -80,14 +80,18 @@ export const finishAnimation = () => {
 }
 
 // Image
-export const addImage = image => {
-  image[3] = ComponentUtil.generateId('image')
+export const addImage = (
+  src: string,
+  classNames: string | string[],
+  effect: string
+) => {
+  const id = ComponentUtil.generateId('image')
   return addComponents(
     [
       {
         type: 'func',
         name: 'Image',
-        args: image,
+        args: [src, classNames, effect, id],
       },
     ],
     'image'
@@ -95,13 +99,19 @@ export const addImage = image => {
 }
 
 // Movie
-export const addMovie = movie => {
+export const addMovie = (
+  src: string,
+  classNames: string | string[],
+  isLoop: boolean,
+  id: string,
+  onComplete: () => void
+) => {
   return addComponents(
     [
       {
         type: 'func',
         name: 'Movie',
-        args: movie,
+        args: [src, classNames, isLoop, id, onComplete],
       },
     ],
     'movie'
