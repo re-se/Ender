@@ -1,4 +1,6 @@
 import ComponentUtil from '../util/ComponentUtil'
+import MovieAnimation from '../util/animation/MovieAnimation'
+import AnimationUtil from '../util/AnimationUtil'
 
 // root
 export const resetState = components => {
@@ -102,10 +104,17 @@ export const addImage = (
 export const addMovie = (
   src: string,
   classNames: string | string[],
-  isLoop: boolean,
-  id: string,
-  onComplete: () => void
+  isLoop: boolean
 ) => {
+  const id = ComponentUtil.generateId('movie')
+  const animation = new MovieAnimation(id, true)
+  const onComplete = () => {
+    animation.finish()
+  }
+
+  AnimationUtil.setAnimation(animation)
+  animation.start()
+
   return addComponents(
     [
       {

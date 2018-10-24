@@ -65,16 +65,7 @@ export const funcMap = {
     classNames: string | string[],
     isLoop: boolean
   ): Generator<void, void, void> {
-    const id = ComponentUtil.generateId('movie')
-    const animation = new MovieAnimation(id, true)
-    const onComplete = () => {
-      animation.finish()
-    }
-
-    store.dispatch(addMovie(src, classNames, isLoop, id, onComplete))
-
-    AnimationUtil.setAnimation(animation)
-    animation.start()
+    store.dispatch(addMovie(src, classNames, isLoop))
     yield
   },
 
