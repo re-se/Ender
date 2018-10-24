@@ -28,30 +28,24 @@ export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
 export const funcMap = {
   /**
    * 画像を描画する
-   * args [
-   *  1: src        画像のファイルパス
-   *  2: classNames クラス名
-   *  3: effect     描画時のエフェクト(FadeInなど)
-   * ]
-   * @param  {any[]} args
-   * @return {void}
    */
-  img: function*(args: string[]): GeneratorFunction {
-    store.dispatch(addImage(args))
+  img: function*(
+    src: string,
+    classNames: string[],
+    effect: string
+  ): Generator<void, void, void> {
+    store.dispatch(addImage([src, classNames, effect]))
     yield
   },
 
   /**
    * アニメーションする(同期)
-   * args [
-   *  1: selector
-   *  2: effectName
-   * ]
-   * @param  {[string[] | string, string]} args
-   * @return {void}
    */
-  animate: function*(args: [string[] | string, string]): GeneratorFunction {
-    let animation = new ImageAnimation(args[0], args[1], true)
+  animate: function*(
+    selector: string,
+    effectName: string
+  ): Generator<void, void, void> {
+    let animation = new ImageAnimation(selector, effectName, true)
     AnimationUtil.setAnimation(animation)
     animation.start()
     yield
@@ -59,52 +53,42 @@ export const funcMap = {
 
   /**
    * アニメーションする(非同期)
-   * args [
-   *  1: selector
-   *  2: effectName
-   * ]
-   * @param  {string[]} args
-   * @return {void}
    */
-  aanimate: (args: string[]) => {
-    let animation = new ImageAnimation(args[0], args[1])
+  aanimate: (selector: string, effectName: string) => {
+    let animation = new ImageAnimation(selector, effectName)
     AnimationUtil.setAnimation(animation)
     animation.start()
   },
 
-  /**
-   * args
-   *  0: src
-   *  1: classNames
-   *  2: isLoop
-   */
-  movie: function*(args: any[]): GeneratorFunction {
+  movie: function*(
+    src: string,
+    classNames: string[],
+    isLoop: boolean
+  ): Generator<void, void, void> {
     const id = ComponentUtil.generateId('movie')
     const animation = new MovieAnimation(id, true)
-
-    args[3] = id
-    args[4] = () => {
+    const onComplete = () => {
       animation.finish()
     }
 
-    store.dispatch(addMovie(args))
+    store.dispatch(addMovie([src, classNames, isLoop, id, onComplete]))
 
     AnimationUtil.setAnimation(animation)
     animation.start()
     yield
   },
 
-  layout: (args: FuncInst[]) => {
-    store.dispatch(addComponents(args))
+  layout: (...componentInsts: FuncInst[]) => {
+    store.dispatch(addComponents(componentInsts))
   },
 
-  set: (args: [string, any]) => {
-    return engine.setVar(args[0], args[1])
+  set: (path: string, value: any) => {
+    return engine.setVar(path, value)
   },
 
-  import: (args: string[]) => {
+  import: (filePath: string) => {
     const path = toAbsolutePath(
-      engine.eval(args[0]),
+      engine.eval(filePath),
       engine.getVar('config.basePath')
     )
     const css = require(path)
@@ -122,7 +106,7 @@ export const funcMap = {
     )
   },
 
-  wait: function*(args?: any[]): GeneratorFunction {
+  wait: function*(...args: any[]): Generator<any, void, void> {
     yield args ? args[0] : undefined
   },
 }
@@ -138,9 +122,9 @@ export function* generator(inst: FuncInst): Iterator<any> {
     return
   }
   if (funcMap[inst.name] instanceof GeneratorFunction) {
-    yield* funcMap[inst.name](inst.args)
+    yield* funcMap[inst.name](...inst.args)
   } else {
-    return funcMap[inst.name](inst.args)
+    return funcMap[inst.name](...inst.args)
   }
 }
 
@@ -149,5 +133,5 @@ export function exec(inst: FuncInst): any {
     console.warn(`undefined func ${inst.name}`)
     return
   }
-  return funcMap[inst.name](inst.args)
+  return funcMap[inst.name](...inst.args)
 }
