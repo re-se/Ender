@@ -1,6 +1,6 @@
 //@flow
 import engine from './engine.js'
-import { generator, exec } from './funcMap'
+import { generator } from './funcMap'
 import {
   addMessage,
   clearMessage,
