@@ -1,0 +1,13 @@
+\layout(\RangeInput(config.audio.bus[0].gain, 0, 1, 0.1))
+text = ''
+\layout(\TextInput('デフォルト', func (v){text = v})
+
+\layout(\NumberInput(config.audio.bus[1].gain))
+
+\layout(\CheckboxInput(config.auto))
+
+mode = "a"
+\layout(\RadioInput(mode, ["a", \Label("b"), \Label(\img("text.png"))]))
+
+mode2
+\layout(\SelectInput(mode2, ["a", \Label("b"), \Label(\img("text.png"))]))
