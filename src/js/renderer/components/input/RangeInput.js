@@ -47,6 +47,7 @@ export default class RangeInput extends Input<Props, State> {
         min={min}
         max={max}
         step={step}
+        id={this.context}
       />
     )
   }
