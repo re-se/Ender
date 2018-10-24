@@ -31,7 +31,7 @@ export const funcMap = {
    */
   img: function*(
     src: string,
-    classNames: string[],
+    classNames: string | string[],
     effect: string
   ): Generator<void, void, void> {
     store.dispatch(addImage([src, classNames, effect]))
@@ -62,7 +62,7 @@ export const funcMap = {
 
   movie: function*(
     src: string,
-    classNames: string[],
+    classNames: string | string[],
     isLoop: boolean
   ): Generator<void, void, void> {
     const id = ComponentUtil.generateId('movie')
