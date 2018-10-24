@@ -13,7 +13,7 @@ export default class ImageAnimation extends Animation {
   effectName: string
 
   /**
-   * エフェクト名に対応したアニメーションを生成する関数
+   * エフェクト名に対応したアニメーション
    */
   animation: AnimationLibrary
 
