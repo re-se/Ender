@@ -1,21 +1,8 @@
-//@flow
-import anime from 'animejs'
-import type { AnimationStyle } from '../ImageAnimation'
-
-export default (selector: string, onComplete: () => void): AnimationStyle => {
-  let animeController = anime({
-    targets: selector,
+export default {
+  easing: 'linear',
+  autoplay: true,
+  duration: 1000,
+  style: {
     opacity: [0, 1],
-    easing: 'linear',
-    duration: 2000,
-    autoplay: false,
-    complete: onComplete,
-  })
-
-  return {
-    endStyle: {
-      opacity: 1,
-    },
-    animeController,
-  }
+  },
 }
