@@ -7,7 +7,16 @@ text = ''
 \layout(\CheckboxInput(config.auto))
 
 mode = "a"
-\layout(\RadioInput(mode, ["a", \Label("b"), \Label(\img("text.png"))]))
+\layout(
+  \RadioInput(
+    mode,
+    [
+      "a",
+      {value: "b", label: \Label("b")},
+      {value: "c", label: \Label(\img("text.png"))},
+    ]
+  )
+)
 
 mode2
 \layout(\SelectInput(mode2, ["a", \Label("b"), \Label(\img("text.png"))]))
