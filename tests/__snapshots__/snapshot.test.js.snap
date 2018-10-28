@@ -13,14 +13,12 @@ exports[`components test image 1`] = `
       id="imageuuid_mock_13"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
-      style={undefined}
     />
     <img
       className="ender-image image-right"
       id="imageuuid_mock_15"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
-      style={undefined}
     />
   </div>
   <span>
@@ -46,6 +44,130 @@ exports[`components test import 1`] = `
   >
     <div
       className="ender-box test1"
+    />
+  </div>
+  <span>
+    AudioEngine mock
+  </span>
+</div>
+`;
+
+exports[`components test lambda 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <span>
+    AudioEngine mock
+  </span>
+</div>
+`;
+
+exports[`components test lambda 2`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            2
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+  <span>
+    AudioEngine mock
+  </span>
+</div>
+`;
+
+exports[`components test lambda 3`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
     />
   </div>
   <span>

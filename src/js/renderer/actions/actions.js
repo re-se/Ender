@@ -1,6 +1,8 @@
 import ComponentUtil from '../util/ComponentUtil'
 import AudioEffect from '../util/audio/AudioEffect'
 import store from '../main/store'
+import MovieAnimation from '../util/animation/MovieAnimation'
+import AnimationUtil from '../util/AnimationUtil'
 
 // root
 export const resetState = components => {
@@ -82,14 +84,18 @@ export const finishAnimation = () => {
 }
 
 // Image
-export const addImage = image => {
-  image[3] = ComponentUtil.generateId('image')
+export const addImage = (
+  src: string,
+  classNames: string | string[],
+  effect: string
+) => {
+  const id = ComponentUtil.generateId('image')
   return addComponents(
     [
       {
         type: 'func',
         name: 'Image',
-        args: image,
+        args: [src, classNames, effect, id],
       },
     ],
     'image'
@@ -168,13 +174,26 @@ export const clearAudioEvent = audio => {
 }
 
 // Movie
-export const addMovie = movie => {
+export const addMovie = (
+  src: string,
+  classNames: string | string[],
+  isLoop: boolean
+) => {
+  const id = ComponentUtil.generateId('movie')
+  const animation = new MovieAnimation(id, true)
+  const onComplete = () => {
+    animation.finish()
+  }
+
+  AnimationUtil.setAnimation(animation)
+  animation.start()
+
   return addComponents(
     [
       {
         type: 'func',
         name: 'Movie',
-        args: movie,
+        args: [src, classNames, isLoop, id, onComplete],
       },
     ],
     'movie'

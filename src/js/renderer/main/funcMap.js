@@ -16,6 +16,7 @@ import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
+import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
 
 /**
@@ -36,34 +37,24 @@ export const getFuncArgs = (args: any[], index: number, defaultValue: any) => {
 export const funcMap = {
   /**
    * 画像を描画する
-   * args [
-   *  1: src        画像のファイルパス
-   *  2: classNames クラス名
-   *  3: effect     描画時のエフェクト(FadeInなど)
-   * ]
-   * @param  {any[]} args
-   * @return {void}
    */
-  img: function*(args: string[]): GeneratorFunction {
-    store.dispatch(addImage(args))
+  img: function*(
+    src: string,
+    classNames: string | string[],
+    effect: string
+  ): Generator<void, void, void> {
+    store.dispatch(addImage(src, classNames, effect))
     yield
   },
 
   /**
    * アニメーションする(同期)
-   * args [
-   *  1: selector
-   *  2: effectName
-   * ]
-   * @param  {[string[] | string, string]} args
-   * @return {void}
    */
-  animate: function*(args: [string[] | string, string]): GeneratorFunction {
-    let animation = new ImageAnimation(
-      engine.eval(args[0]),
-      engine.eval(args[1]),
-      true
-    )
+  animate: function*(
+    selector: string,
+    effectName: string
+  ): Generator<void, void, void> {
+    let animation = new ImageAnimation(selector, effectName, true)
     AnimationUtil.setAnimation(animation)
     animation.start()
     yield
@@ -71,51 +62,39 @@ export const funcMap = {
 
   /**
    * アニメーションする(非同期)
-   * args [
-   *  1: selector
-   *  2: effectName
-   * ]
-   * @param  {string[]} args
-   * @return {void}
    */
-  aanimate: (args: string[]) => {
-    let animation = new ImageAnimation(
-      engine.eval(args[0]),
-      engine.eval(args[1])
-    )
+  aanimate: (selector: string, effectName: string) => {
+    let animation = new ImageAnimation(selector, effectName)
     AnimationUtil.setAnimation(animation)
     animation.start()
   },
 
-  /**
-   * args [
-   *  0: out
-   *  1: src
-   *  2: isLoop
-   *  3: loopOffsetTime
-   *  4: effect
-   * ]
-   */
-  playAudio: (args: string[]) => {
-    const src = engine.eval(args[1])
+  playAudio: (
+    out: string,
+    src: string,
+    isLoop: boolean,
+    loopOffsetTime: number,
+    effect: string
+  ) => {
+    const srcStr = engine.eval(src)
     store.dispatch(
       playAudioAction(
-        src,
-        engine.eval(args[0]),
-        engine.eval(args[2]),
-        engine.eval(args[3])
+        srcStr,
+        engine.eval(out),
+        engine.eval(isLoop),
+        engine.eval(loopOffsetTime)
       )
     )
-    if (args[4]) {
-      store.dispatch(loadAudioEffectAction(src, engine.eval(args[4])))
+    if (effect) {
+      store.dispatch(loadAudioEffectAction(src, engine.eval(effect)))
     }
   },
 
-  stopAudio: (args: [string, string]) => {
-    const bus = engine.eval(args[0])
-    if (args[1]) {
+  stopAudio: (targetBus: string, effect: string) => {
+    const bus = engine.eval(targetBus)
+    if (effect) {
       store.dispatch(
-        loadAudioEffectAction(bus, engine.eval(args[1]), false, () => {
+        loadAudioEffectAction(bus, engine.eval(effect), false, () => {
           store.dispatch(stopAudioAction(bus))
         })
       )
@@ -124,80 +103,46 @@ export const funcMap = {
     }
   },
 
-  pauseAudio: (args: [string, string]) => {
-    store.dispatch(pauseAudioAction(engine.eval(args[0]), engine.eval(args[1])))
-  },
-
-  /**
-   * args [
-   *  0: name
-   *  1: out
-   *  2: gain
-   * ]
-   */
-  loadAudioBus: (args: [string, string, string]) => {
+  pauseAudio: (targetBus: string, effect: string) => {
     store.dispatch(
-      loadAudioBusAction(
-        engine.eval(args[0]),
-        engine.eval(args[1]),
-        engine.eval(args[2])
-      )
+      pauseAudioAction(engine.eval(targetBus), engine.eval(effect))
     )
   },
 
-  /**
-   * args [
-   *  0: targetBus
-   *  1: effect
-   * ]
-   */
-  effectAudio: (args: string[]) => {
-    store.dispatch(loadAudioEffectAction(args[0], args[1], true))
+  loadAudioBus: (name: string, out: string, gain: number) => {
+    store.dispatch(
+      loadAudioBusAction(engine.eval(name), engine.eval(out), engine.eval(gain))
+    )
   },
 
-  /**
-   * args [
-   *  0: targetBus
-   *  1: effect
-   * ]
-   */
-  aeffectAudio: (args: string[]) => {
-    store.dispatch(loadAudioEffectAction(args[0], args[1], false))
+  effectAudio: (targetBus: string, effect: string) => {
+    store.dispatch(loadAudioEffectAction(targetBus, effect, true))
   },
 
-  /**
-   * args
-   *  0: src
-   *  1: classNames
-   *  2: isLoop
-   */
-  movie: function*(args: any[]): GeneratorFunction {
-    const id = ComponentUtil.generateId('movie')
-    const animation = new MovieAnimation(id, true)
+  aeffectAudio: (targetBus: string, effect: string) => {
+    store.dispatch(loadAudioEffectAction(targetBus, effect, false))
+  },
 
-    args[3] = id
-    args[4] = () => {
-      animation.finish()
-    }
-
-    store.dispatch(addMovie(args))
-
-    AnimationUtil.setAnimation(animation)
-    animation.start()
+  movie: function*(
+    src: string,
+    classNames: string | string[],
+    isLoop: boolean
+  ): Generator<void, void, void> {
+    store.dispatch(addMovie(src, classNames, isLoop))
     yield
   },
 
-  layout: (args: FuncInst[]) => {
-    store.dispatch(addComponents(args))
+  layout: (...componentInsts: FuncInst[]) => {
+    store.dispatch(addComponents(componentInsts))
   },
 
-  set: (args: [string, any]) => {
-    return engine.setVar(args[0], args[1])
+  set: (path: string, value: any) => {
+    return engine.setVar(path, value)
   },
 
-  import: (args: string[]) => {
+  import: (filePath: string) => {
     const path = toAbsolutePath(
-      engine.eval(args[0]),
+      engine.eval(filePath),
       engine.getVar('config.basePath')
     )
     const css = require(path)
@@ -215,20 +160,25 @@ export const funcMap = {
     )
   },
 
-  wait: function*(args?: any[]): GeneratorFunction {
-    yield args ? args[0] : undefined
+  wait: function*(value: ?any): Generator<any, void, void> {
+    yield value
   },
 }
 
 export function* generator(inst: FuncInst): Iterator<any> {
+  const lambda = engine.getVar(inst.name, {})
+  if (isLambda(lambda)) {
+    return execLambda(lambda, inst.args)
+  }
+
   if (!funcMap[inst.name]) {
     console.warn(`undefined func ${inst.name}`)
     return
   }
   if (funcMap[inst.name] instanceof GeneratorFunction) {
-    yield* funcMap[inst.name](inst.args)
+    yield* funcMap[inst.name](...inst.args)
   } else {
-    return funcMap[inst.name](inst.args)
+    return funcMap[inst.name](...inst.args)
   }
 }
 
@@ -237,5 +187,5 @@ export function exec(inst: FuncInst): any {
     console.warn(`undefined func ${inst.name}`)
     return
   }
-  return funcMap[inst.name](inst.args)
+  return funcMap[inst.name](...inst.args)
 }

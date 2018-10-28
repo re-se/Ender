@@ -1,0 +1,21 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+c = 1
+
+${c}
+\wait('snapshot')
+
+func a(b) {
+  c = b
+}
+
+\a(2)
+
+${c}
+\wait('snapshot')
+
+d = func () {}
+
+\d()
+\wait('snapshot')
