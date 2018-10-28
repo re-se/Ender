@@ -1,7 +1,7 @@
 //@flow
 import type { FuncInst } from '../main/instMap'
 import componentList from '../config/componentList'
-import { generateUniqueString } from './util'
+import { v1 as uuid } from 'uuid'
 
 export default class ComponentUtil {
   /**
@@ -40,7 +40,7 @@ export default class ComponentUtil {
    * @return {string}
    */
   static generateId(prefix: string = 'default'): string {
-    return prefix + generateUniqueString()
+    return prefix + uuid()
   }
 
   /**

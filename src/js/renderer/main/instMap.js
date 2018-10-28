@@ -1,6 +1,6 @@
 //@flow
 import engine from './engine.js'
-import { generator, exec } from './funcMap'
+import { generator } from './funcMap'
 import {
   addMessage,
   clearMessage,
@@ -42,6 +42,12 @@ export type ClearInst = {
   message?: boolean,
 }
 
+export type LambdaInst = {
+  type: 'lambda',
+  args: any[],
+  body: any[],
+}
+
 const instMap = {
   wait: function*(waitInst: WaitInst): GeneratorFunction {
     if (isAutoPlay()) {
@@ -80,8 +86,6 @@ const instMap = {
   func: function*(funcInst: FuncInst): GeneratorFunction {
     yield* generator(funcInst)
   },
-
-  funcdecl: () => {},
 
   comment: () => {},
 }

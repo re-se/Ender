@@ -237,12 +237,13 @@ exports[`components test auto_play 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1665eab92b21a0"
+      id="imageuuid_mock_8"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/auto_play/test.png"
       style={
         Object {
-          "opacity": 1,
+          "delay": 0,
+          "opacity": 0,
         }
       }
     />
@@ -321,14 +322,39 @@ exports[`components test auto_play 2`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1665eab92b21a0"
+      id="imageuuid_mock_8"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/auto_play/test.png"
       style={
         Object {
-          "opacity": 1,
+          "delay": 0,
+          "opacity": 0,
         }
       }
+    />
+  </div>
+</div>
+`;
+
+exports[`components test image 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <img
+      className="ender-image image-center"
+      id="imageuuid_mock_10"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
+    />
+    <img
+      className="ender-image image-right"
+      id="imageuuid_mock_12"
+      onLoad={[Function]}
+      src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
     />
   </div>
 </div>
@@ -351,6 +377,121 @@ exports[`components test import 1`] = `
   >
     <div
       className="ender-box test1"
+    />
+  </div>
+</div>
+`;
+
+exports[`components test lambda 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            1
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test lambda 2`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            style={Object {}}
+          >
+            2
+          </span>
+          <br
+            style={Object {}}
+          />
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
+    />
+  </div>
+</div>
+`;
+
+exports[`components test lambda 3`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <div
+      className="ender-box "
+    >
+      <div
+        className="ender-messageBox "
+      >
+        <div
+          className="ender-messageBox-inner"
+        >
+          <span
+            className="marker"
+          >
+            ▼
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      className="full"
+      onClick={[Function]}
     />
   </div>
 </div>
