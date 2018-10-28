@@ -21,3 +21,5 @@ mode2 = "a"
 \layout(
   \SelectInput(mode2, ["a","b"])
 )
+
+\wait('snapshot')

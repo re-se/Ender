@@ -27,7 +27,6 @@ export default class CheckboxInput extends Input<Props, State> {
   render() {
     const attributes = this.props.attributes || {}
     const classNames = this.props.classNames || []
-    console.log(this.state.value)
 
     return (
       <LabelContext.Consumer>

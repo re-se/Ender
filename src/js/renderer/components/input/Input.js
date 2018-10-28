@@ -15,7 +15,6 @@ export default class Input<Props, State> extends React.Component<Props, State> {
     const target = event.target
     const defaultValue = this.props.defaultValue
     const value = target.type === 'checkbox' ? target.checked : target.value
-    console.log(value)
     // defaultValue が変数ならその変数に value を代入する
     if (typeof defaultValue === 'object' && defaultValue.type === 'var') {
       engine.setVar(defaultValue.name, value)
