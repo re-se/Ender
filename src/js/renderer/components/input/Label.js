@@ -3,11 +3,12 @@ import React from 'react'
 import type { FuncInst } from '../../main/instMap'
 import ComponentUtil from '../../util/ComponentUtil'
 import generateComponent from '../../util/generateComponent'
-
-const LabelContext = React.createContext('')
+import LabelContext, { EMPTY_LABEL_CONTEXT } from '../../contexts/LabelContext'
+import engine from '../../main/engine'
 
 type Props = {
-  children: Object[],
+  text: string,
+  children: ComponentState[],
   classNames: string[],
 }
 
@@ -15,16 +16,26 @@ type State = {}
 
 export default class Label extends React.Component<Props, State> {
   render() {
-    const childComponents = this.props.children.map(child =>
-      generateComponent(child)
-    )
-    const id = ComponentUtil.generateId('input')
+    const childComponents = this.props.children.map(child => {
+      return generateComponent(child)
+    })
     return (
-      <LabelContext.Provider value={id}>
-        <label classNames={this.props.classNames.join(' ')} for={id}>
-          {childComponents}
-        </label>
-      </LabelContext.Provider>
+      <LabelContext.Consumer>
+        {contextId => {
+          const id =
+            contextId !== EMPTY_LABEL_CONTEXT
+              ? contextId
+              : ComponentUtil.generateId('input')
+          return (
+            <LabelContext.Provider value={id}>
+              <label className={this.props.classNames.join(' ')} htmlFor={id}>
+                {this.props.text}
+                {childComponents}
+              </label>
+            </LabelContext.Provider>
+          )
+        }}
+      </LabelContext.Consumer>
     )
   }
 }

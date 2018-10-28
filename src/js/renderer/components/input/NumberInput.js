@@ -3,8 +3,8 @@ import React from 'react'
 
 import Input from './Input'
 import type { LambdaInst, VarInst } from '../../main/instMap'
-import engine from '../../main/engine'
-import { execLambda } from '../../util/lambda'
+import LabelContext from '../../contexts/LabelContext'
+import ComponentUtil from '../../util/ComponentUtil'
 
 type Props = {
   defaultValue: number | VarInst,
@@ -18,13 +18,10 @@ type State = {
 }
 
 export default class NumberInput extends Input<Props, State> {
-  getInitialState() {
-    return {
-      value:
-        typeof this.props.defaultValue === 'number'
-          ? this.props.defaultValue
-          : 0,
-    }
+  id: string
+  constructor(props: Props) {
+    super(props)
+    this.id = ComponentUtil.generateId('input-number')
   }
 
   render() {
@@ -32,13 +29,21 @@ export default class NumberInput extends Input<Props, State> {
     const classNames = this.props.classNames || []
 
     return (
-      <input
-        type="number"
-        {...attributes}
-        className={`ender-input-number ${classNames.join(' ')}`}
-        onChange={this.onChange.bind(this)}
-        value={this.state.value}
-      />
+      <LabelContext.Consumer>
+        {id => {
+          this.id = id || this.id
+          return (
+            <input
+              type="number"
+              {...attributes}
+              className={`ender-input-number ${classNames.join(' ')}`}
+              onChange={this.onChange.bind(this)}
+              value={this.state.value}
+              id={this.id}
+            />
+          )
+        }}
+      </LabelContext.Consumer>
     )
   }
 }

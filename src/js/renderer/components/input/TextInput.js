@@ -3,8 +3,8 @@ import React from 'react'
 
 import Input from './Input'
 import type { LambdaInst, VarInst } from '../../main/instMap'
-import engine from '../../main/engine'
-import { execLambda } from '../../util/lambda'
+import LabelContext from '../../contexts/LabelContext'
+import ComponentUtil from '../../util/ComponentUtil'
 
 type Props = {
   defaultValue: string | VarInst,
@@ -18,13 +18,10 @@ type State = {
 }
 
 export default class TextInput extends Input<Props, State> {
-  getInitialState() {
-    return {
-      value:
-        typeof this.props.defaultValue === 'string'
-          ? this.props.defaultValue
-          : '',
-    }
+  id: string
+  constructor(props: Props) {
+    super(props)
+    this.id = ComponentUtil.generateId('input-text')
   }
 
   render() {
@@ -32,13 +29,21 @@ export default class TextInput extends Input<Props, State> {
     const classNames = this.props.classNames || []
 
     return (
-      <input
-        type="text"
-        {...attributes}
-        className={`ender-input-text ${classNames.join(' ')}`}
-        onChange={this.onChange.bind(this)}
-        value={this.state.value}
-      />
+      <LabelContext.Consumer>
+        {id => {
+          this.id = id || this.id
+          return (
+            <input
+              type="text"
+              {...attributes}
+              className={`ender-input-text ${classNames.join(' ')}`}
+              onChange={this.onChange.bind(this)}
+              value={this.state.value}
+              id={this.id}
+            />
+          )
+        }}
+      </LabelContext.Consumer>
     )
   }
 }

@@ -3,8 +3,8 @@ import React from 'react'
 
 import Input from './Input'
 import type { LambdaInst, VarInst } from '../../main/instMap'
-import engine from '../../main/engine'
-import { execLambda } from '../../util/lambda'
+import LabelContext from '../../contexts/LabelContext'
+import ComponentUtil from '../../util/ComponentUtil'
 
 type Props = {
   defaultValue: boolean | VarInst,
@@ -18,27 +18,33 @@ type State = {
 }
 
 export default class CheckboxInput extends Input<Props, State> {
-  getInitialState() {
-    return {
-      value:
-        typeof this.props.defaultValue === 'boolean'
-          ? this.props.defaultValue
-          : false,
-    }
+  id: string
+  constructor(props: Props) {
+    super(props)
+    this.id = ComponentUtil.generateId('input-checkbox')
   }
 
   render() {
     const attributes = this.props.attributes || {}
     const classNames = this.props.classNames || []
+    console.log(this.state.value)
 
     return (
-      <input
-        type="checkbox"
-        {...attributes}
-        className={`ender-input-checkbox ${classNames.join(' ')}`}
-        onChange={this.onChange.bind(this)}
-        checked={this.state.value}
-      />
+      <LabelContext.Consumer>
+        {id => {
+          this.id = id || this.id
+          return (
+            <input
+              type="checkbox"
+              {...attributes}
+              className={`ender-input-checkbox ${classNames.join(' ')}`}
+              onChange={this.onChange.bind(this)}
+              checked={this.state.value}
+              id={this.id}
+            />
+          )
+        }}
+      </LabelContext.Consumer>
     )
   }
 }

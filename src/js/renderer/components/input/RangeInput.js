@@ -3,8 +3,8 @@ import React from 'react'
 
 import Input from './Input'
 import type { LambdaInst, VarInst } from '../../main/instMap'
-import engine from '../../main/engine'
-import { execLambda } from '../../util/lambda'
+import LabelContext from '../../contexts/LabelContext'
+import ComponentUtil from '../../util/ComponentUtil'
 
 type Props = {
   defaultValue: number | VarInst,
@@ -21,13 +21,10 @@ type State = {
 }
 
 export default class RangeInput extends Input<Props, State> {
-  getInitialState() {
-    return {
-      value:
-        typeof this.props.defaultValue === 'number'
-          ? this.props.defaultValue
-          : false,
-    }
+  id: string
+  constructor(props: Props) {
+    super(props)
+    this.id = ComponentUtil.generateId('input-range')
   }
 
   render() {
@@ -38,17 +35,24 @@ export default class RangeInput extends Input<Props, State> {
     const step = this.props.step || attributes.step || 0.1
 
     return (
-      <input
-        type="range"
-        {...attributes}
-        className={`ender-input-range ${classNames.join(' ')}`}
-        onChange={this.onChange.bind(this)}
-        value={this.state.value}
-        min={min}
-        max={max}
-        step={step}
-        id={this.context}
-      />
+      <LabelContext.Consumer>
+        {id => {
+          this.id = id || this.id
+          return (
+            <input
+              type="range"
+              {...attributes}
+              className={`ender-input-range ${classNames.join(' ')}`}
+              onChange={this.onChange.bind(this)}
+              value={this.state.value}
+              min={min}
+              max={max}
+              step={step}
+              id={this.id}
+            />
+          )
+        }}
+      </LabelContext.Consumer>
     )
   }
 }

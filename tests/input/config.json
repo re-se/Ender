@@ -1,6 +1,7 @@
 {
   "main": "01.end",
   "auto": false,
+  "autoSpeed": 100,
   "audio": {
     "path": "",
     "bus": [
