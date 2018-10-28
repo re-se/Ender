@@ -11,7 +11,7 @@ import {
 import store from './store'
 import TextAnimation from '../util/animation/TextAnimation'
 import { GeneratorFunction } from '../util/util'
-import { isAutoPlay, autoPlay } from '../util/autoPlay'
+import { autoPlay } from '../util/autoPlay'
 
 export type WaitInst = {
   type: string,
@@ -50,9 +50,7 @@ export type LambdaInst = {
 
 const instMap = {
   wait: function*(waitInst: WaitInst): GeneratorFunction {
-    if (isAutoPlay()) {
-      autoPlay()
-    }
+    autoPlay()
     yield
   },
 
@@ -64,8 +62,8 @@ const instMap = {
       beforeMessageLength
     )
     store.dispatch(setMessagePosition(animation.getInitialState()))
-    store.dispatch(startAnimation(animation))
     animation.start()
+    store.dispatch(startAnimation(animation))
     yield
   },
 

@@ -4,7 +4,7 @@ import { setMessagePosition } from '../../actions/actions'
 import { get } from 'lodash'
 import store from '../../main/store'
 import engine from '../../main/engine'
-import { isAutoPlay, autoPlay } from '../autoPlay'
+import { autoPlay } from '../autoPlay'
 
 type TextAnimationState = {
   index: ?number,
@@ -41,9 +41,7 @@ export default class TextAnimation extends Animation {
         currentMessage.type === 'period'
       ) {
         this.stop()
-        if (isAutoPlay()) {
-          autoPlay()
-        }
+        autoPlay()
         yield { index: index + 1, position }
       }
 

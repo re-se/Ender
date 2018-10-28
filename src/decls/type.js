@@ -16,7 +16,6 @@ declare type ImageState = {
 declare type Message = {
   type: string,
   body: ?string,
-  expr: ?Object,
 }
 
 declare module './ender.js' {

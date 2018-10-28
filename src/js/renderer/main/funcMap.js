@@ -7,7 +7,7 @@ import AnimationUtil from '../util/AnimationUtil'
 import store from './store'
 import engine from './engine'
 import { toAbsolutePath, GeneratorFunction } from '../util/util'
-import { isAutoPlay, autoPlay } from '../util/autoPlay'
+import { autoPlay } from '../util/autoPlay'
 import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
 
@@ -47,8 +47,8 @@ export const funcMap = {
     effectName: string
   ): Generator<void, void, void> {
     let animation = new ImageAnimation(selector, effectName, true)
-    AnimationUtil.setAnimation(animation)
     animation.start()
+    AnimationUtil.setAnimation(animation)
     yield
   },
 
@@ -57,8 +57,8 @@ export const funcMap = {
    */
   aanimate: (selector: string, effectName: string) => {
     let animation = new ImageAnimation(selector, effectName)
-    AnimationUtil.setAnimation(animation)
     animation.start()
+    AnimationUtil.setAnimation(animation)
   },
 
   movie: function*(
@@ -99,6 +99,7 @@ export const funcMap = {
   },
 
   wait: function*(value: ?any): Generator<any, void, void> {
+    autoPlay()
     yield value
   },
 }

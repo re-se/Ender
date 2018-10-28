@@ -47,8 +47,6 @@ class Ender {
    * @return {void}
    */
   init(config: Config) {
-    config.auto = false
-
     let textPath = get(config, 'text.path', '')
     this.scriptPath = path.join(config.basePath, textPath, config.main)
 

@@ -1,8 +1,6 @@
 \layout(\Box(\MessageBox()))
 \layout(\ExecButton("full"))
 
-config.text.periodWait = true
-config.text.speed = 100
 config.auto = true
 config.autoSpeed = 1000
 
