@@ -7,6 +7,8 @@
     "speed": 1000,
     "waitPeriod": false
   }
+  "auto": true,
+  "autoSpeed": 1000,
 }
 ```
 
@@ -32,3 +34,11 @@ config.text.waitPeriod = true
 あいう。えおか # 「う。」で停止
 あいう。\えおか # 「か」まで自動で進む
 ```
+
+## auto: bool
+
+自動再生設定。true で自動再生される。
+
+## autoSpeed: number
+
+自動再生時の wait で止まる ms 数。

@@ -112,8 +112,8 @@ export const addMovie = (
     animation.finish()
   }
 
-  AnimationUtil.setAnimation(animation)
   animation.start()
+  AnimationUtil.setAnimation(animation)
 
   return addComponents(
     [

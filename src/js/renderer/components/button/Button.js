@@ -10,12 +10,21 @@ class Button extends React.Component {
   }
 }
 
-import store from '../../main/store'
 export class ExecButton extends Button {
   constructor(props) {
     super(props)
     this.onClick = () => {
+      engine.setVar('config.auto', false)
       engine.exec()
+    }
+  }
+}
+
+export class StopAutoButton extends Button {
+  constructor(props) {
+    super(props)
+    this.onClick = () => {
+      engine.setVar('config.auto', false)
     }
   }
 }

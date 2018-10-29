@@ -83,7 +83,7 @@ const _evalMessage = messageObject => {
     let value = message[key]
     if (value.type === 'interpolation') {
       value.type = 'text'
-      value.body = engine.eval(value.expr)
+      value.body = engine.eval(value.expr).toString()
     } else if (value.type === 'br') {
       value.body = LF
     }

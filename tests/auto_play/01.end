@@ -1,0 +1,22 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+config.auto = true
+config.autoSpeed = 1000
+
+\img("test.png", "image-center")
+\animate(".image-center", "fadeIn")
+
+aaa。uuu
+bbb
+*ccc*
+{ddd|eee}
+ffffffffffffffffffffffffff@ggg
+hhh\
+iii
+\wait('snapshot')
+
+
+あああ。いいい@ううう
+えええ。\おおお
+\wait('snapshot')
