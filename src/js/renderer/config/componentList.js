@@ -61,6 +61,15 @@ export default {
       }
     },
   },
+  Button: {
+    path: '../components/button/Button',
+    getProps: args => {
+      let onClick = args[0]
+      let content = args[1]
+      let classNames = [].concat(args[2])
+      return { onClick, content, classNames }
+    },
+  },
   ExecButton: {
     path: '../components/button/Button',
     getProps: args => {
@@ -73,6 +82,14 @@ export default {
     getProps: args => {
       let classNames = [].concat(args[0])
       return { classNames }
+    },
+  },
+  Text: {
+    path: '../components/Text',
+    getProps: args => {
+      let text = args[0]
+      let classNames = [].concat(args[1])
+      return { text, classNames }
     },
   },
   Style: {
