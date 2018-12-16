@@ -15,7 +15,6 @@ import type { FuncInst } from '../main/instMap'
 const generateComponent = (component: ComponentState) => {
   const Module = require(componentList[component.name].path)
   const Component = Module[component.name] || Module.default
-
   return <Component {...component.props} key={component.key} />
 }
 

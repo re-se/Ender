@@ -256,7 +256,7 @@ Property = k:(Name / String / Number) _ ":" _ v:Expr {
   return [k, v]
 }
 
-Array = "[" e1:(_ Expr _ ",")* e2:(_ Expr)? _ "]" {
+Array = "[" e1:(__ Expr __ ",")* e2:(__ Expr)? __ "]" {
   return [].concat(e1.map((e) => {
     return e[1]
   })).concat(e2[1] || [])

@@ -1,0 +1,24 @@
+{
+  "main": "01.end",
+  "auto": false,
+  "autoSpeed": 100,
+  "audio": {
+    "path": "",
+    "bus": [
+      {
+        "name": "master",
+        "gain": 1
+      },
+      {
+        "name": "bgm",
+        "gain": 1,
+        "out": "master"
+      },
+      {
+        "name": "se",
+        "gain": 1,
+        "out": "master"
+      }
+    ]
+  }
+}
