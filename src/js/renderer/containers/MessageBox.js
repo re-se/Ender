@@ -139,7 +139,6 @@ const mapStateToProps = state => {
     message: state.MessageBox.message,
     name: state.MessageBox.name,
     next: state.MessageBox.next,
-    classNames: state.MessageBox.classNames,
     index: state.MessageBox.index,
     position: state.MessageBox.position,
   }
