@@ -5,7 +5,7 @@ import less from 'less'
 
 export default function() {
   hook({
-    extensions: ['.less'],
+    extensions: ['.less', '.css'],
     rootDir: engine.getVar('config.basePath'),
     generateScopedName: '[local]',
     append: [
