@@ -48,24 +48,28 @@ class Ender {
    */
   init(config: Config) {
     let textPath = get(config, 'text.path', '')
-    this.scriptPath = path.join(config.basePath, textPath, config.main)
+    this.scriptPath = path.join(config.basePath || '', textPath, config.main)
 
     this.instsStack = [[]]
-    this._loadScript()
     this.pcStack = [0]
     this.mainLoop = this._mainLoop()
     this.nameMapStack = [{}]
     this.isFinished = false
     this.setVar('config', config)
+    this.setVar('global', {})
+
+    this._loadInitialScript()
+
     init()
   }
 
   /**
    * スクリプトファイルを読み込む
    */
-  _loadScript() {
+  _loadInitialScript() {
     const script = fs.readFileSync(this.scriptPath).toString()
     this.insts = (parser.parse(script): Inst[])
+    this.nestScope()
   }
 
   /**
@@ -192,8 +196,8 @@ class Ender {
     return v
   }
 
-  declVar(path: string, value: any) {
-    set(this.nameMap, path, this.eval(value))
+  declVar(varPath: string, value: any) {
+    set(this.nameMap, varPath, this.eval(value))
   }
 
   nestScope() {
@@ -208,13 +212,42 @@ class Ender {
     // mainloop の pc++ 前に呼ばれるため、0 - 1 の -1 としている
     this.pcStack.push(-1)
     this.instsStack.push(insts)
-    this.nestScope()
   }
 
   backInsts() {
     this.pcStack.pop()
     this.instsStack.pop()
-    this.unnestScope()
+    while (this.nameMapStack.length > this.pcStack.length + 1) {
+      this.unnestScope()
+    }
+  }
+
+  loadScript(scriptName: string): void {
+    const config = this.getVar('config')
+
+    this.instsStack = []
+    this.nameMapStack = [this.nameMapStack[0]]
+    this.scriptPath = path.join(
+      config.basePath || '',
+      get(config, 'text.path', ''),
+      scriptName
+    )
+
+    const insts = parser.parse(fs.readFileSync(this.scriptPath).toString())
+    this.callInsts(insts)
+    this.nestScope()
+  }
+
+  includeScript(scriptName: string): void {
+    const config = this.getVar('config')
+
+    const scriptPath = path.join(
+      config.basePath || '',
+      get(config, 'text.path', ''),
+      scriptName
+    )
+    const insts = parser.parse(fs.readFileSync(scriptPath).toString())
+    this.callInsts(insts)
   }
 }
 

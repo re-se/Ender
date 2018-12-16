@@ -1,0 +1,5 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+${global.a}
+\wait('snapshot')
