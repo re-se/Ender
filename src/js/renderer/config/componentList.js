@@ -66,9 +66,9 @@ export default {
     path: '../components/button/Button',
     getProps: args => {
       let onClick = args[0]
-      let content = args[1]
+      let children = [].concat(args[1])
       let classNames = [].concat(args[2])
-      return { onClick, content, classNames }
+      return { onClick, children, classNames }
     },
   },
   ExecButton: {
@@ -147,6 +147,43 @@ export default {
   },
   RangeInput: {
     path: '../components/input/RangeInput',
+    getProps: (args: any[]) => {
+      let defaultValue = args[0]
+      let min = getFuncArgs(args, 1)
+      let max = getFuncArgs(args, 2)
+      let step = getFuncArgs(args, 3)
+      let onChange = args[4]
+      let attributes = getFuncArgs(args, 5)
+      let classNames = [].concat(getFuncArgs(args, 6))
+
+      return {
+        defaultValue,
+        min,
+        max,
+        step,
+        onChange,
+        attributes,
+        classNames,
+      }
+    },
+  },
+  StyledCheckboxInput: {
+    path: '../components/input/StyledCheckboxInput',
+    getProps: (args: any[]) => {
+      let defaultValue = args[0]
+      let onChange = args[1]
+      let attributes = getFuncArgs(args, 2)
+      let classNames = [].concat(getFuncArgs(args, 3))
+      return {
+        defaultValue,
+        onChange,
+        attributes,
+        classNames,
+      }
+    },
+  },
+  StyledRangeInput: {
+    path: '../components/input/StyledRangeInput',
     getProps: (args: any[]) => {
       let defaultValue = args[0]
       let min = getFuncArgs(args, 1)

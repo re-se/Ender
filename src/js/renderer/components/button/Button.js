@@ -5,14 +5,14 @@ import { execLambda } from '../../util/lambda'
 class BaseButton extends React.Component {
   onClick: () => void
   render() {
-    let classNames = []
-    classNames = classNames.concat(this.props.classNames)
+    let classNames = [].concat(this.props.classNames)
+
     return (
       <div
         onClick={this.onClick.bind(this)}
         className={`${classNames.join(' ')}`}
       >
-        {this.props.content}
+        {this.props.children}
       </div>
     )
   }
