@@ -123,7 +123,7 @@ class Ender {
       }
 
       if (isDevelop()) {
-        if (this.pc >= this.insts.length) {
+        if (this.pc >= this.insts.length && this.instsStack.length <= 1) {
           yield
           store.dispatch(resetState())
           this.pc = 0
