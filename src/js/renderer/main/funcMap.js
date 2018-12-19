@@ -112,17 +112,17 @@ export const funcMap = {
    * args
    *  0: script
    */
-  include: (args: string[]) => {
-    engine.includeScript(args[0])
+  include: (script: string) => {
+    engine.includeScript(script)
   },
 
   /**
    * args
    *  0: script
    */
-  load: (args: string[]) => {
+  load: (script: string) => {
     store.dispatch(resetState())
-    engine.loadScript(args[0])
+    engine.loadScript(script)
   },
 }
 
