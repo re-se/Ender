@@ -7,6 +7,10 @@ export const resetState = components => {
   return { type: 'RESET_STATE' }
 }
 
+export const replaceState = state => {
+  return { type: 'REPLACE_STATE', state }
+}
+
 // components
 export const addComponents = (components, key = 'default') => {
   return {
@@ -125,4 +129,19 @@ export const addMovie = (
     ],
     'movie'
   )
+}
+
+// Save
+export const updateSave = saveData => {
+  return {
+    type: 'UPDATE_SAVE',
+    saveData,
+  }
+}
+
+export const deleteSave = name => {
+  return {
+    type: 'DELETE_SAVE',
+    name,
+  }
 }

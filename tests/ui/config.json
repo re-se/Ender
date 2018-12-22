@@ -1,0 +1,32 @@
+{
+  "main": "ui_game.end",
+  "text": {
+    "periodWait": true,
+    "speed": 100,
+    "noWait": false
+  },
+  "img": {
+    "basePath": "img"
+  },
+  "auto": false,
+  "autoSpeed": 1000,
+  "audio": {
+    "path": "audio",
+    "bus": [
+      {
+        "name": "master",
+        "gain": 1
+      },
+      {
+        "name": "bgm",
+        "gain": 1,
+        "out": "master"
+      },
+      {
+        "name": "se",
+        "gain": 1,
+        "out": "master"
+      }
+    ]
+  }
+}

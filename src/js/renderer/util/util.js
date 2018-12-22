@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 
 import { remote } from 'electron'
 const { app } = remote
@@ -33,4 +34,15 @@ export const toCss = (json: Object) => {
 
 export const isDevelop = () => {
   return remote.process.env['NODE_ENV'] === 'development'
+}
+
+/**
+ */
+export function isExistFile(filePath: string): boolean {
+  try {
+    fs.statSync(filePath)
+    return true
+  } catch (error) {
+    return false
+  }
 }

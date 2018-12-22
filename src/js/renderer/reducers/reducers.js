@@ -158,16 +158,40 @@ const animation = (state = [], action) => {
   }
 }
 
+const save = (state = {}, action) => {
+  switch (action.type) {
+    case 'UPDATE_SAVE': {
+      const nextState = { ...state }
+      nextState[action.saveData.name] = action.saveData
+      return nextState
+    }
+    case 'DELETE_SAVE': {
+      const nextState = {}
+      for (let name in state) {
+        if (name !== action.name) {
+          nextState[name] = state[name]
+        }
+      }
+      return nextState
+    }
+    default:
+      return state
+  }
+}
+
 const reducer = combineReducers({
   components,
   MessageBox,
   animation,
+  save,
 })
 
 const root = (state, action) => {
   switch (action.type) {
     case 'RESET_STATE':
       return {}
+    case 'REPLACE_STATE':
+      return { ...action.state }
     default:
       return state
   }

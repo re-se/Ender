@@ -1,0 +1,18 @@
+\layout(\Box(\MessageBox()))
+\layout(\ExecButton("full"))
+
+\img('test.png', 'image-center')
+aaa
+bbb
+
+\snapshot()
+\save('1')
+
+ccc
+\wait('snapshot')
+
+\layout(\Box(\SaveList()))
+
+ddd
+eee
+\loadSaveData('1')

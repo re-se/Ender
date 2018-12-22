@@ -1,0 +1,61 @@
+\import('../../build/css/base.css')
+\import('../../build/css/game.css')
+\layout(\Box(\MessageBox("message-box")))
+\layout(\ExecButton(["full", "button-exec"]))
+\layout(\Box(
+  'menu-box',
+  \Box("text-menu"),
+  \Button(
+    func () {
+      \include('setting.end')
+      \wait
+    },
+    "",
+    ["button-menu", "button-setting"]
+  ),
+  \Button(
+    func () {\include('save.end')},
+    "",
+    ["button-menu", "button-save"]
+  ),
+  \Button(
+    func () {\include('load.end')},
+    "",
+    ["button-menu", "button-load"]
+  ),
+  \Button(
+    func () {\include('title.end')},
+    "",
+    ["button-menu", "button-title"]
+  ),
+  \Button(
+    func () {\include('quit.end')},
+    "",
+    ["button-menu", "button-quit"]
+  )
+))
+
+\layout(\Box(
+  'tool-box',
+  \Button(
+    func () {config.auto = true},
+    "",
+    ["button-tool", "button-auto"]
+  ),
+  \Button(
+    func () {\include('history.end')},
+    "",
+    ["button-tool", "button-log"]
+  ),
+  \Button(
+    func () {config.hide = true},
+    "",
+    ["button-tool", "button-close"]
+  )
+))
+
+\img("test.png", "image-full")
+
+コトミ「親譲りの無鉄砲さで、子供の頃から損ばかりしている。
+吾輩は猫である。名前はまだない。
+私のその人を常に先生と呼んでいた」

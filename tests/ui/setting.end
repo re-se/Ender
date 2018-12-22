@@ -1,0 +1,77 @@
+\import('../../build/css/edit.css')
+\import('../../build/css/setting.css')
+\layout(\Box(
+  ["screen-edit", "full"],
+  \Box("screen-name"),
+  \Box(
+    "box-setting-input",
+    \Box(
+      "box-setting-text",
+      \Text("□文章設定", "head1"),
+      \Text("文字表示間隔", "head2"),
+      \Box(
+        ["box-setting-content", "content-2"],
+        \Label(["ノーウェイト", \StyledCheckboxInput(config.text.noWait)], "label-checkbox"),
+        \StyledRangeInput(config.text.speed, 100, 1000, 100)
+      )
+    ),
+    \Box(
+      "box-setting-auto",
+      \Text("□オートモード", "head1"),
+      \Box(
+        "box-setting-content",
+        \Label(["オートモード機能を使用する", \StyledCheckboxInput(config.auto)], "label-checkbox")
+      ),
+      \Text("表示間隔", "head2"),
+      \Box(
+        "box-setting-content",
+        \StyledRangeInput(config.autoSpeed, 100, 1000, 100)
+      )
+    ),
+    \Box(
+      "box-setting-audio",
+      \Text("□音量設定", "head1"),
+      \Text("全体", "head2"),
+      \Box(
+        "box-setting-content",
+        \StyledRangeInput(config.audio.bus[0].gain, 0, 1, 0.05)
+      ),
+      \Text("BGM", "head2"),
+      \Box(
+        "box-setting-content",
+        \StyledRangeInput(config.audio.bus[1].gain, 0, 1, 0.05)
+      ),
+      \Text("効果音", "head2"),
+      \Box(
+        "box-setting-content",
+        \StyledRangeInput(config.audio.bus[2].gain, 0, 1, 0.05)
+      )
+    )
+  ),
+  \Box(
+    "box-edit-menu",
+    \Button(
+      func () {\include('setting.end')},
+      "",
+      ["button-menu", "button-setting"]
+    ),
+    \Button(
+      func () {\include('save.end')},
+      "",
+      ["button-menu", "button-save"]
+    ),
+    \Button(
+      func () {\include('load.end')},
+      "",
+      ["button-menu", "button-load"]
+    ),
+    \Button(
+      func () {\include('title.end')},
+      "",
+      ["button-menu", "button-title"]
+    ),
+    \ExecButton(
+      ["button-menu", "button-quit"]
+    )
+  )
+))

@@ -1,4 +1,6 @@
 //@flow
+import fs from 'fs'
+import { get } from 'lodash'
 import type { FuncInst } from './instMap'
 import {
   resetState,
@@ -15,6 +17,7 @@ import { toAbsolutePath, GeneratorFunction } from '../util/util'
 import { autoPlay } from '../util/autoPlay'
 import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
+import { save, deleteSave, snapshot } from '../util/save'
 
 /**
  * 関数命令の引数を取得する
@@ -106,6 +109,35 @@ export const funcMap = {
   wait: function*(value: ?any): Generator<any, void, void> {
     autoPlay()
     yield value
+  },
+
+  /**
+   * args
+   *  0: name
+   */
+  save: (args: string[]) => {
+    save(args[0], engine.getVar('global.__system__.snapshot'))
+  },
+
+  /**
+   * args
+   *  0: name
+   */
+  deleteSave: (args: string[]) => {
+    deleteSave(args[0])
+  },
+
+  /**
+   * args
+   *  0: name
+   */
+  loadSaveData: (args: string[]) => {
+    engine.loadSaveData(get(store.getState(), `save.${args[0]}`))
+  },
+
+  snapshot: function*(): GeneratorFunction {
+    snapshot()
+    yield
   },
 
   /**

@@ -273,4 +273,11 @@ export default {
       }
     },
   },
+  SaveList: {
+    path: '../containers/SaveList',
+    getProps: (args: any[]) => {
+      let classNames = [].concat(args[0])
+      return { classNames }
+    },
+  },
 }

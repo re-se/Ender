@@ -7,9 +7,10 @@ import parser from './parser.js'
 import instMap from './instMap.js'
 import * as funcMap from './funcMap.js'
 import { GeneratorFunction, isDevelop } from '../util/util'
-import { resetState, finishAnimation } from '../actions/actions'
+import { resetState, replaceState, finishAnimation } from '../actions/actions'
 import store from './store'
 import init from '../util/css-import'
+import { storeAllSaveFiles } from '../util/save'
 
 class Ender {
   instsStack: Inst[][]
@@ -57,10 +58,11 @@ class Ender {
     this.isFinished = false
     this.setVar('config', config)
     this.setVar('global', {})
-
+    this.setVar('global.__system__', {})
     this._loadInitialScript()
 
     init()
+    storeAllSaveFiles()
   }
 
   /**
@@ -116,7 +118,7 @@ class Ender {
       this.pc += 1
 
       // 命令列の最後に到達 && 戻り先の命令列がある場合
-      if (this.pc >= this.insts.length && this.instsStack.length > 1) {
+      while (this.pc >= this.insts.length && this.instsStack.length > 1) {
         this.backInsts()
         // 命令列呼び出しから pc が増えていないので、ここで増やす
         this.pc += 1
@@ -222,6 +224,39 @@ class Ender {
     }
   }
 
+  getContext(): EngineContext {
+    // nameMap から global.__system__ を除外
+    const globalNameMap = {
+      ...this.nameMapStack[0],
+      global: {
+        ...this.nameMapStack[0].global,
+        __system__: {},
+      },
+    }
+    const nameMapStack = [globalNameMap, ...this.nameMapStack.slice(1)]
+
+    return {
+      scriptPath: this.scriptPath,
+      pcStack: [...this.pcStack],
+      instsStack: [...this.instsStack],
+      nameMapStack: nameMapStack,
+    }
+  }
+
+  loadSaveData(saveData: SaveData): void {
+    const prevState = store.getState()
+    store.dispatch(resetState())
+
+    this.init(this.getVar('config'))
+    this.scriptPath = saveData.engine.scriptPath
+    this.pcStack = [...saveData.engine.pcStack]
+    this.instsStack = [...saveData.engine.instsStack]
+    this.nameMapStack = [...saveData.engine.nameMapStack]
+
+    saveData.state.save = prevState.save
+    store.dispatch(replaceState(saveData.state))
+  }
+
   loadScript(scriptName: string): void {
     const config = this.getVar('config')
 
@@ -253,6 +288,9 @@ class Ender {
 
 export default new Ender()
 
+/**
+ * x.y.z や x[10] となっている varPath から最初のレシーバーのみを取り出す
+ */
 function getReceiver(varPath: string): string {
   return varPath.split(/ |\.|\[/)[0]
 }
