@@ -4,7 +4,7 @@ import fs from 'fs'
 import engine from '../../main/engine'
 import store from '../../main/store'
 import { updateSave } from '../../actions/actions'
-import { isExistFile } from '../util'
+import { isExistFile, isDevelop } from '../util'
 import { SAVE_EXT_NAME } from './config'
 
 /**
@@ -42,8 +42,8 @@ export function save(name: string): SaveData {
   fs.writeFile(saveFilePath, JSON.stringify(context), err => {
     if (err) {
       console.warn(err)
-    } else {
-      console.log('done save')
+    } else if (isDevelop()) {
+      console.log(`done save. ${saveFilePath}`)
     }
   })
 

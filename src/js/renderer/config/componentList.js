@@ -276,8 +276,11 @@ export default {
   SaveList: {
     path: '../containers/SaveList',
     getProps: (args: any[]) => {
-      let classNames = [].concat(args[0])
-      return { classNames }
+      let onClick = args[0]
+      let classNames = [].concat(args[1])
+      let limit = args[2] || -1
+      let offset = args[3] || 0
+      return { classNames, onClick, limit, offset }
     },
   },
 }

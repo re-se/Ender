@@ -7,7 +7,10 @@ import SaveData from '../components/SaveData'
 
 export type Props = {
   classNames: string[],
+  limit: number,
+  offset: number,
   saves: Object,
+  onClick: any,
 }
 
 type State = {
@@ -18,13 +21,35 @@ class SaveList extends React.Component<Props, State> {
   render() {
     const saves = this.props.saves
 
-    console.log(saves)
     const saveDataList = []
     for (let key in saves) {
       const saveData = saves[key]
-      saveDataList.push(
-        <SaveData saveData={saveData} key={`saveData-${key}`} />
+      saveDataList[key] = (
+        <SaveData
+          saveData={saveData}
+          key={`saveData-${key}`}
+          onClickLambda={this.props.onClick}
+        />
       )
+    }
+
+    if (this.props.limit > 0) {
+      for (
+        let key = this.props.offset;
+        saveDataList.length < this.props.limit;
+        key++
+      ) {
+        if (saveDataList[key] !== undefined) {
+          continue
+        }
+        saveDataList[key] = (
+          <SaveData
+            saveData={{ name: key }}
+            key={`saveData-${key}`}
+            onClickLambda={this.props.onClick}
+          />
+        )
+      }
     }
 
     return (

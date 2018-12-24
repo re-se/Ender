@@ -21,7 +21,8 @@ export function storeAllSaveFiles(): void {
   // State にセーブファイルの情報を登録
   filenames.forEach(filename => {
     const file = fs.readFileSync(path.join(savePath, filename), 'utf-8')
-    const context = JSON.parse(file)
+    let context = JSON.parse(file)
+    context = formatSaveData(context)
 
     store.dispatch(updateSave(context))
   })
@@ -37,4 +38,12 @@ export function storeAllSaveFiles(): void {
       store.dispatch(deleteSave(name))
     }
   }
+}
+
+function formatSaveData(saveData: Object): Object {
+  let formatedSaveData = { ...saveData }
+  if (saveData.date) {
+    formatedSaveData.date = new Date(saveData.date)
+  }
+  return formatedSaveData
 }

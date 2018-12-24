@@ -115,24 +115,29 @@ export const funcMap = {
    * args
    *  0: name
    */
-  save: (args: string[]) => {
-    save(args[0], engine.getVar('global.__system__.snapshot'))
+  save: (name: string) => {
+    save(engine.eval(name), engine.getVar('global.__system__.snapshot'))
   },
 
   /**
    * args
    *  0: name
    */
-  deleteSave: (args: string[]) => {
-    deleteSave(args[0])
+  deleteSave: (name: string) => {
+    deleteSave(engine.eval(name))
   },
 
   /**
    * args
    *  0: name
    */
-  loadSaveData: (args: string[]) => {
-    engine.loadSaveData(get(store.getState(), `save.${args[0]}`))
+  loadSaveData: (nameExpr: string | Object) => {
+    const name = engine.eval(nameExpr)
+    const saveData = get(store.getState(), `save.${name}`)
+    console.log(saveData)
+    if (saveData) {
+      engine.loadSaveData(saveData)
+    }
   },
 
   snapshot: function*(): GeneratorFunction {
