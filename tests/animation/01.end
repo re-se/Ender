@@ -1,6 +1,0 @@
-\layout(\ExecButton("full"))
-\img("test1.png", "image-left")
-\img("test2.png", "image-right")
-
-\animate("image-left", "fadeIn")
-\animate("image-right", "fadeIn")

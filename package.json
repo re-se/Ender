@@ -115,8 +115,10 @@
     ]
   },
   "jest": {
+    "testURL": "http://localhost/",
     "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js"
+      "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js",
+      "AudioEngine$": "<rootDir>/tests/__mocks__/AudioEngine.js"
     }
   }
 }

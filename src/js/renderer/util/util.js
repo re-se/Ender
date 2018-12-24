@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import { v1 as uuid } from 'uuid'
 
 import { remote } from 'electron'
 const { app } = remote

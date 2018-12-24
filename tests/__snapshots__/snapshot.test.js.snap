@@ -237,7 +237,7 @@ exports[`components test auto_play 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="imageuuid_mock_8"
+      id="imageuuid_mock_16"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/auto_play/test.png"
       style={
@@ -248,6 +248,9 @@ exports[`components test auto_play 1`] = `
       }
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -322,7 +325,7 @@ exports[`components test auto_play 2`] = `
   >
     <img
       className="ender-image image-center"
-      id="imageuuid_mock_8"
+      id="imageuuid_mock_16"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/auto_play/test.png"
       style={
@@ -333,6 +336,9 @@ exports[`components test auto_play 2`] = `
       }
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -346,17 +352,20 @@ exports[`components test image 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="imageuuid_mock_10"
+      id="imageuuid_mock_18"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
     />
     <img
       className="ender-image image-right"
-      id="imageuuid_mock_12"
+      id="imageuuid_mock_20"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/image/test.png"
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -379,6 +388,9 @@ exports[`components test import 1`] = `
       className="ender-box test1"
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -433,12 +445,14 @@ exports[`components test include 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e76238a396"
+      id="imageuuid_mock_27"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
-      style={undefined}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -493,12 +507,14 @@ exports[`components test include 2`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e76238a396"
+      id="imageuuid_mock_27"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
-      style={undefined}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -553,12 +569,119 @@ exports[`components test include 3`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e76238a396"
+      id="imageuuid_mock_27"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/include/test.png"
-      style={undefined}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
+</div>
+`;
+
+exports[`components test input 1`] = `
+<div
+  className="inner-view"
+  id="inner"
+>
+  <div
+    className="ender-box "
+  >
+    <input
+      className="ender-input-range "
+      id="input-rangeuuid_mock_37"
+      max={1}
+      min={0}
+      onChange={[Function]}
+      step={0.1}
+      type="range"
+      value={1}
+    />
+    <input
+      className="ender-input-text "
+      id="input-textuuid_mock_46"
+      onChange={[Function]}
+      type="text"
+      value="デフォルト"
+    />
+    <label
+      className=""
+      htmlFor="inputuuid_mock_115"
+    >
+      gain
+      <input
+        className="ender-input-number "
+        id="inputuuid_mock_115"
+        onChange={[Function]}
+        type="number"
+        value={1}
+      />
+    </label>
+    <input
+      checked={null}
+      className="ender-input-checkbox "
+      id="input-checkboxuuid_mock_81"
+      onChange={[Function]}
+      type="checkbox"
+    />
+    <div
+      className="ender-input-radio "
+      id="input-radiouuid_mock_99"
+    >
+      <div>
+        <label
+          htmlFor="input-radiouuid_mock_99-a"
+        >
+          <span>
+            a
+          </span>
+        </label>
+        <input
+          checked={true}
+          id="input-radiouuid_mock_99-a"
+          onChange={[Function]}
+          type="radio"
+          value="a"
+        />
+      </div>
+      <div>
+        <label
+          className=""
+          htmlFor="input-radiouuid_mock_99-b"
+        >
+          b
+        </label>
+        <input
+          checked={false}
+          id="input-radiouuid_mock_99-b"
+          onChange={[Function]}
+          type="radio"
+          value="b"
+        />
+      </div>
+    </div>
+    <select
+      className="ender-select "
+      id="selectuuid_mock_116"
+      onChange={[Function]}
+      value="a"
+    >
+      <option
+        value="a"
+      >
+        a
+      </option>
+      <option
+        value="b"
+      >
+        b
+      </option>
+    </select>
+  </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -600,6 +723,9 @@ exports[`components test lambda 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -641,6 +767,9 @@ exports[`components test lambda 2`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -674,6 +803,9 @@ exports[`components test lambda 3`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -689,6 +821,9 @@ exports[`components test layout_base 1`] = `
       className="ender-box sample"
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -781,6 +916,9 @@ exports[`components test literal 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -835,12 +973,14 @@ exports[`components test load 1`] = `
   >
     <img
       className="ender-image image-center"
-      id="image1666e7624033b7"
+      id="imageuuid_mock_127"
       onLoad={[Function]}
       src="/Users/kmac/Documents/srss/Ender/tests/load/test.png"
-      style={undefined}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -882,6 +1022,9 @@ exports[`components test load 2`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1102,6 +1245,9 @@ exports[`components test message_box 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1171,6 +1317,9 @@ exports[`components test message_box 2`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1204,6 +1353,9 @@ exports[`components test message_box 3`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1237,6 +1389,9 @@ exports[`components test message_box 4`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1284,6 +1439,9 @@ iii
 あいうえおかきくけこ
     </pre>
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1749,6 +1907,9 @@ exports[`components test message_box_ruby 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1785,6 +1946,9 @@ exports[`components test movie 1`] = `
   <div
     className="ender-box "
   />
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1826,6 +1990,9 @@ exports[`components test set_return_value 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;
 
@@ -1871,5 +2038,8 @@ exports[`components test variable 1`] = `
       onClick={[Function]}
     />
   </div>
+  <span>
+    AudioEngine mock
+  </span>
 </div>
 `;

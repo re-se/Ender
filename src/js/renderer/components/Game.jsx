@@ -1,8 +1,31 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import generateComponent from '../util/generateComponent'
+import AudioEngine from '../containers/AudioEngine'
 
 const Game = ({ components = {} }) => {
+  return (
+    <div id="inner" className="inner-view" key="inner-view">
+      {generateChildComponents(components)}
+      <AudioEngine />
+    </div>
+  )
+}
+
+const mapStateToProps = state => {
+  return {
+    components: state.components,
+  }
+}
+
+export default connect(mapStateToProps)(Game)
+
+/**
+ * Enderコンポーネントの配列からReactコンポーネントの配列を作成
+ * @params components
+ * @retrun React.Component[]
+ */
+const generateChildComponents = components => {
   let childComponents = []
   for (const key in components) {
     const children = components[key]
@@ -19,17 +42,5 @@ const Game = ({ components = {} }) => {
       )
     }
   }
-  return (
-    <div id="inner" className="inner-view" key="inner-view">
-      {childComponents}
-    </div>
-  )
+  return childComponents
 }
-
-const mapStateToProps = state => {
-  return {
-    components: state.components,
-  }
-}
-
-export default connect(mapStateToProps)(Game)

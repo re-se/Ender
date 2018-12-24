@@ -1,6 +1,0 @@
-\layout(\ExecButton("full"))
-\img("test1.png", "image-left")
-\img("test2.png", "image-right")
-
-\aanimate("image-left", "fadeIn")
-\aanimate("image-right", "fadeIn")

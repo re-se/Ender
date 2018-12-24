@@ -9,6 +9,11 @@ import {
   deleteStyle,
   addImage,
   addMovie,
+  playAudio as playAudioAction,
+  stopAudio as stopAudioAction,
+  pauseAudio as pauseAudioAction,
+  loadAudioBus as loadAudioBusAction,
+  loadAudioEffect as loadAudioEffectAction,
 } from '../actions/actions'
 import ImageAnimation from '../util/animation/ImageAnimation'
 import MovieAnimation from '../util/animation/MovieAnimation'
@@ -70,6 +75,60 @@ export const funcMap = {
     let animation = new ImageAnimation(selector, effectName)
     animation.start()
     AnimationUtil.setAnimation(animation)
+  },
+
+  playAudio: (
+    out: string,
+    src: string,
+    isLoop: boolean,
+    loopOffsetTime: number,
+    effect: string
+  ) => {
+    const srcStr = engine.eval(src)
+    store.dispatch(
+      playAudioAction(
+        srcStr,
+        engine.eval(out),
+        engine.eval(isLoop),
+        engine.eval(loopOffsetTime)
+      )
+    )
+    if (effect) {
+      store.dispatch(loadAudioEffectAction(src, engine.eval(effect)))
+    }
+  },
+
+  stopAudio: (targetBus: string, effect: string) => {
+    const bus = engine.eval(targetBus)
+    if (effect) {
+      store.dispatch(
+        loadAudioEffectAction(bus, engine.eval(effect), false, () => {
+          store.dispatch(stopAudioAction(bus))
+        })
+      )
+    } else {
+      store.dispatch(stopAudioAction(bus))
+    }
+  },
+
+  pauseAudio: (targetBus: string, effect: string) => {
+    store.dispatch(
+      pauseAudioAction(engine.eval(targetBus), engine.eval(effect))
+    )
+  },
+
+  loadAudioBus: (name: string, out: string, gain: number) => {
+    store.dispatch(
+      loadAudioBusAction(engine.eval(name), engine.eval(out), engine.eval(gain))
+    )
+  },
+
+  effectAudio: (targetBus: string, effect: string) => {
+    store.dispatch(loadAudioEffectAction(targetBus, effect, true))
+  },
+
+  aeffectAudio: (targetBus: string, effect: string) => {
+    store.dispatch(loadAudioEffectAction(targetBus, effect, false))
   },
 
   movie: function*(
