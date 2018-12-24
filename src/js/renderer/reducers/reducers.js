@@ -31,6 +31,14 @@ const components = (state = {}, action) => {
     }
     case 'UPDATE_COMPONENT_STYLE':
       return updateComponentStyle(state, action.selector, action.style)
+    case 'DELETE_STYLE':
+      let nextState = { ...state }
+      if (nextState['style']) {
+        nextState['style'] = state['style'].filter(
+          styleComponent => action.filePath !== styleComponent.props.filePath
+        )
+      }
+      return nextState
     default:
       return state
   }

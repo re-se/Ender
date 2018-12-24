@@ -35,6 +35,13 @@ export const updateComponentStyle = (selector, style) => {
   }
 }
 
+export const deleteStyle = filePath => {
+  return {
+    type: 'DELETE_STYLE',
+    filePath,
+  }
+}
+
 // MessageBox
 export const clearMessage = () => {
   return {

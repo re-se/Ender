@@ -5,6 +5,8 @@ import type { FuncInst } from './instMap'
 import {
   resetState,
   addComponents,
+  deleteComponents,
+  deleteStyle,
   addImage,
   addMovie,
 } from '../actions/actions'
@@ -17,6 +19,7 @@ import { toAbsolutePath, GeneratorFunction } from '../util/util'
 import { autoPlay } from '../util/autoPlay'
 import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
+import StyleUtil from '../util/StyleUtil'
 import { save, deleteSave, snapshot } from '../util/save'
 
 /**
@@ -98,7 +101,7 @@ export const funcMap = {
           {
             type: 'func',
             name: 'Style',
-            args: [css],
+            args: [css, filePath],
           },
         ],
         'style'
@@ -160,6 +163,19 @@ export const funcMap = {
   load: (script: string) => {
     store.dispatch(resetState())
     engine.loadScript(script)
+  },
+
+  clear: (name: string) => {
+    if (name) {
+      const selectorTree = StyleUtil.parse(name)
+      store.dispatch(deleteComponents(selectorTree))
+    } else {
+      store.dispatch(resetState())
+    }
+  },
+
+  clearStyle: (filePath: string) => {
+    store.dispatch(deleteStyle(filePath))
   },
 }
 
