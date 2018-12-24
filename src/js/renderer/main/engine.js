@@ -171,7 +171,7 @@ class Ender {
       console.warn(`undefined variable: ${varPath}`)
     }
 
-    return variable || defaultValue
+    return variable !== undefined ? variable : defaultValue
   }
 
   /**

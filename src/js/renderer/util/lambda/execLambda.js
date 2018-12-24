@@ -7,6 +7,9 @@ export function execLambda(lambdaInst, args) {
 
   const argDecls = lambdaInst.args.map(arg => generateArgDecl(arg))
   argDecls.forEach((argDecl, index) => {
-    engine.declVar(argDecl.name, args[index] || argDecl.defaultValue)
+    engine.declVar(
+      argDecl.name,
+      args[index] !== undefined ? args[index] : argDecl.defaultValue
+    )
   })
 }
