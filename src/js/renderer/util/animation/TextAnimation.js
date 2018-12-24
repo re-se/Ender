@@ -40,9 +40,15 @@ export default class TextAnimation extends Animation {
         engine.getVar('config.text.periodWait', false) &&
         currentMessage.type === 'period'
       ) {
-        this.stop()
-        autoPlay()
-        yield { index: index + 1, position }
+        if (index === this.message.length - 1) {
+          yield { index: index + 1, position }
+          this.stop()
+          autoPlay()
+        } else {
+          this.stop()
+          autoPlay()
+          yield { index: index + 1, position }
+        }
       }
 
       if (currentMessage.body) {

@@ -284,6 +284,15 @@ class Ender {
     const insts = parser.parse(fs.readFileSync(scriptPath).toString())
     this.callInsts(insts)
   }
+
+  includeScreen(scriptName: string): void {
+    this.includeScript(scriptName)
+    this.insts.map(inst => {
+      if (inst.type === 'clear') {
+        inst.message = false
+      }
+    })
+  }
 }
 
 export default new Ender()

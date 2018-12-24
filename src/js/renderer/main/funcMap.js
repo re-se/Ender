@@ -156,6 +156,10 @@ export const funcMap = {
     engine.includeScript(script)
   },
 
+  screen: (script: string) => {
+    engine.includeScreen(script)
+  },
+
   /**
    * args
    *  0: script
