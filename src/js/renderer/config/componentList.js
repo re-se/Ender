@@ -62,6 +62,28 @@ export default {
       }
     },
   },
+  BlurBox: {
+    path: '../components/BlurBox',
+    getProps: args => {
+      let classNames = []
+      if (typeof args[0] === 'string' || args[0] instanceof Array) {
+        classNames = classNames.concat(engine.eval(args[0]))
+        args = args.slice(1)
+      }
+
+      let blurSelector = ''
+      if (typeof args[0] === 'string' || args[0] instanceof Array) {
+        blurSelector = engine.eval(args[0])
+        args = args.slice(1)
+      }
+
+      return {
+        classNames: classNames,
+        blurSelector,
+        children: args,
+      }
+    },
+  },
   Button: {
     path: '../components/button/Button',
     getProps: args => {
@@ -85,6 +107,23 @@ export default {
       return { classNames }
     },
   },
+  HideButton: {
+    path: '../components/button/Button',
+    getProps: args => {
+      let onClick = args[0]
+      let selector = args[1]
+      let classNames = [].concat(args[2])
+      return { onClick, selector, classNames }
+    },
+  },
+  ShowButton: {
+    path: '../components/button/Button',
+    getProps: args => {
+      let onClick = args[0]
+      let classNames = [].concat(args[1])
+      return { onClick, classNames }
+    },
+  },
   Text: {
     path: '../components/Text',
     getProps: args => {
@@ -97,7 +136,8 @@ export default {
     path: '../components/Style',
     getProps: args => {
       let style = args[0]
-      return { style }
+      let filePath = args[1]
+      return { style, filePath }
     },
   },
   NumberInput: {
