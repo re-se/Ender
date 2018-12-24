@@ -26,6 +26,7 @@ import { execLambda, isLambda } from '../util/lambda'
 import ComponentUtil from '../util/ComponentUtil'
 import StyleUtil from '../util/StyleUtil'
 import { save, deleteSave, snapshot } from '../util/save'
+import { saveConfig as _saveConfig } from '../main/config'
 
 /**
  * 関数命令の引数を取得する
@@ -239,6 +240,10 @@ export const funcMap = {
 
   clearStyle: (filePath: string) => {
     store.dispatch(deleteStyle(filePath))
+  },
+
+  saveConfig: () => {
+    _saveConfig(engine.getVar('config'))
   },
 }
 
