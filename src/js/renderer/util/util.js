@@ -1,5 +1,6 @@
 import path from 'path'
 import fs from 'fs'
+import os from 'os'
 import { v1 as uuid } from 'uuid'
 
 import { remote } from 'electron'
@@ -9,6 +10,10 @@ export const toAbsolutePath = (originPath, prefix = app.getAppPath()) => {
   return path.isAbsolute(originPath)
     ? originPath
     : path.join(prefix, originPath)
+}
+
+export const toAbsoluteAppPath = (originPath, prefix = getAppPath()) => {
+  return toAbsolutePath(originPath, prefix)
 }
 
 export const GeneratorFunction = function*() {}.constructor
@@ -46,4 +51,18 @@ export function isExistFile(filePath: string): boolean {
   } catch (error) {
     return false
   }
+}
+
+function getAppPath() {
+  const appPath = app.getAppPath()
+  let to = ''
+  if (path.extname(appPath) === '.asar') {
+    const osName = os.type()
+    if (osName === 'Windows') {
+      to = '../../'
+    } else if (osName === 'Darwin') {
+      to = '../../../../'
+    }
+  }
+  return path.resolve(appPath, to)
 }
