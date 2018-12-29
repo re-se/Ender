@@ -1,17 +1,19 @@
 import fs from 'fs'
 import path from 'path'
 import { isPlainObject, cloneDeep } from 'lodash'
-import { toAbsolutePath } from './util'
+import { toAbsolutePath, toAbsoluteAppPath, isExistFile } from './util'
 
-const defaultBaseConfigPath = null // "dist/resource/_base.json"
+const defaultBaseConfigPath = 'build/resource/_base.json'
 
 const toPublic = key => (key[0] === '@' ? key : `@${key}`)
 
 export default class Config {
   static generateConfig(path) {
     let configObject = null
-    if (path) {
+    if (path && isExistFile(path)) {
       configObject = JSON.parse(fs.readFileSync(path, 'utf8'))
+      configObject.basePath = toAbsolutePath(configObject.basePath || '')
+      configObject.savePath = toAbsoluteAppPath(configObject.savePath || 'save')
     } else {
       configObject = {}
     }
