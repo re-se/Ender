@@ -13,7 +13,13 @@ import { SAVE_EXT_NAME } from './config'
 export function storeAllSaveFiles(): void {
   const config = engine.getVar('config')
 
-  const savePath = path.join(config.basePath || '', config.savePath || '')
+  const savePath = path.join(config.savePath || '')
+
+  // セーブディレクトリがなければ作る
+  if (!isExistFile(savePath)) {
+    fs.mkdirSync(savePath)
+  }
+
   const filenames = fs
     .readdirSync(savePath)
     .filter(filename => path.extname(filename) === SAVE_EXT_NAME)
