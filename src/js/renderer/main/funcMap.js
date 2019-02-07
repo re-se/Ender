@@ -52,7 +52,9 @@ export const funcMap = {
     classNames: string | string[],
     effect: string
   ): Generator<void, void, void> {
-    store.dispatch(addImage(src, classNames, effect))
+    store.dispatch(
+      addImage(engine.eval(src), engine.eval(classNames), engine.eval(effect))
+    )
     yield
   },
 
@@ -229,12 +231,22 @@ export const funcMap = {
     engine.loadScript(script)
   },
 
-  clear: (name: string) => {
+  clear: (name: string, effect) => {
     if (name) {
       const selectorTree = StyleUtil.parse(name)
       store.dispatch(deleteComponents(selectorTree))
     } else {
       store.dispatch(resetState())
+    }
+
+    if (effect) {
+      store.dispatch(
+        effect(bus, engine.eval(effect), false, () => {
+          store.dispatch(stopAudioAction(bus))
+        })
+      )
+    } else {
+      store.dispatch(stopAudioAction(bus))
     }
   },
 
