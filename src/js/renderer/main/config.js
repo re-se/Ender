@@ -5,6 +5,9 @@ import { toAbsolutePath, isExistFile, isDevelop } from '../util/util'
 import fs from 'fs'
 
 export function generateConfig(configPath: string): Config {
+  if (!isExistFile(configPath)) {
+    fs.writeFileSync(configPath, '{}')
+  }
   let config = Config.generateConfig(configPath)
   config.auto = false
   config.extendGetter('basePath', function(key, getter) {

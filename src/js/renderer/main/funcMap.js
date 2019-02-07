@@ -27,6 +27,7 @@ import ComponentUtil from '../util/ComponentUtil'
 import StyleUtil from '../util/StyleUtil'
 import { save, deleteSave, snapshot } from '../util/save'
 import { saveConfig as _saveConfig } from '../main/config'
+import path from 'path'
 
 /**
  * 関数命令の引数を取得する
@@ -52,9 +53,10 @@ export const funcMap = {
     classNames: string | string[],
     effect: string
   ): Generator<void, void, void> {
-    store.dispatch(
-      addImage(engine.eval(src), engine.eval(classNames), engine.eval(effect))
-    )
+    const config = engine.getVar('config')
+    const srcPath = path.join(config.img.path || '', src)
+
+    store.dispatch(addImage(srcPath, classNames, effect))
     yield
   },
 
@@ -88,9 +90,11 @@ export const funcMap = {
     effect: string
   ) => {
     const srcStr = engine.eval(src)
+    const config = engine.getVar('config')
+    const srcPath = path.join(config.audio.path || '', srcStr)
     store.dispatch(
       playAudioAction(
-        srcStr,
+        srcPath,
         engine.eval(out),
         engine.eval(isLoop),
         engine.eval(loopOffsetTime)

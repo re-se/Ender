@@ -1,7 +1,7 @@
 //@flow
 import type { FuncInst } from '../main/instMap'
 import componentList from '../config/componentList'
-import { v1 as uuid } from 'uuid'
+import uuid from 'uuid/v4'
 
 export default class ComponentUtil {
   /**
@@ -14,11 +14,15 @@ export default class ComponentUtil {
     if (props.children) {
       props.children = props.children.map(child => {
         if (typeof child !== 'object') {
-          return child
-        } else {
-          return ComponentUtil.generateComponentState(child, key)
+          child = {
+            type: 'func',
+            name: 'Text',
+            args: [child.toString()],
+          }
         }
+        return ComponentUtil.generateComponentState(child, key)
       })
+      console.log(props)
     }
     return props
   }

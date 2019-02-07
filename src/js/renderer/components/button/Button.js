@@ -3,18 +3,26 @@ import engine from '../../main/engine'
 import { execLambda } from '../../util/lambda'
 import store from '../../main/store'
 import { addComponents, deleteStyle } from '../../actions/actions'
+import generateComponent from '../../util/generateComponent'
 
 class BaseButton extends React.Component {
   onClick: () => void
   render() {
     let classNames = [].concat(this.props.classNames)
+    let childComponents = []
+    for (const key in this.props.children) {
+      const child = this.props.children[key]
+      if (child) {
+        childComponents.push(generateComponent(child))
+      }
+    }
 
     return (
       <div
         onClick={this.onClick.bind(this)}
         className={`${classNames.join(' ')}`}
       >
-        {this.props.children}
+        {childComponents}
       </div>
     )
   }
